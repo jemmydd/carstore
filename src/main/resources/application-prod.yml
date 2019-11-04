@@ -1,0 +1,14 @@
+# 端口
+#server:
+#  port: 80
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: mechanical@LyjQ1anPro%Root
+    url: jdbc:mysql://127.0.0.1:3306/mechanical?characterEncoding=UTF-8&allowMultiQueries=true&useUnicode=true&serverTimezone=Asia/Shanghai
+    username: root
+
+# 业务资源的域名
+file-domain:
+  ali-oss-domain: https://mechanical.oss-cn-hangzhou.aliyuncs.com/

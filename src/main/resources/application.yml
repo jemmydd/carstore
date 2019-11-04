@@ -1,0 +1,67 @@
+# 端口
+server:
+  port: 443
+  ssl:
+    key-alias: alias
+    key-store: classpath:alymf1n.jks
+    key-store-password: sDwLujqG
+    key-store-type: JKS
+
+# 应用名称、默认的启动配置
+spring:
+  application:
+    name: mechanical
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/mechanical?characterEncoding=UTF-8&allowMultiQueries=true&useUnicode=true
+    username: root
+  profiles:
+    active: test
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 10MB
+  freemarker:
+    allow-request-override: false
+    allow-session-override: false
+    cache: true
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    enabled: true
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: true
+    prefer-file-system-access: true
+    settings:
+      classic_compatible: true
+      default_encoding: UTF-8
+      template_update_delay: 0
+    suffix: .ftl
+    template-loader-path: classpath:/templates
+
+# 是否打开始终显示监控的详情
+management:
+  endpoint:
+    health:
+      show-details: always
+
+# mybatis设置
+mybatis:
+  mapper-locations: classpath*:/mapper/*.xml
+  type-aliases-package: com.luoyanjie.mechanical.bean.entity
+
+# 请求的日志打印
+logging:
+  level:
+    root: INFO
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+
+# 业务资源的域名
+file-domain:
+  ali-oss-domain: https://mechanical-test.oss-cn-hangzhou.aliyuncs.com/
+
+pg-app-info:
+  app-id: wxb64ae6be832c8aeb
+  app-secret: e028f44c44e50efdb51d553279660fc6

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoyanjie.mechanical.dao.mapper.CategoryDOMapper">
+  <resultMap id="BaseResultMap" type="com.luoyanjie.mechanical.bean.entity.CategoryDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+    <result column="category_level" jdbcType="INTEGER" property="categoryLevel" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sorted_num" jdbcType="INTEGER" property="sortedNum" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="is_show_index" jdbcType="TINYINT" property="isShowIndex" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, is_deleted, category_level, parent_id, name, sorted_num, 
+    icon, is_show_index
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from category
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from category
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.luoyanjie.mechanical.bean.entity.CategoryDO" useGeneratedKeys="true" keyProperty="id">
+    insert into category (id, create_time, update_time, 
+      is_deleted, category_level, parent_id, 
+      name, sorted_num, icon, 
+      is_show_index)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{isDeleted,jdbcType=TINYINT}, #{categoryLevel,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{sortedNum,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, 
+      #{isShowIndex,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.luoyanjie.mechanical.bean.entity.CategoryDO" useGeneratedKeys="true" keyProperty="id">
+    insert into category
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="categoryLevel != null">
+        category_level,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sortedNum != null">
+        sorted_num,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="isShowIndex != null">
+        is_show_index,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="categoryLevel != null">
+        #{categoryLevel,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sortedNum != null">
+        #{sortedNum,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="isShowIndex != null">
+        #{isShowIndex,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.luoyanjie.mechanical.bean.entity.CategoryDO">
+    update category
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="categoryLevel != null">
+        category_level = #{categoryLevel,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sortedNum != null">
+        sorted_num = #{sortedNum,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="isShowIndex != null">
+        is_show_index = #{isShowIndex,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.luoyanjie.mechanical.bean.entity.CategoryDO">
+    update category
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      category_level = #{categoryLevel,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      sorted_num = #{sortedNum,jdbcType=INTEGER},
+      icon = #{icon,jdbcType=VARCHAR},
+      is_show_index = #{isShowIndex,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--自定义sql-->
+  <update id="secondGoToFirst">
+    <if test="firstId == null or secondCategoryIds == null or secondCategoryIds.size == 0">
+      select 1
+    </if>
+    <if test="firstId != null and secondCategoryIds != null and secondCategoryIds.size > 0">
+      <foreach item="item" collection="secondCategoryIds" open="" separator=";" close="">
+        update category set parent_id = #{firstId} where id = #{item} and category_level = 2
+      </foreach>
+    </if>
+  </update>
+  <select id="selectBatchSecondByFirst" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from category
+    <where>
+      category_level = 2
+      <if test="firstIds == null or firstIds.size == 0">
+        and parent_id = -1
+      </if>
+      <if test="firstIds != null and firstIds.size > 0">
+        and parent_id in
+        <foreach item="item" collection="firstIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="selectSecondByFirst" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from category
+    <where>
+      category_level = 2
+      <if test="firstId != null">
+        and parent_id = #{firstId}
+      </if>
+    </where>
+  </select>
+</mapper>

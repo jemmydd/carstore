@@ -1,0 +1,3 @@
+#
+ALTER TABLE banner
+    ADD url VARCHAR(1000) NULL COMMENT '跳转地址';

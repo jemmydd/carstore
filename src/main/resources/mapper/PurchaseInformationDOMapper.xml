@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoyanjie.mechanical.dao.mapper.PurchaseInformationDOMapper">
+  <resultMap id="BaseResultMap" type="com.luoyanjie.mechanical.bean.entity.PurchaseInformationDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="category_first_id" jdbcType="INTEGER" property="categoryFirstId" />
+    <result column="category_second_id" jdbcType="INTEGER" property="categorySecondId" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="new_old_level" jdbcType="VARCHAR" property="newOldLevel" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="contact_mobile" jdbcType="VARCHAR" property="contactMobile" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="shelf_status" jdbcType="TINYINT" property="shelfStatus" />
+    <result column="creator" jdbcType="INTEGER" property="creator" />
+    <result column="expected_price" jdbcType="VARCHAR" property="expectedPrice" />
+    <result column="usage_hours" jdbcType="VARCHAR" property="usageHours" />
+    <result column="year_limit_num" jdbcType="VARCHAR" property="yearLimitNum" />
+    <result column="has_invoice" jdbcType="TINYINT" property="hasInvoice" />
+    <result column="has_certificate" jdbcType="TINYINT" property="hasCertificate" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, category_first_id, category_second_id, province_code, 
+    province_name, city_code, city_name, area_code, area_name, new_old_level, title, 
+    content, contact_mobile, view_count, shelf_status, creator, expected_price, usage_hours, 
+    year_limit_num, has_invoice, has_certificate, contact, remark, brand_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from purchase_information
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from purchase_information
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.luoyanjie.mechanical.bean.entity.PurchaseInformationDO" useGeneratedKeys="true" keyProperty="id">
+    insert into purchase_information (id, create_time, update_time, 
+      category_first_id, category_second_id, province_code, 
+      province_name, city_code, city_name, 
+      area_code, area_name, new_old_level, 
+      title, content, contact_mobile, 
+      view_count, shelf_status, creator, 
+      expected_price, usage_hours, year_limit_num, 
+      has_invoice, has_certificate, contact, 
+      remark, brand_id)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{categoryFirstId,jdbcType=INTEGER}, #{categorySecondId,jdbcType=INTEGER}, #{provinceCode,jdbcType=VARCHAR}, 
+      #{provinceName,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, 
+      #{areaCode,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, #{newOldLevel,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{contactMobile,jdbcType=VARCHAR}, 
+      #{viewCount,jdbcType=INTEGER}, #{shelfStatus,jdbcType=TINYINT}, #{creator,jdbcType=INTEGER}, 
+      #{expectedPrice,jdbcType=VARCHAR}, #{usageHours,jdbcType=VARCHAR}, #{yearLimitNum,jdbcType=VARCHAR}, 
+      #{hasInvoice,jdbcType=TINYINT}, #{hasCertificate,jdbcType=TINYINT}, #{contact,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.luoyanjie.mechanical.bean.entity.PurchaseInformationDO" useGeneratedKeys="true" keyProperty="id">
+    insert into purchase_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="categoryFirstId != null">
+        category_first_id,
+      </if>
+      <if test="categorySecondId != null">
+        category_second_id,
+      </if>
+      <if test="provinceCode != null">
+        province_code,
+      </if>
+      <if test="provinceName != null">
+        province_name,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="cityName != null">
+        city_name,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+      <if test="newOldLevel != null">
+        new_old_level,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="contactMobile != null">
+        contact_mobile,
+      </if>
+      <if test="viewCount != null">
+        view_count,
+      </if>
+      <if test="shelfStatus != null">
+        shelf_status,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="expectedPrice != null">
+        expected_price,
+      </if>
+      <if test="usageHours != null">
+        usage_hours,
+      </if>
+      <if test="yearLimitNum != null">
+        year_limit_num,
+      </if>
+      <if test="hasInvoice != null">
+        has_invoice,
+      </if>
+      <if test="hasCertificate != null">
+        has_certificate,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="brandId != null">
+        brand_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="categoryFirstId != null">
+        #{categoryFirstId,jdbcType=INTEGER},
+      </if>
+      <if test="categorySecondId != null">
+        #{categorySecondId,jdbcType=INTEGER},
+      </if>
+      <if test="provinceCode != null">
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="newOldLevel != null">
+        #{newOldLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contactMobile != null">
+        #{contactMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="viewCount != null">
+        #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="shelfStatus != null">
+        #{shelfStatus,jdbcType=TINYINT},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="expectedPrice != null">
+        #{expectedPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="usageHours != null">
+        #{usageHours,jdbcType=VARCHAR},
+      </if>
+      <if test="yearLimitNum != null">
+        #{yearLimitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="hasInvoice != null">
+        #{hasInvoice,jdbcType=TINYINT},
+      </if>
+      <if test="hasCertificate != null">
+        #{hasCertificate,jdbcType=TINYINT},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        #{brandId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.luoyanjie.mechanical.bean.entity.PurchaseInformationDO">
+    update purchase_information
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="categoryFirstId != null">
+        category_first_id = #{categoryFirstId,jdbcType=INTEGER},
+      </if>
+      <if test="categorySecondId != null">
+        category_second_id = #{categorySecondId,jdbcType=INTEGER},
+      </if>
+      <if test="provinceCode != null">
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="newOldLevel != null">
+        new_old_level = #{newOldLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contactMobile != null">
+        contact_mobile = #{contactMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="viewCount != null">
+        view_count = #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="shelfStatus != null">
+        shelf_status = #{shelfStatus,jdbcType=TINYINT},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="expectedPrice != null">
+        expected_price = #{expectedPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="usageHours != null">
+        usage_hours = #{usageHours,jdbcType=VARCHAR},
+      </if>
+      <if test="yearLimitNum != null">
+        year_limit_num = #{yearLimitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="hasInvoice != null">
+        has_invoice = #{hasInvoice,jdbcType=TINYINT},
+      </if>
+      <if test="hasCertificate != null">
+        has_certificate = #{hasCertificate,jdbcType=TINYINT},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.luoyanjie.mechanical.bean.entity.PurchaseInformationDO">
+    update purchase_information
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      category_first_id = #{categoryFirstId,jdbcType=INTEGER},
+      category_second_id = #{categorySecondId,jdbcType=INTEGER},
+      province_code = #{provinceCode,jdbcType=VARCHAR},
+      province_name = #{provinceName,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      new_old_level = #{newOldLevel,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      contact_mobile = #{contactMobile,jdbcType=VARCHAR},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      shelf_status = #{shelfStatus,jdbcType=TINYINT},
+      creator = #{creator,jdbcType=INTEGER},
+      expected_price = #{expectedPrice,jdbcType=VARCHAR},
+      usage_hours = #{usageHours,jdbcType=VARCHAR},
+      year_limit_num = #{yearLimitNum,jdbcType=VARCHAR},
+      has_invoice = #{hasInvoice,jdbcType=TINYINT},
+      has_certificate = #{hasCertificate,jdbcType=TINYINT},
+      contact = #{contact,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      brand_id = #{brandId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--自定义sql-->
+  <select id="search" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM purchase_information
+    <where>
+      <if test="categoryFirstId != null and categoryFirstId != -1">
+        and category_first_id = #{categoryFirstId}
+      </if>
+      <if test="categorySecondId != null and categorySecondId != -1">
+        and category_second_id = #{categorySecondId}
+      </if>
+      <if test="provinceCode != null and provinceCode != ''">
+        and province_code = #{provinceCode}
+      </if>
+      <if test="cityCode != null and cityCode != ''">
+        and city_code = #{cityCode}
+      </if>
+      <if test="areaCode != null and areaCode != ''">
+        and area_code = #{areaCode}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        and (
+        title like concat('%', #{keyword}, '%')
+        or new_old_level like concat('%', #{keyword}, '%')
+        or content like concat('%', #{keyword}, '%')
+        )
+      </if>
+      <if test="contactMobile != null and contactMobile != ''">
+        and contact_mobile like concat('%', #{contactMobile}, '%')
+      </if>
+      <if test="shelfStatus != null">
+        and shelf_status = #{shelfStatus}
+      </if>
+      <if test="creator != null">
+        and creator = #{creator}
+      </if>
+      <if test="brandId != null">
+        and brand_id = #{brandId}
+      </if>
+    </where>
+    order by id desc
+  </select>
+  <select id="searchById" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM purchase_information
+    WHERE id = #{id}
+  </select>
+</mapper>

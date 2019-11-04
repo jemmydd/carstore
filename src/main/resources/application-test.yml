@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: mechanical@LyjQ1an
+    url: jdbc:mysql://121.43.166.200:3306/mechanical?characterEncoding=UTF-8&allowMultiQueries=true&useUnicode=true&serverTimezone=Asia/Shanghai
+    username: mechanical
