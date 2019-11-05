@@ -1,6 +1,6 @@
 # 端口
 server:
-  port: 443
+  port: 8081
   ssl:
     key-alias: alias
     key-store: classpath:alymf1n.jks
@@ -50,7 +50,7 @@ management:
 # mybatis设置
 mybatis:
   mapper-locations: classpath*:/mapper/*.xml
-  type-aliases-package: com.luoyanjie.mechanical.bean.entity
+  type-aliases-package: com.lym.mechanical.bean.entity
 
 # 请求的日志打印
 logging:

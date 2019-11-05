@@ -5,7 +5,7 @@
               value="[%d{'yyyy-MM-dd HH:mm:ss,SSS',GMT+8:00}] %highlight(%level) [%thread] - [%c.%M][%line] - %boldGreen(%msg%n)"/>
     <property name="log.charset" value="UTF-8"/>
     <property name="log.level" value="INFO"/>
-    <property name="log.path" value="../logs/mechanical"/>
+    <property name="log.path" value="../logs/carstore"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -84,7 +84,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.luoyanjie.mechanical.dao" additivity="false">
+    <logger name="com.lym.mechanical.dao" additivity="false">
         <level value="debug"/>
         <appender-ref ref="DB"/>
         <appender-ref ref="STDOUT"/>
