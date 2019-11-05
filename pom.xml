@@ -206,7 +206,7 @@
     </dependencies>
 
     <build>
-        <finalName>mechanical</finalName>
+        <finalName>carstore</finalName>
 
         <plugins>
             <plugin>

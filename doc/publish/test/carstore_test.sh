@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Created by Thor on 2017-06-22
+# Created by liyimin on 2019-11-05
 
 # **************** START constant define **************** #
 
@@ -13,7 +13,7 @@ RUNNING_ENV=test
 MAIN_PATH=/root/zSky
 
 # 项目名称
-PROJECT_NAME=mechanical
+PROJECT_NAME=carstore
 
 # auto script file name
 SCRIPT_NAME=${PROJECT_NAME}_${RUNNING_ENV}.sh
@@ -22,7 +22,7 @@ SCRIPT_NAME=${PROJECT_NAME}_${RUNNING_ENV}.sh
 APP_NAME=${PROJECT_NAME}.jar
 
 # git branch
-GIT_BRANCH=dev
+GIT_BRANCH=master
 
 # project source code dir
 PROJECT_DIR=${MAIN_PATH}/project/${PROJECT_NAME}
