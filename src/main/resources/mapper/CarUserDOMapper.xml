@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.mechanical.dao.mapper.CarUserDOMapper">
+  <resultMap id="BaseResultMap" type="com.lym.mechanical.bean.entity.CarUserDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+    <result column="head_portrait" jdbcType="VARCHAR" property="headPortrait" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="openid" jdbcType="VARCHAR" property="openid" />
+    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
+    <result column="vip_start_time" jdbcType="TIMESTAMP" property="vipStartTime" />
+    <result column="vip_end_time" jdbcType="TIMESTAMP" property="vipEndTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, is_deleted, head_portrait, name, nick_name, sex, phone, 
+    openid, session_key, vip_start_time, vip_end_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from car_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from car_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
+    insert into car_user (id, create_time, update_time, 
+      is_deleted, head_portrait, name, 
+      nick_name, sex, phone, 
+      openid, session_key, vip_start_time, 
+      vip_end_time)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{isDeleted,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{nickName,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{phone,jdbcType=VARCHAR}, 
+      #{openid,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{vipStartTime,jdbcType=TIMESTAMP}, 
+      #{vipEndTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
+    insert into car_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="headPortrait != null">
+        head_portrait,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="sessionKey != null">
+        session_key,
+      </if>
+      <if test="vipStartTime != null">
+        vip_start_time,
+      </if>
+      <if test="vipEndTime != null">
+        vip_end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="headPortrait != null">
+        #{headPortrait,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null">
+        #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="vipStartTime != null">
+        #{vipStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vipEndTime != null">
+        #{vipEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
+    update car_user
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="headPortrait != null">
+        head_portrait = #{headPortrait,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null">
+        session_key = #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="vipStartTime != null">
+        vip_start_time = #{vipStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vipEndTime != null">
+        vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
+    update car_user
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      head_portrait = #{headPortrait,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=TINYINT},
+      phone = #{phone,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR},
+      session_key = #{sessionKey,jdbcType=VARCHAR},
+      vip_start_time = #{vipStartTime,jdbcType=TIMESTAMP},
+      vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

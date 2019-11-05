@@ -6,5 +6,6 @@ package com.lym.mechanical.bean.enumBean;
  * Coding happily every day!
  */
 public enum WxQrEnum {
-    PG_QR
+    PG_QR,
+    NAME_CARD,
 }

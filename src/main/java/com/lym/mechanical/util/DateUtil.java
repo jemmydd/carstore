@@ -81,4 +81,8 @@ public class DateUtil {
 
         return DateFormatUtils.format(date, Constant.DATE_FORMAT);
     }
+
+    public static Date now() {
+        return new Date();
+    }
 }
