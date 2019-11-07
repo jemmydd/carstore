@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.mechanical.dao.mapper.PublishImageVideoDOMapper">
+  <resultMap id="BaseResultMap" type="com.lym.mechanical.bean.entity.PublishImageVideoDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="publish_id" jdbcType="INTEGER" property="publishId" />
+    <result column="file" jdbcType="VARCHAR" property="file" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="first_pic" jdbcType="VARCHAR" property="firstPic" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, publish_id, file, type, first_pic
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from publish_image_video
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from publish_image_video
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishImageVideoDO" useGeneratedKeys="true" keyProperty="id">
+    insert into publish_image_video (id, create_time, update_time, 
+      publish_id, file, type, 
+      first_pic)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{publishId,jdbcType=INTEGER}, #{file,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, 
+      #{firstPic,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishImageVideoDO" useGeneratedKeys="true" keyProperty="id">
+    insert into publish_image_video
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="publishId != null">
+        publish_id,
+      </if>
+      <if test="file != null">
+        file,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="firstPic != null">
+        first_pic,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishId != null">
+        #{publishId,jdbcType=INTEGER},
+      </if>
+      <if test="file != null">
+        #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="firstPic != null">
+        #{firstPic,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.PublishImageVideoDO">
+    update publish_image_video
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishId != null">
+        publish_id = #{publishId,jdbcType=INTEGER},
+      </if>
+      <if test="file != null">
+        file = #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="firstPic != null">
+        first_pic = #{firstPic,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.PublishImageVideoDO">
+    update publish_image_video
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      publish_id = #{publishId,jdbcType=INTEGER},
+      file = #{file,jdbcType=VARCHAR},
+      type = #{type,jdbcType=CHAR},
+      first_pic = #{firstPic,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--自定义sql-->
+  <select id="selectBatchByPublish" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from publish_image_video
+    <where>
+      <if test="publishIds == null or publishIds.size == 0">
+        and publish_id = -1
+      </if>
+      <if test="publishIds != null and publishIds.size > 0">
+        and publish_id in
+        <foreach item="item" collection="publishIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="selectByPublish" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from publish_image_video
+    where publish_id = #{publishId}
+  </select>
+  <insert id="insertBatchSelective">
+    <if test="data == null or data.size == 0">
+      select 1 = -1
+    </if>
+    <if test="data != null and data.size > 0">
+      <foreach item="item" collection="data" open="" separator=";" close="">
+        insert into publish_image_video
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="item.id != null">
+            id,
+          </if>
+          <if test="item.createTime != null">
+            create_time,
+          </if>
+          <if test="item.updateTime != null">
+            update_time,
+          </if>
+          <if test="item.publishId != null">
+            publish_id,
+          </if>
+          <if test="item.file != null">
+            file,
+          </if>
+          <if test="item.type != null">
+            type,
+          </if>
+          <if test="item.firstPic != null">
+            first_pic,
+          </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+          <if test="item.id != null">
+            #{item.id,jdbcType=INTEGER},
+          </if>
+          <if test="item.createTime != null">
+            #{item.createTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="item.updateTime != null">
+            #{item.updateTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="item.publishId != null">
+            #{item.publishId,jdbcType=INTEGER},
+          </if>
+          <if test="item.file != null">
+            #{item.file,jdbcType=VARCHAR},
+          </if>
+          <if test="item.type != null">
+            #{item.type,jdbcType=CHAR},
+          </if>
+          <if test="item.firstPic != null">
+            #{item.firstPic,jdbcType=VARCHAR},
+          </if>
+        </trim>
+      </foreach>
+    </if>
+  </insert>
+</mapper>

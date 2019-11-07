@@ -185,4 +185,20 @@
       vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectBatchByPrimaryKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from car_user
+    <where>
+      <if test="ids != null and ids.size > 0">
+        id in
+        <foreach collection="ids" close=")" item="item" open="(" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="ids == null or ids.size == 0">
+        1 = 0
+      </if>
+    </where>
+  </select>
 </mapper>

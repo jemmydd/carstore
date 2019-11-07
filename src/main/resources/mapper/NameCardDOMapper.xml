@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.mechanical.dao.mapper.NameCardDOMapper">
+  <resultMap id="BaseResultMap" type="com.lym.mechanical.bean.entity.NameCardDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="wechat_no" jdbcType="VARCHAR" property="wechatNo" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
+    <result column="company_address" jdbcType="VARCHAR" property="companyAddress" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="voice_introduce" jdbcType="VARCHAR" property="voiceIntroduce" />
+    <result column="voice_introduce_time" jdbcType="INTEGER" property="voiceIntroduceTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, user_id, name, mobile, wechat_no, company_name, job_title, 
+    company_address, location, introduce, voice_introduce, voice_introduce_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from name_card
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from name_card
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardDO" useGeneratedKeys="true" keyProperty="id">
+    insert into name_card (id, create_time, update_time, 
+      user_id, name, mobile, 
+      wechat_no, company_name, job_title, 
+      company_address, location, introduce, 
+      voice_introduce, voice_introduce_time)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{userId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{wechatNo,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{jobTitle,jdbcType=VARCHAR}, 
+      #{companyAddress,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{introduce,jdbcType=VARCHAR}, 
+      #{voiceIntroduce,jdbcType=VARCHAR}, #{voiceIntroduceTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO" useGeneratedKeys="true" keyProperty="id">
+    insert into name_card
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="wechatNo != null">
+        wechat_no,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="jobTitle != null">
+        job_title,
+      </if>
+      <if test="companyAddress != null">
+        company_address,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="introduce != null">
+        introduce,
+      </if>
+      <if test="voiceIntroduce != null">
+        voice_introduce,
+      </if>
+      <if test="voiceIntroduceTime != null">
+        voice_introduce_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatNo != null">
+        #{wechatNo,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="companyAddress != null">
+        #{companyAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceIntroduce != null">
+        #{voiceIntroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceIntroduceTime != null">
+        #{voiceIntroduceTime,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
+    update name_card
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatNo != null">
+        wechat_no = #{wechatNo,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        job_title = #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="companyAddress != null">
+        company_address = #{companyAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceIntroduce != null">
+        voice_introduce = #{voiceIntroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceIntroduceTime != null">
+        voice_introduce_time = #{voiceIntroduceTime,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
+    update name_card
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      wechat_no = #{wechatNo,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      job_title = #{jobTitle,jdbcType=VARCHAR},
+      company_address = #{companyAddress,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      introduce = #{introduce,jdbcType=VARCHAR},
+      voice_introduce = #{voiceIntroduce,jdbcType=VARCHAR},
+      voice_introduce_time = #{voiceIntroduceTime,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectBatchByPrimaryKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from name_card
+    <where>
+      <if test="ids != null and ids.size > 0">
+        id in
+        <foreach collection="ids" separator="," open="(" item="item" close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="ids == null or ids.size == 0">
+        1 = 0
+      </if>
+    </where>
+  </select>
+  <select id="selectByCardId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from name_card
+    <where>
+      <if test="cardId != null">
+        id = #{cardId}
+      </if>
+    </where>
+    order by create_time desc, id desc
+  </select>
+</mapper>

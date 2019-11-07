@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.mechanical.dao.mapper.MessageDOMapper">
+  <resultMap id="BaseResultMap" type="com.lym.mechanical.bean.entity.MessageDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="from_car_user_id" jdbcType="INTEGER" property="fromCarUserId" />
+    <result column="to_car_user_id" jdbcType="INTEGER" property="toCarUserId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="user_group" jdbcType="VARCHAR" property="userGroup" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, from_car_user_id, to_car_user_id, content, type, user_group
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.MessageDO" useGeneratedKeys="true" keyProperty="id">
+    insert into message (id, create_time, update_time, 
+      from_car_user_id, to_car_user_id, content, 
+      type, user_group)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{fromCarUserId,jdbcType=INTEGER}, #{toCarUserId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{userGroup,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.MessageDO" useGeneratedKeys="true" keyProperty="id">
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="fromCarUserId != null">
+        from_car_user_id,
+      </if>
+      <if test="toCarUserId != null">
+        to_car_user_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="userGroup != null">
+        user_group,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fromCarUserId != null">
+        #{fromCarUserId,jdbcType=INTEGER},
+      </if>
+      <if test="toCarUserId != null">
+        #{toCarUserId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="userGroup != null">
+        #{userGroup,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.MessageDO">
+    update message
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fromCarUserId != null">
+        from_car_user_id = #{fromCarUserId,jdbcType=INTEGER},
+      </if>
+      <if test="toCarUserId != null">
+        to_car_user_id = #{toCarUserId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="userGroup != null">
+        user_group = #{userGroup,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.MessageDO">
+    update message
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      from_car_user_id = #{fromCarUserId,jdbcType=INTEGER},
+      to_car_user_id = #{toCarUserId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      user_group = #{userGroup,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectBatchByUserGroup" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message
+    <where>
+      <if test="userGroups != null and userGroups.size > 0">
+        user_group in
+        <foreach collection="userGroups" separator="," open="(" item="item" close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="userGroups == null or userGroups.size == 0">
+        1 = 0
+      </if>
+    </where>
+  </select>
+</mapper>

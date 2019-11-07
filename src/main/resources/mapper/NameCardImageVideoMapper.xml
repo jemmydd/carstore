@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.mechanical.dao.mapper.NameCardImageVideoMapper">
+  <resultMap id="BaseResultMap" type="com.lym.mechanical.bean.entity.NameCardImageVideo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="card_id" jdbcType="INTEGER" property="cardId" />
+    <result column="file" jdbcType="VARCHAR" property="file" />
+    <result column="type" jdbcType="CHAR" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, card_id, file, type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from name_card_image_video
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from name_card_image_video
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardImageVideo" useGeneratedKeys="true" keyProperty="id">
+    insert into name_card_image_video (id, create_time, update_time, 
+      card_id, file, type)
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{cardId,jdbcType=INTEGER}, #{file,jdbcType=VARCHAR}, #{type,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardImageVideo" useGeneratedKeys="true" keyProperty="id">
+    insert into name_card_image_video
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="cardId != null">
+        card_id,
+      </if>
+      <if test="file != null">
+        file,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cardId != null">
+        #{cardId,jdbcType=INTEGER},
+      </if>
+      <if test="file != null">
+        #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.NameCardImageVideo">
+    update name_card_image_video
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cardId != null">
+        card_id = #{cardId,jdbcType=INTEGER},
+      </if>
+      <if test="file != null">
+        file = #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.NameCardImageVideo">
+    update name_card_image_video
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      card_id = #{cardId,jdbcType=INTEGER},
+      file = #{file,jdbcType=VARCHAR},
+      type = #{type,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="insertBatchSelective" parameterType="com.lym.mechanical.bean.entity.NameCardImageVideo">
+    <foreach collection="data" close=";" item="item" open="" separator=";">
+      insert into name_card_image_video
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          id,
+        </if>
+        <if test="item.createTime != null">
+          create_time,
+        </if>
+        <if test="item.updateTime != null">
+          update_time,
+        </if>
+        <if test="item.cardId != null">
+          card_id,
+        </if>
+        <if test="item.file != null">
+          file,
+        </if>
+        <if test="item.type != null">
+          type,
+        </if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          #{item.id,jdbcType=INTEGER},
+        </if>
+        <if test="item.createTime != null">
+          #{item.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.updateTime != null">
+          #{item.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.cardId != null">
+          #{item.cardId,jdbcType=INTEGER},
+        </if>
+        <if test="item.file != null">
+          #{item.file,jdbcType=VARCHAR},
+        </if>
+        <if test="item.type != null">
+          #{item.type,jdbcType=CHAR},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.mechanical.dao.mapper.DiscussDOMapper">
+  <resultMap id="BaseResultMap" type="com.lym.mechanical.bean.entity.DiscussDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="publish_id" jdbcType="INTEGER" property="publishId" />
+    <result column="publish_user_id" jdbcType="INTEGER" property="publishUserId" />
+    <result column="publish_user_read_status" jdbcType="TINYINT" property="publishUserReadStatus" />
+    <result column="floor_discuss_id" jdbcType="INTEGER" property="floorDiscussId" />
+    <result column="floor_discuss_user_id" jdbcType="INTEGER" property="floorDiscussUserId" />
+    <result column="be_reply_discuss_id" jdbcType="INTEGER" property="beReplyDiscussId" />
+    <result column="be_reply_reply_discuss_user_id" jdbcType="INTEGER" property="beReplyReplyDiscussUserId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, user_id, content, publish_id, publish_user_id, publish_user_read_status, 
+    floor_discuss_id, floor_discuss_user_id, be_reply_discuss_id, be_reply_reply_discuss_user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from discuss
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from discuss
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.DiscussDO" useGeneratedKeys="true" keyProperty="id">
+    insert into discuss (id, create_time, update_time, 
+      user_id, content, publish_id, 
+      publish_user_id, publish_user_read_status, floor_discuss_id, 
+      floor_discuss_user_id, be_reply_discuss_id, be_reply_reply_discuss_user_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{userId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{publishId,jdbcType=INTEGER}, 
+      #{publishUserId,jdbcType=INTEGER}, #{publishUserReadStatus,jdbcType=TINYINT}, #{floorDiscussId,jdbcType=INTEGER}, 
+      #{floorDiscussUserId,jdbcType=INTEGER}, #{beReplyDiscussId,jdbcType=INTEGER}, #{beReplyReplyDiscussUserId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.DiscussDO" useGeneratedKeys="true" keyProperty="id">
+    insert into discuss
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="publishId != null">
+        publish_id,
+      </if>
+      <if test="publishUserId != null">
+        publish_user_id,
+      </if>
+      <if test="publishUserReadStatus != null">
+        publish_user_read_status,
+      </if>
+      <if test="floorDiscussId != null">
+        floor_discuss_id,
+      </if>
+      <if test="floorDiscussUserId != null">
+        floor_discuss_user_id,
+      </if>
+      <if test="beReplyDiscussId != null">
+        be_reply_discuss_id,
+      </if>
+      <if test="beReplyReplyDiscussUserId != null">
+        be_reply_reply_discuss_user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="publishId != null">
+        #{publishId,jdbcType=INTEGER},
+      </if>
+      <if test="publishUserId != null">
+        #{publishUserId,jdbcType=INTEGER},
+      </if>
+      <if test="publishUserReadStatus != null">
+        #{publishUserReadStatus,jdbcType=TINYINT},
+      </if>
+      <if test="floorDiscussId != null">
+        #{floorDiscussId,jdbcType=INTEGER},
+      </if>
+      <if test="floorDiscussUserId != null">
+        #{floorDiscussUserId,jdbcType=INTEGER},
+      </if>
+      <if test="beReplyDiscussId != null">
+        #{beReplyDiscussId,jdbcType=INTEGER},
+      </if>
+      <if test="beReplyReplyDiscussUserId != null">
+        #{beReplyReplyDiscussUserId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.DiscussDO">
+    update discuss
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="publishId != null">
+        publish_id = #{publishId,jdbcType=INTEGER},
+      </if>
+      <if test="publishUserId != null">
+        publish_user_id = #{publishUserId,jdbcType=INTEGER},
+      </if>
+      <if test="publishUserReadStatus != null">
+        publish_user_read_status = #{publishUserReadStatus,jdbcType=TINYINT},
+      </if>
+      <if test="floorDiscussId != null">
+        floor_discuss_id = #{floorDiscussId,jdbcType=INTEGER},
+      </if>
+      <if test="floorDiscussUserId != null">
+        floor_discuss_user_id = #{floorDiscussUserId,jdbcType=INTEGER},
+      </if>
+      <if test="beReplyDiscussId != null">
+        be_reply_discuss_id = #{beReplyDiscussId,jdbcType=INTEGER},
+      </if>
+      <if test="beReplyReplyDiscussUserId != null">
+        be_reply_reply_discuss_user_id = #{beReplyReplyDiscussUserId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.DiscussDO">
+    update discuss
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      publish_id = #{publishId,jdbcType=INTEGER},
+      publish_user_id = #{publishUserId,jdbcType=INTEGER},
+      publish_user_read_status = #{publishUserReadStatus,jdbcType=TINYINT},
+      floor_discuss_id = #{floorDiscussId,jdbcType=INTEGER},
+      floor_discuss_user_id = #{floorDiscussUserId,jdbcType=INTEGER},
+      be_reply_discuss_id = #{beReplyDiscussId,jdbcType=INTEGER},
+      be_reply_reply_discuss_user_id = #{beReplyReplyDiscussUserId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

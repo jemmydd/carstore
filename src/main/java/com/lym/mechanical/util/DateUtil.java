@@ -7,6 +7,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author liyimin
@@ -82,7 +83,27 @@ public class DateUtil {
         return DateFormatUtils.format(date, Constant.DATE_FORMAT);
     }
 
+    public static String formatDate(Date date, String format) {
+        if (date == null) return "";
+
+        return DateFormatUtils.format(date, format);
+    }
+
     public static Date now() {
         return new Date();
+    }
+
+    /**
+     * 判断当前是否在时间段内
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    public static Boolean dateValid(Date startTime, Date endTime) {
+        if (Objects.isNull(startTime) || Objects.isNull(endTime)) {
+            return Boolean.FALSE;
+        }
+        Date now = new Date();
+        return now.compareTo(startTime) >= 0 && now.compareTo(endTime) <= 0;
     }
 }

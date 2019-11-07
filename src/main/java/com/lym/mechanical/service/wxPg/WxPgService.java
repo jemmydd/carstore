@@ -3,8 +3,7 @@ package com.lym.mechanical.service.wxPg;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import com.google.common.collect.Maps;
-import com.lym.mechanical.bean.common.DefaultHandleConstant;
-import com.lym.mechanical.bean.dto.user.UserDTO;
+import com.lym.mechanical.bean.dto.user.CarUserDTO;
 import com.lym.mechanical.bean.dto.wxPg.AccessTokenDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxPgAuthDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserDTO;
@@ -31,7 +30,6 @@ import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -94,8 +92,8 @@ public class WxPgService {
     @Autowired
     private FileDomain fileDomain;
 
-    public UserDTO auth(WxLoginInfo info) {
-        UserDTO result;
+    public CarUserDTO auth(WxLoginInfo info) {
+        CarUserDTO result;
 
         WxPgAuthDTO wxPgAuthDTO = auth(pgAppInfo.getAppId(), pgAppInfo.getAppSecret(), info.getCode());
 
@@ -119,7 +117,7 @@ public class WxPgService {
                 carUserDOMapper.insertSelective(userDO);
             }
 
-            result = UserDTO.builder()
+            result = CarUserDTO.builder()
                     .id(userDO.getId())
                     .openId(userDO.getOpenid())
                     .phone(Objects.isNull(userDO.getPhone()) ? "" : userDO.getPhone())

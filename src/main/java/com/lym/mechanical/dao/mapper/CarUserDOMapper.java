@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface CarUserDOMapper {
     int deleteByPrimaryKey(Integer id);
@@ -23,4 +25,6 @@ public interface CarUserDOMapper {
     @Select("select * from car_user where openid = #{openId} and is_delete = 0")
     @ResultMap("BaseResultMap")
     CarUserDO selectByOpenId(@Param("openId") String openId);
+
+    List<CarUserDO> selectBatchByPrimaryKey(@Param("ids") List<Integer> ids);
 }
