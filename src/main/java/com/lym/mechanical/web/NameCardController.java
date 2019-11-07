@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("card")
-@Api("名片")
+@Api(tags = "名片")
 public class NameCardController {
 
     @Autowired
