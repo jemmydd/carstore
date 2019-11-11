@@ -33,4 +33,6 @@ public interface NameCardDOMapper {
     List<NameCardDO> selectBatchByPrimaryKey(@Param("ids") List<Integer> ids);
 
     List<NameCardDO> selectByCardId(@Param("cardId") Integer cardId);
+
+    List<NameCardDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
 }

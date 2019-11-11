@@ -1,5 +1,6 @@
 package com.lym.mechanical.dao.mapper;
 
+import com.lym.mechanical.bean.dto.message.LookUserDTO;
 import com.lym.mechanical.bean.entity.NameCardLookRecordDO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
@@ -25,4 +26,6 @@ public interface NameCardLookRecordDOMapper {
     @Select("select * from name_card_look_record where user_id = #{userId} order by create_time desc, id desc")
     @ResultMap("BaseResultMap")
     List<NameCardLookRecordDO> selectByUserId(@Param("userId") Integer userId);
+
+    List<LookUserDTO> selectLookRecordByUserId(@Param("userId") Integer userId);
 }

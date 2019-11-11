@@ -159,3 +159,19 @@ COMMENT='车商收藏表'
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
+
+DROP TABLE IF EXISTS `publish_look_record`;
+CREATE TABLE `publish_look_record` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '数据库自增ID',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	`user_id` INT(11) NOT NULL COMMENT '用户id',
+	`publish_id` INT(11) NOT NULL COMMENT '看过的设备id',
+	PRIMARY KEY (`id`),
+	INDEX `idx_user_id` (`user_id`)
+)
+COMMENT='设备浏览记录表（看自己的不算）'
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+

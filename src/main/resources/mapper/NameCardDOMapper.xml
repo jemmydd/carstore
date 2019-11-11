@@ -223,4 +223,20 @@
     </where>
     order by create_time desc, id desc
   </select>
+  <select id="selectBatchByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from name_card
+    <where>
+      <if test="userIds != null and userIds.size > 0">
+        user_id in
+        <foreach collection="userIds" separator="," open="(" item="item" close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="userIds == null or userIds.size == 0">
+        1 = 0
+      </if>
+    </where>
+  </select>
 </mapper>

@@ -90,4 +90,35 @@
       card_id = #{cardId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectLookRecordByUserId" resultType="com.lym.mechanical.bean.dto.message.LookUserDTO">
+    SELECT
+    user_id AS userId,
+    biz_id AS bizId,
+    `date` AS `date`,
+    biz_type AS bizType
+    FROM (
+    SELECT
+    user_id AS user_id,
+    publish_id AS biz_id,
+    create_time AS `date`,
+    'PUBLISH_LOOK' AS biz_type
+    FROM publish_look_record
+    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId)
+    UNION ALL
+    SELECT
+    car_user_id AS user_id,
+    publish_id AS biz_id,
+    create_time AS `date`,
+    'PUBLISH_COLLECT' AS biz_type
+    FROM car_user_collection
+    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId)
+    UNION ALL
+    SELECT
+    user_id AS user_id,
+    card_id AS biz_id,
+    create_time AS `date`,
+    'CARD' AS biz_type
+    FROM name_card_look_record
+    WHERE card_id IN (SELECT id FROM name_card WHERE user_id = #{userId})) a ORDER BY a.`date` desc
+  </select>
 </mapper>

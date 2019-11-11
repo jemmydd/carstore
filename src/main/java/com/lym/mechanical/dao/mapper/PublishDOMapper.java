@@ -116,4 +116,6 @@ public interface PublishDOMapper {
             @Param("shelfStatus") Byte shelfStatus,
             @Param("brandId") Integer brandId
     );
+
+    List<PublishDO> selectBatchByPrimaryKey(@Param("ids") List<Integer> ids);
 }
