@@ -35,4 +35,7 @@ public interface NameCardFriendDOMapper {
     @Select("select * from name_card_friend where user_id = #{userId} and card_id = #{cardId}")
     @ResultMap("BaseResultMap")
     NameCardFriendDO selectByUserIdAndCardId(@Param("userId") Integer userId, @Param("cardId") Integer cardId);
+
+    @Delete("delete from name_card_friend where user_id = #{userId} and card_id = #{cardId}")
+    void deleteByUserIdAndCardId(@Param("userId") Integer userId, @Param("cardId") Integer cardId);
 }

@@ -213,7 +213,7 @@ public class WxPgService {
 
                 wxAccessTokenDOMapper.updateByPrimaryKeySelective(
                         WxAccessTokenDO.builder()
-                                .id(1)
+                                .id(2)
                                 .accessToken(newData)
                                 .build()
                 );
@@ -228,7 +228,7 @@ public class WxPgService {
         String result;
 
         String paramJson = SecureUtil.md5(GsonUtil.GSON.toJson(param));
-        WxQrDO wxQrDO = wxQrDOMapper.selectByMd5Param(paramJson, WxQrEnum.PG_QR.name());
+        WxQrDO wxQrDO = wxQrDOMapper.selectByMd5Param(paramJson, WxQrEnum.NAME_CARD.name());
 
         if (wxQrDO == null || StringUtils.isEmpty(wxQrDO.getUrl())) {
             InputStream inputStream = getQrResponseBody(param);

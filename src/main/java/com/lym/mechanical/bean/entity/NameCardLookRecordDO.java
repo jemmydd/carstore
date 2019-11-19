@@ -16,6 +16,8 @@ public class NameCardLookRecordDO {
 
     private Integer cardId;
 
+    private Boolean hasDial;
+
     public Integer getId() {
         return id;
     }
@@ -54,5 +56,13 @@ public class NameCardLookRecordDO {
 
     public void setCardId(Integer cardId) {
         this.cardId = cardId;
+    }
+
+    public Boolean getHasDial() {
+        return hasDial;
+    }
+
+    public void setHasDial(Boolean hasDial) {
+        this.hasDial = hasDial;
     }
 }

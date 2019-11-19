@@ -76,7 +76,7 @@ public class PublishService {
         Page<PublishDO> pd = (Page<PublishDO>) publishDOMapper.search(
                 param.getSearchText(),
                 param.getProvinceCode(), param.getCityCode(), param.getAreaCode(), param.getCategoryFirstId(), param.getCategorySecondId(),
-                PublishCallSceneEnum.isMy(param.getPublishCallSceneEnum()) ? param.getUserId() : param.getPublishId(),
+                param.getPublishId(),
                 sortedTypeEnum.name(),
                 param.getIsDownShelf(),
                 param.getBrandId()
@@ -92,7 +92,7 @@ public class PublishService {
 
         return PageData.data(pd,
                 data.stream()
-                        .map(row -> cov(row, param.getUserId(), userDOMap.get(row.getUserId()), param.getPublishCallSceneEnum(), pimMap.get(row.getId()), cm))
+                        .map(row -> cov(row, param.getPublishId(), userDOMap.get(row.getUserId()), param.getPublishCallSceneEnum(), pimMap.get(row.getId()), cm))
                         .collect(Collectors.toList())
         );
     }
@@ -128,7 +128,7 @@ public class PublishService {
 
         return PageData.data(pd,
                 data.stream()
-                        .map(row -> cov(row, param.getUserId(), userDOMap.get(row.getUserId()), PublishCallSceneEnum.SQUARE, pimMap.get(row.getId()), cm))
+                        .map(row -> cov(row, param.getPublishId(), userDOMap.get(row.getUserId()), PublishCallSceneEnum.SQUARE, pimMap.get(row.getId()), cm))
                         .collect(Collectors.toList())
         );
     }

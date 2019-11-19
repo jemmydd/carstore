@@ -16,6 +16,12 @@ public class PublishLookRecordDO {
 
     private Integer publishId;
 
+    private Boolean hasDial;
+
+    private Boolean hasCollect;
+
+    private Integer lookTime;
+
     public Integer getId() {
         return id;
     }
@@ -54,5 +60,29 @@ public class PublishLookRecordDO {
 
     public void setPublishId(Integer publishId) {
         this.publishId = publishId;
+    }
+
+    public Boolean getHasDial() {
+        return hasDial;
+    }
+
+    public void setHasDial(Boolean hasDial) {
+        this.hasDial = hasDial;
+    }
+
+    public Boolean getHasCollect() {
+        return hasCollect;
+    }
+
+    public void setHasCollect(Boolean hasCollect) {
+        this.hasCollect = hasCollect;
+    }
+
+    public Integer getLookTime() {
+        return lookTime;
+    }
+
+    public void setLookTime(Integer lookTime) {
+        this.lookTime = lookTime;
     }
 }

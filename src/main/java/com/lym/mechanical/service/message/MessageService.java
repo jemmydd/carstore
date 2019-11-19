@@ -81,7 +81,7 @@ public class MessageService {
                         .message(Objects.equals(messageDO.getType(), MessageTypeEnum.TEXT.getCode()) ? messageDO.getContent()
                                 : MessageTypeEnum.getNameByCode(messageDO.getType()))
                         .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
-                        .time(DateUtil.formatDate(messageDO.getCreateTime()))
+                        .time(DateUtil.getDateStr(messageDO.getCreateTime()))
                         .userId(otherUserId)
                         .build());
             }
@@ -189,7 +189,7 @@ public class MessageService {
                     .cardId(Objects.equals("CARD", row.getBizType()) ? row.getBizId() : null)
                     .desc(desc)
                     .publishId(Objects.equals("PUBLISH", row.getBizType()) ? row.getBizId() : null)
-                    .time(DateUtil.formatDate(row.getDate()))
+                    .time(DateUtil.getDateStr(row.getDate()))
                     .userId(row.getUserId())
                     .build();
         }).collect(Collectors.toList()));

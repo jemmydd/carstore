@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublishParam {
-    @ApiModelProperty("当前用户id")
-    private Integer userId;
 
     @ApiModelProperty("页码，必传")
     private Integer pageNum;
@@ -50,7 +48,7 @@ public class PublishParam {
     @ApiModelProperty(value = "调用场景", hidden = true)
     private PublishCallSceneEnum publishCallSceneEnum;
 
-    @ApiModelProperty("车商用户id")
+    @ApiModelProperty("要查看的车商用户id")
     private Integer publishId;
 
     @ApiModelProperty("是否已经下架")

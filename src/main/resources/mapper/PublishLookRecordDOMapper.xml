@@ -7,9 +7,12 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="publish_id" jdbcType="INTEGER" property="publishId" />
+    <result column="has_dial" jdbcType="BIT" property="hasDial" />
+    <result column="has_collect" jdbcType="BIT" property="hasCollect" />
+    <result column="look_time" jdbcType="INTEGER" property="lookTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_time, update_time, user_id, publish_id
+    id, create_time, update_time, user_id, publish_id, has_dial, has_collect, look_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -21,13 +24,15 @@
     delete from publish_look_record
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishLookRecordDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishLookRecordDO">
     insert into publish_look_record (id, create_time, update_time, 
-      user_id, publish_id)
+      user_id, publish_id, has_dial, 
+      has_collect, look_time)
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{userId,jdbcType=INTEGER}, #{publishId,jdbcType=INTEGER})
+      #{userId,jdbcType=INTEGER}, #{publishId,jdbcType=INTEGER}, #{hasDial,jdbcType=BIT}, 
+      #{hasCollect,jdbcType=BIT}, #{lookTime,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishLookRecordDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishLookRecordDO">
     insert into publish_look_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -44,6 +49,15 @@
       </if>
       <if test="publishId != null">
         publish_id,
+      </if>
+      <if test="hasDial != null">
+        has_dial,
+      </if>
+      <if test="hasCollect != null">
+        has_collect,
+      </if>
+      <if test="lookTime != null">
+        look_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -62,6 +76,15 @@
       <if test="publishId != null">
         #{publishId,jdbcType=INTEGER},
       </if>
+      <if test="hasDial != null">
+        #{hasDial,jdbcType=BIT},
+      </if>
+      <if test="hasCollect != null">
+        #{hasCollect,jdbcType=BIT},
+      </if>
+      <if test="lookTime != null">
+        #{lookTime,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.PublishLookRecordDO">
@@ -79,6 +102,15 @@
       <if test="publishId != null">
         publish_id = #{publishId,jdbcType=INTEGER},
       </if>
+      <if test="hasDial != null">
+        has_dial = #{hasDial,jdbcType=BIT},
+      </if>
+      <if test="hasCollect != null">
+        has_collect = #{hasCollect,jdbcType=BIT},
+      </if>
+      <if test="lookTime != null">
+        look_time = #{lookTime,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -87,7 +119,79 @@
     set create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       user_id = #{userId,jdbcType=INTEGER},
-      publish_id = #{publishId,jdbcType=INTEGER}
+      publish_id = #{publishId,jdbcType=INTEGER},
+      has_dial = #{hasDial,jdbcType=BIT},
+      has_collect = #{hasCollect,jdbcType=BIT},
+      look_time = #{lookTime,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectTodayGuest" resultType="Integer">
+    SELECT DISTINCT * FROM(
+    SELECT user_id FROM name_card_look_record WHERE card_id = (SELECT id FROM name_card WHERE user_id = #{userId}) AND DATE_FORMAT(create_time,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')
+    UNION ALL
+    SELECT user_id FROM publish_look_record WHERE publish_id in (SELECT id FROM publish WHERE car_user_id = #{userId}) AND DATE_FORMAT(create_time,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')
+    ) a
+  </select>
+  <select id="selectTotalGuest" resultType="Integer">
+    SELECT DISTINCT * FROM(
+    SELECT user_id FROM name_card_look_record WHERE card_id = (SELECT id FROM name_card WHERE user_id = #{userId})
+    UNION ALL
+    SELECT user_id FROM publish_look_record WHERE publish_id in (SELECT id FROM publish WHERE car_user_id = #{userId})
+    ) a
+  </select>
+  <select id="selectMyGuestList" resultType="com.lym.mechanical.bean.dto.my.MyGuestDO">
+    SELECT user_id as userId,MAX(create_time) as createTime FROM(
+        SELECT user_id,create_time FROM publish_look_record WHERE publish_id in (SELECT id FROM publish WHERE car_user_id = #{userId})
+        <if test="type != null and type == 0">
+          and DATE_FORMAT(create_time,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')
+        </if>
+        <if test="hasDial != null and hasDial == 1">
+          and has_dial = 1
+        </if>
+        <if test="hasCollect != null and hasCollect == 1">
+          and has_collect = 1
+        </if>
+        <if test="hasLook != null and hasLook == 0">
+          UNION ALL
+          SELECT user_id, create_time FROM name_card_look_record WHERE card_id = (SELECT id FROM name_card WHERE user_id = #{userId})
+          <if test="type != null and type == 0">
+            and DATE_FORMAT(create_time,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')
+          </if>
+          <if test="hasDial != null and hasDial == 1">
+            and has_dial = 1
+          </if>
+        </if>
+    ) a GROUP BY a.user_id
+  </select>
+  <select id="selectByUserIdAndPublishIdOrderByLookTime" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from publish_look_record
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+      <if test="publishId != null">
+        and publish_id = #{publishId}
+      </if>
+    </where>
+    order by look_time desc
+  </select>
+  <select id="selectHistory" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from publish_look_record
+    <where>
+        <if test="publishId != null">
+          and publish_id = #{publishId}
+        </if>
+        <if test="hasDial != null and hasDial == 1">
+          and has_dial = #{hasDial}
+        </if>
+        <if test="hasCollect != null and hasCollect == 1">
+          and has_collect = #{hasCollect}
+        </if>
+    </where>
+    order by create_time desc
+  </select>
 </mapper>

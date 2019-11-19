@@ -7,9 +7,10 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="card_id" jdbcType="INTEGER" property="cardId" />
+    <result column="has_dial" jdbcType="BIT" property="hasDial" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_time, update_time, user_id, card_id
+    id, create_time, update_time, user_id, card_id, has_dial
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -21,13 +22,15 @@
     delete from name_card_look_record
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardLookRecordDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardLookRecordDO">
     insert into name_card_look_record (id, create_time, update_time, 
-      user_id, card_id)
+      user_id, card_id, has_dial
+      )
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{userId,jdbcType=INTEGER}, #{cardId,jdbcType=INTEGER})
+      #{userId,jdbcType=INTEGER}, #{cardId,jdbcType=INTEGER}, #{hasDial,jdbcType=BIT}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardLookRecordDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardLookRecordDO">
     insert into name_card_look_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -44,6 +47,9 @@
       </if>
       <if test="cardId != null">
         card_id,
+      </if>
+      <if test="hasDial != null">
+        has_dial,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -62,6 +68,9 @@
       <if test="cardId != null">
         #{cardId,jdbcType=INTEGER},
       </if>
+      <if test="hasDial != null">
+        #{hasDial,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.NameCardLookRecordDO">
@@ -79,6 +88,9 @@
       <if test="cardId != null">
         card_id = #{cardId,jdbcType=INTEGER},
       </if>
+      <if test="hasDial != null">
+        has_dial = #{hasDial,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -87,7 +99,8 @@
     set create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       user_id = #{userId,jdbcType=INTEGER},
-      card_id = #{cardId,jdbcType=INTEGER}
+      card_id = #{cardId,jdbcType=INTEGER},
+      has_dial = #{hasDial,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectLookRecordByUserId" resultType="com.lym.mechanical.bean.dto.message.LookUserDTO">
