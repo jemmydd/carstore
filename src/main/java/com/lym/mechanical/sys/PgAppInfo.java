@@ -13,7 +13,16 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "pg-app-info")
 @Configuration
 public class PgAppInfo {
+
     private String appId;
 
     private String appSecret;
+
+    private String mchId;
+
+    private String serverIp;
+
+    private String privateKey;
+
+    private String callbackUrl;
 }

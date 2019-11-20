@@ -15,10 +15,11 @@
     <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
     <result column="vip_start_time" jdbcType="TIMESTAMP" property="vipStartTime" />
     <result column="vip_end_time" jdbcType="TIMESTAMP" property="vipEndTime" />
+    <result column="has_try" jdbcType="BIT" property="hasTry" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, is_deleted, head_portrait, name, nick_name, sex, phone, 
-    openid, session_key, vip_start_time, vip_end_time
+    openid, session_key, vip_start_time, vip_end_time, has_try
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -30,19 +31,19 @@
     delete from car_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
     insert into car_user (id, create_time, update_time, 
       is_deleted, head_portrait, name, 
       nick_name, sex, phone, 
       openid, session_key, vip_start_time, 
-      vip_end_time)
+      vip_end_time, has_try)
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{isDeleted,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{nickName,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{phone,jdbcType=VARCHAR}, 
       #{openid,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{vipStartTime,jdbcType=TIMESTAMP}, 
-      #{vipEndTime,jdbcType=TIMESTAMP})
+      #{vipEndTime,jdbcType=TIMESTAMP}, #{hasTry,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
     insert into car_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -83,6 +84,9 @@
       </if>
       <if test="vipEndTime != null">
         vip_end_time,
+      </if>
+      <if test="hasTry != null">
+        has_try,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -125,6 +129,9 @@
       <if test="vipEndTime != null">
         #{vipEndTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="hasTry != null">
+        #{hasTry,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
@@ -166,23 +173,10 @@
       <if test="vipEndTime != null">
         vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="hasTry != null">
+        has_try = #{hasTry,jdbcType=BIT},
+      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
-    update car_user
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      is_deleted = #{isDeleted,jdbcType=TINYINT},
-      head_portrait = #{headPortrait,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=TINYINT},
-      phone = #{phone,jdbcType=VARCHAR},
-      openid = #{openid,jdbcType=VARCHAR},
-      session_key = #{sessionKey,jdbcType=VARCHAR},
-      vip_start_time = #{vipStartTime,jdbcType=TIMESTAMP},
-      vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectBatchByPrimaryKey" resultMap="BaseResultMap">
@@ -190,9 +184,9 @@
     <include refid="Base_Column_List" />
     from car_user
     <where>
-      <if test="ids != null and ids.size > 0">
+      <if test="ids != null and ids.size &gt; 0">
         id in
-        <foreach collection="ids" close=")" item="item" open="(" separator=",">
+        <foreach close=")" collection="ids" item="item" open="(" separator=",">
           #{item}
         </foreach>
       </if>

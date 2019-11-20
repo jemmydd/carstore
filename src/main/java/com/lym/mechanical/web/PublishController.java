@@ -89,4 +89,26 @@ public class PublishController {
     public Result<PageData<PublishDTO>> getPageDataComplex(PublishComplexParam param) {
         return ResultUtil.success(publishService.getPageDataComplex(param));
     }
+
+    @ApiOperation(value = "关闭设备详情页面（需要记录本次浏览时间）")
+    @GetMapping("stopLook.action")
+    public Result<Boolean> stopLook(@ApiParam(value = "用户ID，公共参数", required = true) @RequestParam(value = "userId") Integer userId,
+                                    @ApiParam(value = "发布ID", required = true) @RequestParam(value = "publishId") Integer publishId,
+                                    @ApiParam(value = "浏览时间（秒）", required = true) @RequestParam(value = "time") Integer time) {
+        return ResultUtil.success(publishService.stopLook(userId, publishId, time));
+    }
+
+    @GetMapping("addCollect.action")
+    @ApiOperation(value = "加入收藏")
+    public Result<Boolean> addCollect(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                         @RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId) {
+        return ResultUtil.success(publishService.addCollect(userId, publishId));
+    }
+
+    @GetMapping("takeMobile.action")
+    @ApiOperation(value = "拨号")
+    public Result<Boolean> takeMobile(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                      @RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId) {
+        return ResultUtil.success(publishService.takeMobile(userId, publishId));
+    }
 }

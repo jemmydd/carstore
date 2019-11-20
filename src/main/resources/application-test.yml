@@ -4,3 +4,11 @@ spring:
     password: mechanical@LyjQ1an
     url: jdbc:mysql://121.43.166.200:3306/mechanical?characterEncoding=UTF-8&allowMultiQueries=true&useUnicode=true&serverTimezone=Asia/Shanghai
     username: mechanical
+
+pg-app-info:
+  app-id: wxb64ae6be832c8aeb
+  app-secret: e028f44c44e50efdb51d553279660fc6
+  mch-id: 111111
+  server-ip: 116.62.19.123
+  private-key: 1111
+  call-back-url: https://testcar.lanchengyun.com/pay/callback

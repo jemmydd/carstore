@@ -194,4 +194,21 @@
     </where>
     order by create_time desc
   </select>
+  <select id="selectHistoryByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from publish_look_record
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+      <if test="hasDial != null and hasDial == 1">
+        and has_dial = #{hasDial}
+      </if>
+      <if test="hasCollect != null and hasCollect == 1">
+        and has_collect = #{hasCollect}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
 </mapper>

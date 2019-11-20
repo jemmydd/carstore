@@ -32,6 +32,8 @@ public class CarUserDO {
 
     private Date vipEndTime;
 
+    private Boolean hasTry;
+
     public Integer getId() {
         return id;
     }
@@ -134,5 +136,13 @@ public class CarUserDO {
 
     public void setVipEndTime(Date vipEndTime) {
         this.vipEndTime = vipEndTime;
+    }
+
+    public Boolean getHasTry() {
+        return hasTry;
+    }
+
+    public void setHasTry(Boolean hasTry) {
+        this.hasTry = hasTry;
     }
 }

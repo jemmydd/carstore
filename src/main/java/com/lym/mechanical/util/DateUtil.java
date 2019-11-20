@@ -2,7 +2,10 @@ package com.lym.mechanical.util;
 
 import com.lym.mechanical.bean.common.Constant;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -138,6 +141,19 @@ public class DateUtil {
         return DateFormatUtils.format(date, format);
     }
 
+    public static Date stringToDate(String date, String format) {
+        if (StringUtils.isEmpty(date)) return new Date();
+
+        if (StringUtils.isBlank(format)) {
+            format = Constant.DATE_FORMAT;
+        }
+
+        org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern(format);
+        DateTime dateTime = DateTime.parse(date, formatter);
+
+        return dateTime.toDate();
+    }
+
     public static Date now() {
         return new Date();
     }
@@ -173,6 +189,24 @@ public class DateUtil {
         } else {
             return seconds + "秒";
         }
+    }
+
+    /**
+     * 获取unix版本的系统当前时间戳,（unix时间戳是从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒）
+     *
+     * @return unix版本的系统当前时间戳
+     */
+    public static Integer getUnixTimestamp() {
+        return (int) (getTimestamp() / 1000);
+    }
+
+    /**
+     * 获取系统当前时间戳
+     *
+     * @return 系统当前时间戳
+     */
+    public static long getTimestamp() {
+        return System.currentTimeMillis();
     }
 
     public static void main(String[] args) {

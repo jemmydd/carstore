@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -63,6 +64,9 @@ public class PublishService {
 
     @Autowired
     private CarUserCollectionDOMapper carUserCollectionDOMapper;
+
+    @Autowired
+    private PublishLookRecordDOMapper publishLookRecordDOMapper;
 
     private static final Integer OVER_SIZE = 8;
     private static final String CONTENT_PREFIX = "回复%s：";
@@ -451,11 +455,28 @@ public class PublishService {
         CarUserCollectionDO collectionDO = carUserCollectionDOMapper.selectByUserAndPublish(userId, publishId);
         Map<Integer, String> cm = categoryService.allMap();
 
+        addPublishLookRecord(userId, PublishDO);
+
         return PublishDetailDTO.builder()
                 .discuss(publishDiscussDTOS)
                 .publish(cov(PublishDO, userId, publishUser, PublishCallSceneEnum.SQUARE, publishImageVideoDOS, cm))
                 .collectionDown(collectionDO != null)
                 .build();
+    }
+
+    @Async
+    public void addPublishLookRecord(Integer userId, PublishDO publishDO) {
+        if (!Objects.equals(userId, publishDO.getCarUserId())) {
+            publishLookRecordDOMapper.insertSelective(PublishLookRecordDO.builder()
+                    .createTime(DateUtil.now())
+                    .updateTime(DateUtil.now())
+                    .userId(userId)
+                    .publishId(publishDO.getId())
+                    .hasDial(Boolean.FALSE)
+                    .hasCollect(Boolean.FALSE)
+                    .lookTime(0)
+                    .build());
+        }
     }
 
 //    @Transactional
@@ -718,6 +739,40 @@ public class PublishService {
     private void checkForView(Integer userId, Integer publishId) {
         if (userId == null) throw new RuntimeException(String.format(ExceptionAdvice.NOT_EMPTY, "用户ID"));
         if (publishId == null) throw new RuntimeException(String.format(ExceptionAdvice.NOT_EMPTY, "发布ID"));
+    }
+
+    public Boolean stopLook(Integer userId, Integer publishId, Integer time) {
+        PublishLookRecordDO publishLookRecordDO = publishLookRecordDOMapper.selectRecentRecord(userId, publishId);
+        if (!Objects.isNull(publishLookRecordDO)) {
+            PublishLookRecordDO update = PublishLookRecordDO.builder()
+                    .id(publishLookRecordDO.getId())
+                    .updateTime(DateUtil.now())
+                    .lookTime(time)
+                    .build();
+            publishLookRecordDOMapper.updateByPrimaryKeySelective(publishLookRecordDO);
+        }
+        return Boolean.TRUE;
+    }
+
+    @Transactional
+    public Boolean addCollect(Integer userId, Integer publishId) {
+        CarUserCollectionDO carUserCollectionDO = carUserCollectionDOMapper.selectByUserAndPublish(userId, publishId);
+        if (Objects.isNull(carUserCollectionDO)) {
+            carUserCollectionDO = CarUserCollectionDO.builder()
+                    .carUserId(userId)
+                    .createTime(DateUtil.now())
+                    .publishId(publishId)
+                    .updateTime(DateUtil.now())
+                    .build();
+            carUserCollectionDOMapper.insertSelective(carUserCollectionDO);
+            publishLookRecordDOMapper.updateCollectByPublishIdAndUserId(userId, publishId, "1");
+        }
+        return Boolean.TRUE;
+    }
+
+    public Boolean takeMobile(Integer userId, Integer publishId) {
+        publishLookRecordDOMapper.updateDialByPublishIdAndUserId(userId, publishId, "1");
+        return Boolean.TRUE;
     }
 }
 

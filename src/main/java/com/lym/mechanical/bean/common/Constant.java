@@ -28,4 +28,6 @@ public interface Constant {
     String DEFAULT_ADMIN_USER = "account";
     String DEFAULT_ADMIN_PWD = "admin.laogao";
     String DEFAULT_ADMIN_TOKEN = "dbad26f4daa9a67ccba01baf7d28bbb7";
+
+    Integer DECIMAL_DIGITS = 2;
 }

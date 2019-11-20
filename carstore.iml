@@ -249,5 +249,7 @@
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:macosx-x86_64:3.4.2-1.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:windows-x86:3.4.2-1.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:windows-x86_64:3.4.2-1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.wxpay:wxpay-sdk:0.0.3" level="project" />
+    <orderEntry type="library" name="Maven: joda-time:joda-time:2.9.9" level="project" />
   </component>
 </module>

@@ -13,6 +13,7 @@ CREATE TABLE `car_user` (
 	`session_key` VARCHAR(50) NULL DEFAULT NULL COMMENT 'session_key',
 	`vip_start_time` DATETIME NULL DEFAULT NULL COMMENT '会员有效开始时间',
 	`vip_end_time` DATETIME NULL DEFAULT NULL COMMENT '会员有效截止时间',
+	`has_try` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '是否试用过7天会员',
 	PRIMARY KEY (`id`)
 )
 COMMENT='车商用户'
@@ -167,6 +168,9 @@ CREATE TABLE `publish_look_record` (
 	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 	`user_id` INT(11) NOT NULL COMMENT '用户id',
 	`publish_id` INT(11) NOT NULL COMMENT '看过的设备id',
+	`has_dial` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '是否有拨号',
+	`has_collect` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '是否有收藏',
+	`look_time` INT(11) NOT NULL DEFAULT '0' COMMENT '浏览时间',
 	PRIMARY KEY (`id`),
 	INDEX `idx_user_id` (`user_id`)
 )
@@ -175,3 +179,40 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 
+DROP TABLE IF EXISTS `vip_order`;
+CREATE TABLE `vip_order` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '数据库自增ID',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	`user_id` INT(11) NOT NULL COMMENT '用户id',
+	`buy_type` TINYINT(2) NOT NULL COMMENT '购买类型，1-7天试用，2-1个月，3-3个月，4-12个月',
+	`pay_type` VARCHAR(10) NULL DEFAULT NULL COMMENT '支付方式',
+	`ought_amount` DECIMAL(10,2) NOT NULL COMMENT '应付金额',
+	`real_amount` DECIMAL(10,2) NULL DEFAULT NULL COMMENT '实付金额',
+	`payment_id` INT NULL DEFAULT NULL COMMENT '流水id',
+	`status` VARCHAR(10) NOT NULL COMMENT '支付状态',
+	`pay_time` DATETIME NULL DEFAULT NULL COMMENT '支付时间',
+	PRIMARY KEY (`id`),
+	INDEX `idx_user_id` (`user_id`)
+)
+COMMENT='购买会员订单表'
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+DROP TABLE IF EXISTS `payment`;
+CREATE TABLE `payment` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '数据库自增ID',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	`uuid` VARCHAR(36) NOT NULL COMMENT '唯一商户订单号',
+	`trade_no` VARCHAR(255) NULL DEFAULT NULL COMMENT '外部交易凭证号',
+	`amount` DECIMAL(10,2) NOT NULL COMMENT '金额',
+	`status` VARCHAR(10) NOT NULL COMMENT '支付状态',
+	`pay_time` DATETIME NULL DEFAULT NULL COMMENT '支付时间',
+	PRIMARY KEY (`id`)
+)
+COMMENT='流水表'
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;

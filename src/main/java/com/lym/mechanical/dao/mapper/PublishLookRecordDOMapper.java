@@ -2,10 +2,7 @@ package com.lym.mechanical.dao.mapper;
 
 import com.lym.mechanical.bean.dto.my.MyGuestDO;
 import com.lym.mechanical.bean.entity.PublishLookRecordDO;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -52,4 +49,17 @@ public interface PublishLookRecordDOMapper {
             " ORDER BY c DESC) a LIMIT 1")
     @ResultType(Integer.class)
     Integer selectLookTimeTopByUserId(@Param("userId") Integer userId);
+
+    List<PublishLookRecordDO> selectHistoryByUserId(@Param("userId") Integer userId,
+                                                    @Param("hasDial") String hasDial, @Param("hasCollect") String hasCollect);
+
+    @Select("select * from publish_look_record where user_id = #{userId} and publish_id = #{publishId} order by create_time desc, id desc limit 1")
+    @ResultMap("BaseResultMap")
+    PublishLookRecordDO selectRecentRecord(@Param("userId") Integer userId, @Param("publishId") Integer publishId);
+
+    @Update("update publish_look_record set has_collect = #{type} where user_id = #{userId} and publish_id = #{publishId}")
+    void updateCollectByPublishIdAndUserId(@Param("userId") Integer userId, @Param("publishId") Integer publishId, @Param("type") String type);
+
+    @Update("update publish_look_record set has_dial = #{type} where user_id = #{userId} and publish_id = #{publishId}")
+    void updateDialByPublishIdAndUserId(@Param("userId") Integer userId, @Param("publishId") Integer publishId, @Param("type") String type);
 }

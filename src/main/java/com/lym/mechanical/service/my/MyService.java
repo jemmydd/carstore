@@ -18,6 +18,7 @@ import com.lym.mechanical.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Comparator;
@@ -169,8 +170,10 @@ public class MyService {
                 .build());
     }
 
+    @Transactional
     public Boolean removeCollect(Integer userId, Integer publishId) {
         carUserCollectionDOMapper.deleteByUserIdAndPublishId(userId, publishId);
+        publishLookRecordDOMapper.updateCollectByPublishIdAndUserId(userId, publishId, "0");
         return Boolean.TRUE;
     }
 
@@ -394,6 +397,41 @@ public class MyService {
     }
 
     public List<LatentPublishStatisticDTO> latentPublishList(Integer latentUserId, String hasDial, String hasCollect) {
-        return null;
+        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistoryByUserId(latentUserId, hasDial, hasCollect);
+        if (ObjectUtils.isEmpty(recordDOS)) {
+            return Lists.newArrayList();
+        }
+        List<LatentPublishStatisticDTO> result = Lists.newArrayList();
+        List<Integer> publishIds = Lists.newArrayList();
+        Map<Integer, List<PublishLookRecordDO>> recordMap = recordDOS.stream().collect(Collectors.groupingBy(PublishLookRecordDO::getPublishId));
+        List<PublishDO> publishDOS = publishDOMapper.searchByIds(recordDOS.stream().map(PublishLookRecordDO::getPublishId).distinct().collect(Collectors.toList()));
+        Map<Integer, PublishDO> map = ObjectUtils.isEmpty(publishDOS) ? Maps.newHashMap() :
+                publishDOS.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
+        for (PublishLookRecordDO recordDO : recordDOS) {
+            if (!publishIds.contains(recordDO.getPublishId())) {
+                List<PublishLookRecordDO> recordList = recordMap.get(recordDO.getPublishId());
+                String recentTime;
+                recordList = recordList.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
+                recentTime = DateUtil.getDateStr(recordList.get(0).getCreateTime());
+                recordList = recordList.stream().sorted((o1, o2) -> -o1.getLookTime().compareTo(o2.getLookTime())).collect(Collectors.toList());
+                PublishDO publishDO = map.get(recordDO.getPublishId());
+                result.add(LatentPublishStatisticDTO.builder()
+                        .publishId(recordDO.getPublishId())
+                        .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
+                        .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
+                                (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
+                                (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
+                        .hasCollect(recordDO.getHasCollect() ? "有" : "无")
+                        .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
+                        .image(publishDO.getMainMedia())
+                        .lookTimes(recordList.size() + "次")
+                        .mostLookTime(DateUtil.getTime(recordList.get(0).getLookTime().longValue()))
+                        .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
+                        .recentTime(recentTime)
+                        .title(publishDO.getTitle())
+                        .build());
+            }
+        }
+        return result;
     }
 }
