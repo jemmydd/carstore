@@ -116,7 +116,7 @@
     create_time AS `date`,
     'PUBLISH_LOOK' AS biz_type
     FROM publish_look_record
-    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId)
+    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId})
     UNION ALL
     SELECT
     car_user_id AS user_id,
@@ -124,7 +124,7 @@
     create_time AS `date`,
     'PUBLISH_COLLECT' AS biz_type
     FROM car_user_collection
-    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId)
+    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId})
     UNION ALL
     SELECT
     user_id AS user_id,
