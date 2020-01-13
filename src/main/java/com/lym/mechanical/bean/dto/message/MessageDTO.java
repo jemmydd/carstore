@@ -33,4 +33,7 @@ public class MessageDTO {
 
     @ApiModelProperty(value = "时间")
     private String time;
+
+    @ApiModelProperty(value = "维度消息数量")
+    private Integer notReadCount;
 }

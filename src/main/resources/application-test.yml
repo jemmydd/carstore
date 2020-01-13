@@ -6,8 +6,8 @@ spring:
     username: mechanical
 
 pg-app-info:
-  app-id: wxb64ae6be832c8aeb
-  app-secret: e028f44c44e50efdb51d553279660fc6
+  app-id: wx8dd96b368530c89d
+  app-secret: 427cd0b374b47ccb63350d1cc39a7cab
   mch-id: 111111
   server-ip: 116.62.19.123
   private-key: 1111

@@ -47,6 +47,13 @@ public class MessageController {
         return ResultUtil.success(messageService.messageDetail(userId, otherUserId, pageNum, pageSize));
     }
 
+    @GetMapping("makeTag.action")
+    @ApiOperation(value = "标记为意向客户/取消标记为意向客户")
+    public Result<Boolean> makeTag(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                   @RequestParam("otherUserId") @ApiParam(value = "对方的用户id") Integer otherUserId) {
+        return ResultUtil.success(messageService.makeTag(userId, otherUserId));
+    }
+
     @PostMapping("send.action")
     @ApiOperation(value = "发送消息")
     public Result<Boolean> sendMessage(@RequestBody MessageSendParam param) {

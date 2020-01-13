@@ -29,6 +29,9 @@ public class MessageDetailDTO {
     @ApiModelProperty(value = "对方用户id")
     private Integer userId;
 
+    @ApiModelProperty(value = "名片id，没有返回null")
+    private Integer cardId;
+
     @ApiModelProperty(value = "聊天内容")
     private PageData<MessageDetailListDTO> messages;
 }

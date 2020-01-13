@@ -104,6 +104,7 @@ CREATE TABLE `message` (
 	`content` VARCHAR(500) NOT NULL COMMENT '内容，可能是图片、视频、文字、设备id',
 	`type` VARCHAR(10) NOT NULL COMMENT '类型，TEXT-文本，IMAGE-图片，VIDEO-视频，PUBLISH-设备',
 	`user_group` VARCHAR(30) NOT NULL COMMENT '分组标识',
+	`is_read` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否已读',
 	PRIMARY KEY (`id`),
 	INDEX `idx_from_car_user_id` (`from_car_user_id`),
 	INDEX `idx_to_car_user_id` (`to_car_user_id`)
@@ -213,6 +214,21 @@ CREATE TABLE `payment` (
 	PRIMARY KEY (`id`)
 )
 COMMENT='流水表'
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+DROP TABLE IF EXISTS `intention_custom`;
+CREATE TABLE `intention_custom` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '数据库自增ID',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	`user_id` INT(11) NOT NULL COMMENT '用户id',
+	`intention_custom_user_id` INT(11) NOT NULL COMMENT '意向客户用户id',
+	PRIMARY KEY (`id`),
+	INDEX `idx_user_id` (`user_id`)
+)
+COMMENT='意向客户表'
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;

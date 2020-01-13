@@ -1,9 +1,6 @@
 package com.lym.mechanical.web;
 
-import com.lym.mechanical.bean.dto.card.ChangeNameCardDTO;
-import com.lym.mechanical.bean.dto.card.FriendNameCardDTO;
-import com.lym.mechanical.bean.dto.card.MyNameCardDTO;
-import com.lym.mechanical.bean.dto.card.OtherNameCardDTO;
+import com.lym.mechanical.bean.dto.card.*;
 import com.lym.mechanical.bean.param.card.ApplyCarStoreParam;
 import com.lym.mechanical.bean.param.card.NameCardParam;
 import com.lym.mechanical.component.result.Result;
@@ -14,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Classname NameCardController
@@ -69,9 +68,15 @@ public class NameCardController {
 
     @GetMapping("searchFriendCards.action")
     @ApiOperation(value = "添加友情合作搜索名片")
-    public Result<FriendNameCardDTO> searchFriendCards(@RequestParam(value = "cardId", required = false) @ApiParam(value = "名片id") Integer cardId,
-                                                       @RequestParam("userId") @ApiParam(value = "当前登录用户id", required = true) Integer userId) {
+    public Result<List<NameCardSimpleDTO>> searchFriendCards(@RequestParam(value = "cardId", required = false) @ApiParam(value = "名片id") Integer cardId,
+                                                             @RequestParam("userId") @ApiParam(value = "当前登录用户id", required = true) Integer userId) {
         return ResultUtil.success(nameCardService.searchFriendCards(cardId, userId));
+    }
+
+    @GetMapping("historyFriendCards.action")
+    @ApiOperation(value = "添加友情合作历史添加")
+    public Result<List<NameCardSimpleDTO>> historyFriendCards(@RequestParam("userId") @ApiParam(value = "当前登录用户id", required = true) Integer userId) {
+        return ResultUtil.success(nameCardService.historyFriendCards(userId));
     }
 
     @PostMapping("addFriend.action")

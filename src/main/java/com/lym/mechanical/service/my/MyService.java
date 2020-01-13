@@ -4,8 +4,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.lym.mechanical.bean.common.Constant;
 import com.lym.mechanical.bean.common.DefaultHandleConstant;
 import com.lym.mechanical.bean.dto.card.NameCardDTO;
+import com.lym.mechanical.bean.dto.location.LocationDetailDTO;
 import com.lym.mechanical.bean.dto.my.*;
 import com.lym.mechanical.bean.dto.publish.PublishDTO;
 import com.lym.mechanical.bean.entity.*;
@@ -14,8 +16,10 @@ import com.lym.mechanical.bean.param.publish.PublishParam;
 import com.lym.mechanical.component.result.PageData;
 import com.lym.mechanical.dao.mapper.*;
 import com.lym.mechanical.service.publish.PublishService;
+import com.lym.mechanical.service.user.UserService;
 import com.lym.mechanical.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +71,12 @@ public class MyService {
     @Autowired
     private PublishService publishService;
 
+    @Autowired
+    private IntentionCustomDOMapper intentionCustomDOMapper;
+
+    @Autowired
+    private UserService userService;
+
     public MyIndexDTO myIndex(Integer userId) {
         if (Objects.isNull(userId)) {
             throw new RuntimeException("用户未登录");
@@ -80,6 +90,7 @@ public class MyService {
         List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId);
         List<Integer> todayGuest = publishLookRecordDOMapper.selectTodayGuest(userId);
         List<Integer> totalGuest = publishLookRecordDOMapper.selectTotalGuest(userId);
+        List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
         return MyIndexDTO.builder()
                 .avatar(StringUtils.isEmpty(carUserDO.getHeadPortrait()) ? "" : carUserDO.getHeadPortrait())
                 .hasCard(!Objects.isNull(nameCardDO))
@@ -93,6 +104,7 @@ public class MyService {
                 .todayGuest(ObjectUtils.isEmpty(todayGuest) ? 0 : todayGuest.size())
                 .vipEndTime(Objects.isNull(carUserDO.getVipEndTime()) ? "" : DateUtil.formatDate(carUserDO.getVipEndTime(), "yyyy-MM-dd"))
                 .totalGuest(ObjectUtils.isEmpty(totalGuest) ? 0 : totalGuest.size())
+                .intentionCount(ObjectUtils.isEmpty(intentionCustom) ? 0 : intentionCustom.size())
                 .build();
     }
 
@@ -217,8 +229,27 @@ public class MyService {
                                     }).collect(Collectors.toList()))
                             .image(Objects.isNull(publishDO) ? "" : publishDO.getMainMedia())
                             .lookCount(ObjectUtils.isEmpty(records) ? 0 : records.stream().map(PublishLookRecordDO::getUserId).distinct().count())
+                            .productiveYear(publishDO.getProductiveYear())
+                            .usageHours(publishDO.getUsageHours())
+                            .locationDetail(getLocationDetail(publishDO))
+                            .location(userService.getUserLocation(publishDO.getProvinceName(), publishDO.getCityName(), publishDO.getAreaName()))
+                            .createTime(DateFormatUtils.format(row.getCreateTime(), Constant.DATE_FORMAT))
+                            .inPrice(publishDO.getInPrice() == null ? DefaultHandleConstant.PUBLISH_IN : String.valueOf(publishDO.getInPrice()))
+                            .outPrice(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : String.valueOf(publishDO.getOutPrice()))
                             .build();
                 }).collect(Collectors.toList()))
+                .build();
+    }
+
+    private LocationDetailDTO getLocationDetail(PublishDO row) {
+        return LocationDetailDTO.builder()
+                .areaCode(row.getAreaCode())
+                .areaName(row.getAreaName())
+                .cityCode(row.getCityCode())
+                .cityName(row.getCityName())
+                .location(userService.getUserLocation(row.getProvinceName(), row.getCityName(), row.getAreaName()))
+                .provinceCode(row.getProvinceCode())
+                .provinceName(row.getProvinceName())
                 .build();
     }
 

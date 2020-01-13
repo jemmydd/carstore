@@ -25,7 +25,7 @@ public class MyIndexDTO {
     @ApiModelProperty(value = "是否有名片")
     private Boolean hasCard;
 
-    @ApiModelProperty(value = "名片id")
+    @ApiModelProperty(value = "名片id（编号）")
     private Integer cardId;
 
     @ApiModelProperty(value = "头像")
@@ -37,15 +37,18 @@ public class MyIndexDTO {
     @ApiModelProperty(value = "是否车商")
     private Boolean isCarStore;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "是否VIP")
     private Boolean isVip;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "今日访客数量")
     private Integer todayGuest;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "沟通过数量")
     private Integer talkCount;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "累计访客数量")
     private Integer totalGuest;
+
+    @ApiModelProperty(value = "意向客户数量")
+    private Integer intentionCount;
 }

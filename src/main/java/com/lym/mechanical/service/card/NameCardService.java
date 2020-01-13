@@ -624,7 +624,15 @@ public class NameCardService {
         return Boolean.TRUE;
     }
 
-    public FriendNameCardDTO searchFriendCards(Integer cardId, Integer userId) {
+    public List<NameCardSimpleDTO> searchFriendCards(Integer cardId, Integer userId) {
+        List<NameCardFriendDO> nameCardFriendDOS = nameCardFriendDOMapper.selectByUserId(userId);
+        List<Integer> currentCardIds = ObjectUtils.isEmpty(nameCardFriendDOS) ? Lists.newArrayList() :
+                nameCardFriendDOS.stream().map(NameCardFriendDO::getCardId).distinct().collect(Collectors.toList());
+        List<NameCardDO> nameCardDOS = nameCardDOMapper.selectByCardId(cardId);
+        return buildSimpleNameCard(nameCardDOS, currentCardIds);
+    }
+
+    public List<NameCardSimpleDTO> historyFriendCards(Integer userId) {
         List<NameCardFriendDO> nameCardFriendDOS = nameCardFriendDOMapper.selectByUserId(userId);
         List<FriendCardRecordDO> recordDOS = friendCardRecordDOMapper.selectByUserId(userId);
         List<NameCardSimpleDTO> historyCards = Lists.newArrayList();
@@ -635,12 +643,7 @@ public class NameCardService {
                     recordDOS.stream().map(FriendCardRecordDO::getCardId).distinct().collect(Collectors.toList()));
             historyCards = buildSimpleNameCard(nameCardDOS, currentCardIds);
         }
-        List<NameCardDO> nameCardDOS = nameCardDOMapper.selectByCardId(cardId);
-        List<NameCardSimpleDTO> searchCards = buildSimpleNameCard(nameCardDOS, currentCardIds);
-        return FriendNameCardDTO.builder()
-                .historyCards(historyCards)
-                .searchCards(searchCards)
-                .build();
+        return historyCards;
     }
 
     private List<NameCardSimpleDTO> buildSimpleNameCard(List<NameCardDO> nameCardDOS, List<Integer> currentCardIds) {

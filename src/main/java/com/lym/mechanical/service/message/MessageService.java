@@ -8,10 +8,7 @@ import com.lym.mechanical.bean.common.Constant;
 import com.lym.mechanical.bean.common.DefaultHandleConstant;
 import com.lym.mechanical.bean.dto.card.RecentlyUserDTO;
 import com.lym.mechanical.bean.dto.message.*;
-import com.lym.mechanical.bean.entity.CarUserDO;
-import com.lym.mechanical.bean.entity.MessageDO;
-import com.lym.mechanical.bean.entity.NameCardDO;
-import com.lym.mechanical.bean.entity.PublishDO;
+import com.lym.mechanical.bean.entity.*;
 import com.lym.mechanical.bean.enumBean.MessageTypeEnum;
 import com.lym.mechanical.bean.param.message.MessageSendParam;
 import com.lym.mechanical.component.result.PageData;
@@ -52,6 +49,9 @@ public class MessageService {
 
     @Autowired
     private NameCardLookRecordDOMapper nameCardLookRecordDOMapper;
+
+    @Autowired
+    private IntentionCustomDOMapper intentionCustomDOMapper;
 
     public List<MessageDTO> list(Integer userId) {
         List<MessageDTO> result = Lists.newArrayList();
@@ -131,6 +131,7 @@ public class MessageService {
                 .wechatNo(Objects.isNull(nameCardDO) ? "" : nameCardDO.getWechatNo())
                 .userId(otherUserId)
                 .messages(details)
+                .cardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId())
                 .build();
     }
 
@@ -241,5 +242,20 @@ public class MessageService {
                 return PageData.noData(pageSize);
             }
         }
+    }
+
+    public Boolean makeTag(Integer userId, Integer otherUserId) {
+        IntentionCustomDO intentionCustomDO = intentionCustomDOMapper.selectByUserIdAndOtherId(userId, otherUserId);
+        if (Objects.isNull(intentionCustomDO)) {
+            intentionCustomDOMapper.insertSelective(IntentionCustomDO.builder()
+                    .createTime(DateUtil.now())
+                    .updateTime(DateUtil.now())
+                    .userId(userId)
+                    .intentionCustomUserId(otherUserId)
+                    .build());
+        } else {
+            intentionCustomDOMapper.deleteByPrimaryKey(intentionCustomDO.getId());
+        }
+        return Boolean.TRUE;
     }
 }
