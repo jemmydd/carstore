@@ -35,10 +35,16 @@ public class PayController {
         return ResultUtil.success(payService.payList(userId));
     }
 
+    @GetMapping("payUserList")
+    @ApiOperation(value = "最近购买VIP用户列表")
+    public Result<List<String>> payUserList() {
+        return ResultUtil.success(payService.payUserList());
+    }
+
     @GetMapping("pay")
     @ApiOperation(value = "微信预下单")
     public Result<Object> pay(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
-                              @RequestParam("type") @ApiParam(value = "购买类型") String type) {
+                              @RequestParam("type") @ApiParam(value = "购买类型,1-3天试用，2-一年VIP") String type) {
         return ResultUtil.success(payService.pay(userId, type));
     }
 

@@ -9,6 +9,7 @@ import com.lym.mechanical.bean.dto.pay.*;
 import com.lym.mechanical.bean.entity.CarUserDO;
 import com.lym.mechanical.bean.entity.PaymentDO;
 import com.lym.mechanical.bean.entity.VipOrderDO;
+import com.lym.mechanical.bean.enumBean.VipTypeEnum;
 import com.lym.mechanical.dao.mapper.CarUserDOMapper;
 import com.lym.mechanical.dao.mapper.PaymentDOMapper;
 import com.lym.mechanical.dao.mapper.VipOrderDOMapper;
@@ -18,11 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Classname PayService
@@ -36,6 +39,12 @@ import java.util.*;
 public class PayService {
 
     private static final BigDecimal[] AMOUNT = {BigDecimal.ZERO, new BigDecimal(1), new BigDecimal(39), new BigDecimal(98), new BigDecimal(288)};
+
+    private static final Long ONE_MINITE_SECOND = 60 * 1000L;
+
+    private static final Long ONE_HOUR_SECOND = 60 * 60 * 1000L;
+
+    private static final Long ONE_DAY_SECOND = 60 * 60 * 24 * 1000L;
 
     @Autowired
     private PgAppInfo pgAppInfo;
@@ -88,12 +97,13 @@ public class PayService {
         if (Objects.isNull(carUserDO) || StringUtils.isEmpty(carUserDO.getOpenid())) {
             throw new RuntimeException("用户不存在");
         }
-        if (!Lists.newArrayList("1", "2", "3", "4").contains(type)) {
+        VipTypeEnum typeEnum = VipTypeEnum.getType(Byte.valueOf(type));
+        if (Objects.isNull(typeEnum)) {
             throw new RuntimeException("购买类型有误");
         }
         Date now = DateUtil.now();
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        BigDecimal amount = AMOUNT[Integer.parseInt(type)];
+        BigDecimal amount = typeEnum.getAmount();
 
         PaymentDO paymentDO = PaymentDO.builder()
                 .createTime(now)
@@ -232,6 +242,87 @@ public class PayService {
                         .payTime(gmtPayment)
                         .build());
             }
+        }
+    }
+
+    public List<String> payUserList() {
+        List<VipOrderDO> vipOrderDOS = vipOrderDOMapper.selectByStatus("PAID");
+        if (ObjectUtils.isEmpty(vipOrderDOS)) {
+            return Lists.newArrayList();
+        }
+        List<CarUserDO> userDOS = carUserDOMapper.selectBatchByPrimaryKey(vipOrderDOS.stream().map(VipOrderDO::getUserId).distinct().collect(Collectors.toList()));
+        Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(userDOS) ? Maps.newHashMap() :
+                userDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+        return vipOrderDOS.stream().map(row -> {
+            CarUserDO carUserDO = userMap.get(row.getUserId());
+            String mobile = Objects.isNull(carUserDO) ? "" : carUserDO.getPhone();
+            return "用户" + hidePhone(mobile) + " " + dealTime(row.getUpdateTime()) + "购买了" + VipTypeEnum.getType(row.getBuyType()).getName();
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 手机号隐藏 例 ：158*****5566
+     *
+     * @param phone
+     * @return
+     */
+    public String hidePhone(String phone) {
+        if (phone == null || phone.length() < 3) {
+            return "";
+        }
+        return hideStr(3, 4, 4, phone);
+    }
+
+    /**
+     * 隐藏字符的显示
+     *
+     * @param preNum 字符前端要显示的字符数
+     * @param sufNum 字符后端要显示的字符数
+     * @param str
+     * @return
+     */
+    public String hideStr(int preNum, int sufNum, int hideNum, String str) {
+        if (str == null) {
+            return str;
+        }
+        int len = str.length();
+        if (preNum + sufNum > len) {
+            return str;
+        }
+        StringBuilder sb = new StringBuilder();
+        if (sufNum > 0) {
+            sb.append(str.substring(0, preNum)).append(creatHideChar(hideNum)).append(str.substring(len - sufNum));
+        } else {
+            sb.append(str.substring(0, preNum)).append(creatHideChar(hideNum));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 生成*字符窜
+     *
+     * @param num
+     * @return
+     */
+    public String creatHideChar(int num) {
+        StringBuilder sb = new StringBuilder();
+        while (num > 0) {
+            sb.append("*");
+            num--;
+        }
+        return sb.toString();
+    }
+
+    private String dealTime(Date date) {
+        Long secondBetween = DateUtil.now().getTime() - date.getTime();
+        if (secondBetween < ONE_MINITE_SECOND) {
+            return secondBetween / 1000 + "秒前";
+        } else if (secondBetween < ONE_HOUR_SECOND) {
+            return secondBetween / ONE_MINITE_SECOND + "分钟前";
+        } else if (secondBetween < ONE_DAY_SECOND) {
+            return secondBetween / ONE_HOUR_SECOND + "小时前";
+        } else {
+            return secondBetween / ONE_DAY_SECOND + "天前";
         }
     }
 }

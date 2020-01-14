@@ -53,10 +53,11 @@ public class MessageService {
     @Autowired
     private IntentionCustomDOMapper intentionCustomDOMapper;
 
-    public List<MessageDTO> list(Integer userId) {
+    public List<MessageDTO> list(Integer userId, String name) {
         List<MessageDTO> result = Lists.newArrayList();
-        List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId);
+        List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, name);
         if (!ObjectUtils.isEmpty(messageDOS)) {
+            List<MessageDO> messageList = messageDOMapper.selectByToUserId(userId);
             List<Integer> userIds = Lists.newArrayList();
             messageDOS.forEach(row -> {
                 Integer otherUserId = Objects.equals(userId, row.getFromCarUserId()) ? row.getToCarUserId() :
@@ -76,6 +77,9 @@ public class MessageService {
                         messageDO.getFromCarUserId();
                 CarUserDO otherUser = userMap.get(otherUserId);
                 NameCardDO nameCardDO = nameCardMap.get(otherUserId);
+                List<MessageDO> notReadMessages = ObjectUtils.isEmpty(messageList) ? Lists.newArrayList() :
+                        messageList.stream().filter(row -> Objects.equals(row.getFromCarUserId(), otherUserId) && !row.getIsRead())
+                        .collect(Collectors.toList());
                 result.add(MessageDTO.builder()
                         .avatar(Objects.isNull(otherUser) ? "" : otherUser.getHeadPortrait())
                         .message(Objects.equals(messageDO.getType(), MessageTypeEnum.TEXT.getCode()) ? messageDO.getContent()
@@ -83,6 +87,7 @@ public class MessageService {
                         .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
                         .time(DateUtil.getDateStr(messageDO.getCreateTime()))
                         .userId(otherUserId)
+                        .notReadCount(ObjectUtils.isEmpty(notReadMessages) ? 0 : notReadMessages.size())
                         .build());
             }
         }
@@ -126,6 +131,7 @@ public class MessageService {
                         .build();
             }).collect(Collectors.toList()));
         }
+        messageDOMapper.updateReadByToUserIdAndFromUserId(userId, otherUserId);
         return MessageDetailDTO.builder()
                 .mobile(Objects.isNull(nameCardDO) ? "" : nameCardDO.getMobile())
                 .wechatNo(Objects.isNull(nameCardDO) ? "" : nameCardDO.getWechatNo())
@@ -256,6 +262,11 @@ public class MessageService {
         } else {
             intentionCustomDOMapper.deleteByPrimaryKey(intentionCustomDO.getId());
         }
+        return Boolean.TRUE;
+    }
+
+    public Boolean allRead(Integer userId) {
+        messageDOMapper.updateReadByToUserIdAndFromUserId(userId, null);
         return Boolean.TRUE;
     }
 }

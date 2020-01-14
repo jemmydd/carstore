@@ -10,9 +10,11 @@
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="user_group" jdbcType="VARCHAR" property="userGroup" />
+    <result column="is_read" jdbcType="BIT" property="isRead" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_time, update_time, from_car_user_id, to_car_user_id, content, type, user_group
+    id, create_time, update_time, from_car_user_id, to_car_user_id, content, type, user_group, 
+    is_read
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -24,15 +26,17 @@
     delete from message
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.MessageDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.MessageDO">
     insert into message (id, create_time, update_time, 
       from_car_user_id, to_car_user_id, content, 
-      type, user_group)
+      type, user_group, is_read
+      )
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{fromCarUserId,jdbcType=INTEGER}, #{toCarUserId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{userGroup,jdbcType=VARCHAR})
+      #{type,jdbcType=VARCHAR}, #{userGroup,jdbcType=VARCHAR}, #{isRead,jdbcType=BIT}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.MessageDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.MessageDO">
     insert into message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -58,6 +62,9 @@
       </if>
       <if test="userGroup != null">
         user_group,
+      </if>
+      <if test="isRead != null">
+        is_read,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -85,6 +92,9 @@
       <if test="userGroup != null">
         #{userGroup,jdbcType=VARCHAR},
       </if>
+      <if test="isRead != null">
+        #{isRead,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.MessageDO">
@@ -111,6 +121,9 @@
       <if test="userGroup != null">
         user_group = #{userGroup,jdbcType=VARCHAR},
       </if>
+      <if test="isRead != null">
+        is_read = #{isRead,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -122,7 +135,8 @@
       to_car_user_id = #{toCarUserId,jdbcType=INTEGER},
       content = #{content,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
-      user_group = #{userGroup,jdbcType=VARCHAR}
+      user_group = #{userGroup,jdbcType=VARCHAR},
+      is_read = #{isRead,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectBatchByUserGroup" resultMap="BaseResultMap">
@@ -130,9 +144,9 @@
     <include refid="Base_Column_List" />
     from message
     <where>
-      <if test="userGroups != null and userGroups.size > 0">
+      <if test="userGroups != null and userGroups.size &gt; 0">
         user_group in
-        <foreach collection="userGroups" separator="," open="(" item="item" close=")">
+        <foreach close=")" collection="userGroups" item="item" open="(" separator=",">
           #{item}
         </foreach>
       </if>
@@ -141,4 +155,27 @@
       </if>
     </where>
   </select>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT * from message JOIN (SELECT MAX(create_time) AS `time`,user_group AS user_group FROM message WHERE
+    <if test="name != null and name != ''">
+      (from_car_user_id = #{userId} and to_car_user_id in (select user_id from name_card where name like concat('%', #{name}, '%')))
+      OR
+      (to_car_user_id = #{userId} and from_car_user_id in (select user_id from name_card where name like concat('%', #{name}, '%')))
+    </if>
+    <if test="name == null or name == ''">
+      from_car_user_id = #{userId} OR to_car_user_id = #{userId}
+    </if>
+    GROUP BY user_group) a ON message.create_time = a.`time` AND message.user_group = a.user_group
+  </select>
+  <update id="updateReadByToUserIdAndFromUserId">
+    update message set is_read = 1
+    <where>
+      <if test="fromUserId != null">
+        and from_car_user_id = #{fromUserId}
+      </if>
+      <if test="toUserId != null">
+        and to_car_user_id = #{toUserId}
+      </if>
+    </where>
+  </update>
 </mapper>

@@ -1,10 +1,7 @@
 package com.lym.mechanical.dao.mapper;
 
 import com.lym.mechanical.bean.entity.MessageDO;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,12 +30,15 @@ public interface MessageDOMapper {
 
     List<MessageDO> selectBatchByUserGroup(@Param("userGroups") List<String> userGroups);
 
-    @Select("SELECT * from message JOIN (SELECT MAX(create_time) AS `time`,user_group AS user_group FROM message WHERE from_car_user_id = #{userId} OR to_car_user_id = #{userId}" +
-            " GROUP BY user_group ) a ON message.create_time = a.`time` AND message.user_group = a.user_group")
-    @ResultMap("BaseResultMap")
-    List<MessageDO> selectByUserId(@Param("userId") Integer userId);
+    List<MessageDO> selectByUserId(@Param("userId") Integer userId, @Param("name") String name);
 
     @Select("SELECT * from message where user_group = #{userGroup} order by create_time desc, id desc")
     @ResultMap("BaseResultMap")
     List<MessageDO> selectByUserGroup(@Param("userGroup") String userGroup);
+
+    @Select("SELECT * from message where to_car_user_id = #{toUserId} order by create_time desc, id desc")
+    @ResultMap("BaseResultMap")
+    List<MessageDO> selectByToUserId(@Param("toUserId") Integer toUserId);
+
+    void updateReadByToUserIdAndFromUserId(@Param("toUserId") Integer toUserId, @Param("fromUserId") Integer fromUserId);
 }

@@ -87,7 +87,7 @@ public class MyService {
         }
         NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
         List<CarUserApplyDO> applyDOS = carUserApplyDOMapper.selectByUserId(userId);
-        List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId);
+        List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
         List<Integer> todayGuest = publishLookRecordDOMapper.selectTodayGuest(userId);
         List<Integer> totalGuest = publishLookRecordDOMapper.selectTotalGuest(userId);
         List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);

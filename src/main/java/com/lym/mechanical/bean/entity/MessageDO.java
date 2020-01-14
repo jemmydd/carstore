@@ -22,6 +22,8 @@ public class MessageDO {
 
     private String userGroup;
 
+    private Boolean isRead;
+
     public Integer getId() {
         return id;
     }
@@ -84,5 +86,13 @@ public class MessageDO {
 
     public void setUserGroup(String userGroup) {
         this.userGroup = userGroup == null ? null : userGroup.trim();
+    }
+
+    public Boolean getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
     }
 }

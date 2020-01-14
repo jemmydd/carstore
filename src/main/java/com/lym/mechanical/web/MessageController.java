@@ -34,8 +34,15 @@ public class MessageController {
 
     @GetMapping("list.action")
     @ApiOperation(value = "消息列表")
-    public Result<List<MessageDTO>> messageList(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) {
-        return ResultUtil.success(messageService.list(userId));
+    public Result<List<MessageDTO>> messageList(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                                @RequestParam(value = "name", required = false) @ApiParam("搜索联系人") String name) {
+        return ResultUtil.success(messageService.list(userId, name));
+    }
+
+    @GetMapping("allRead.action")
+    @ApiOperation(value = "一键已读")
+    public Result<Boolean> allRead(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) {
+        return ResultUtil.success(messageService.allRead(userId));
     }
 
     @GetMapping("detail.action")
