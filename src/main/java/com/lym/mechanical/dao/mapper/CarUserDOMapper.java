@@ -22,7 +22,7 @@ public interface CarUserDOMapper {
 
     int updateByPrimaryKey(CarUserDO record);
 
-    @Select("select * from car_user where openid = #{openId} and is_delete = 0")
+    @Select("select * from car_user where openid = #{openId} and is_deleted = 0")
     @ResultMap("BaseResultMap")
     CarUserDO selectByOpenId(@Param("openId") String openId);
 
