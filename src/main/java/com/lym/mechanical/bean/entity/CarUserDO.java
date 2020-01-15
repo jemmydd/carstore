@@ -1,10 +1,14 @@
 package com.lym.mechanical.bean.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CarUserDO {
     private Integer id;
 

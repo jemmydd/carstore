@@ -1,11 +1,15 @@
 package com.lym.mechanical.bean.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VipOrderDO {
     private Integer id;
 
