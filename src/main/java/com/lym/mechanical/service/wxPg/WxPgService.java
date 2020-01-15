@@ -92,8 +92,8 @@ public class WxPgService {
     @Autowired
     private FileDomain fileDomain;
 
-    public CarUserDTO auth(WxLoginInfo info) {
-        CarUserDTO result;
+    public CarUserDO auth(WxLoginInfo info) {
+        CarUserDO userDO;
 
         WxPgAuthDTO wxPgAuthDTO = auth(pgAppInfo.getAppId(), pgAppInfo.getAppSecret(), info.getCode());
 
@@ -101,7 +101,7 @@ public class WxPgService {
         if (wxPgAuthDTO == null) {
             throw new RuntimeException("微信授权失败");
         } else {
-            CarUserDO userDO = carUserDOMapper.selectByOpenId(wxPgAuthDTO.getOpenid());
+            userDO = carUserDOMapper.selectByOpenId(wxPgAuthDTO.getOpenid());
             if (userDO == null) {
                 userDO = CarUserDO.builder()
                         .createTime(DateUtil.now())
@@ -116,16 +116,9 @@ public class WxPgService {
 
                 carUserDOMapper.insertSelective(userDO);
             }
-
-            result = CarUserDTO.builder()
-                    .id(userDO.getId())
-                    .openId(userDO.getOpenid())
-                    .phone(Objects.isNull(userDO.getPhone()) ? "" : userDO.getPhone())
-                    .sessionKey(userDO.getSessionKey())
-                    .build();
         }
 
-        return result;
+        return userDO;
     }
 
     public WxPgAuthDTO auth(String appId, String appSecret, String code) {

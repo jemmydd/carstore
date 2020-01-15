@@ -2,6 +2,7 @@ package com.lym.mechanical.web;
 
 import com.lym.mechanical.bean.dto.user.CarUserDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserPhoneDTO;
+import com.lym.mechanical.bean.entity.CarUserDO;
 import com.lym.mechanical.bean.param.wxPg.QrParam;
 import com.lym.mechanical.bean.param.wxPg.WxLoginInfo;
 import com.lym.mechanical.component.result.Result;
@@ -32,7 +33,7 @@ public class WxPgController {
 
     @ApiOperation(value = "授权，失败报异常或返回-1的用户、成功返回正常用户")
     @PostMapping("auth.action")
-    public Result<CarUserDTO> auth(@RequestBody WxLoginInfo info) {
+    public Result<CarUserDO> auth(@RequestBody WxLoginInfo info) {
         return ResultUtil.success(wxPgService.auth(info));
     }
 
