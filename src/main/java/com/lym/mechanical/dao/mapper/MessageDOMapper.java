@@ -20,7 +20,7 @@ public interface MessageDOMapper {
 
     int updateByPrimaryKey(MessageDO record);
 
-    @Select("select distinct user_group from message where from_car_user_id = #{userId} or to_car_user_id = #{userId} order by create_time desc, id desc limit 2")
+    @Select("select distinct user_group from (select * from message where from_car_user_id = #{userId} or to_car_user_id = #{userId} order by create_time desc, id desc) a limit 2")
     @ResultType(String.class)
     List<String> selectRecentlyUsers(@Param("userId") Integer userId);
 
