@@ -103,4 +103,21 @@
       is_hot = #{isHot,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="search" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from brand
+    <where>
+      <if test="name != null and name != ''">
+        and name like concat('%', #{name}, '%')
+      </if>
+      <if test="capital != null and name != capital">
+        and capital like concat('%', #{capital}, '%')
+      </if>
+      <if test="isHot != null">
+        and is_hot = #{isHot}
+      </if>
+    </where>
+    order by capital
+  </select>
 </mapper>
