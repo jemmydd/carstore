@@ -43,7 +43,7 @@
       #{openid,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{vipStartTime,jdbcType=TIMESTAMP}, 
       #{vipEndTime,jdbcType=TIMESTAMP}, #{hasTry,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
     insert into car_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
