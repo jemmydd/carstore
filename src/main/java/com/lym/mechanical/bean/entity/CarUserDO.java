@@ -38,6 +38,8 @@ public class CarUserDO {
 
     private Boolean hasTry;
 
+    private Integer cardId;
+
     public Integer getId() {
         return id;
     }
@@ -148,5 +150,13 @@ public class CarUserDO {
 
     public void setHasTry(Boolean hasTry) {
         this.hasTry = hasTry;
+    }
+
+    public Integer getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(Integer cardId) {
+        this.cardId = cardId;
     }
 }

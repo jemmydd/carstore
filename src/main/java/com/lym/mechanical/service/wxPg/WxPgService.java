@@ -9,6 +9,7 @@ import com.lym.mechanical.bean.dto.wxPg.WxPgAuthDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserPhoneDTO;
 import com.lym.mechanical.bean.entity.CarUserDO;
+import com.lym.mechanical.bean.entity.NameCardDO;
 import com.lym.mechanical.bean.entity.WxAccessTokenDO;
 import com.lym.mechanical.bean.entity.WxQrDO;
 import com.lym.mechanical.bean.enumBean.WxQrEnum;
@@ -18,6 +19,7 @@ import com.lym.mechanical.bean.param.wxPg.WxLoginInfo;
 import com.lym.mechanical.component.oss.OssService;
 import com.lym.mechanical.component.oss.OssServiceImpl;
 import com.lym.mechanical.dao.mapper.CarUserDOMapper;
+import com.lym.mechanical.dao.mapper.NameCardDOMapper;
 import com.lym.mechanical.dao.mapper.WxAccessTokenDOMapper;
 import com.lym.mechanical.dao.mapper.WxQrDOMapper;
 import com.lym.mechanical.sys.FileDomain;
@@ -92,6 +94,9 @@ public class WxPgService {
     @Autowired
     private FileDomain fileDomain;
 
+    @Autowired
+    private NameCardDOMapper nameCardDOMapper;
+
     public CarUserDO auth(WxLoginInfo info) {
         CarUserDO userDO;
 
@@ -116,6 +121,8 @@ public class WxPgService {
 
                 carUserDOMapper.insertSelective(userDO);
             }
+            NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userDO.getId());
+            userDO.setCardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId());
         }
 
         return userDO;
