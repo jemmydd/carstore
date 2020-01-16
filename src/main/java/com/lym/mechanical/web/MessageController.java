@@ -75,11 +75,11 @@ public class MessageController {
         return ResultUtil.success(messageService.lookRecord(userId, pageNum, pageSize));
     }
 
-    @GetMapping("askStatistic.action")
-    @ApiOperation(value = "访问统计")
-    public Result<PageData<RecentlyUserDTO>> askStatistic(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
-                                                          @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,
-                                                          @RequestParam("pageSize") @ApiParam(value = "每页显示数量") Integer pageSize) {
-        return ResultUtil.success(messageService.askStatistic(userId, pageNum, pageSize));
-    }
+//    @GetMapping("askStatistic.action")
+//    @ApiOperation(value = "访问统计")
+//    public Result<PageData<RecentlyUserDTO>> askStatistic(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+//                                                          @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,
+//                                                          @RequestParam("pageSize") @ApiParam(value = "每页显示数量") Integer pageSize) {
+//        return ResultUtil.success(messageService.askStatistic(userId, pageNum, pageSize));
+//    }
 }

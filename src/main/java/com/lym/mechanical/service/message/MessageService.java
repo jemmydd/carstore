@@ -202,53 +202,53 @@ public class MessageService {
         }).collect(Collectors.toList()));
     }
 
-    public PageData<RecentlyUserDTO> askStatistic(Integer userId, Integer pageNum, Integer pageSize) {
-        PageData.checkPageParam(pageNum, pageSize);
-        PageHelper.startPage(pageNum, pageSize);
-
-        Page<String> userGroups = (Page<String>) messageDOMapper.selectRecentlyUsers(userId);
-        List<String> data = userGroups.getResult();
-        if (ObjectUtils.isEmpty(data)) {
-            return PageData.noData(pageSize);
-        } else {
-            List<Integer> userIds = ObjectUtils.isEmpty(userGroups) ? Lists.newArrayList() :
-                    userGroups.stream().map(row -> {
-                        String[] s = row.split("-");
-                        return Objects.equals(s[0], userId.toString()) ? Integer.parseInt(s[1]) : Integer.parseInt(s[0]);
-                    }).collect(Collectors.toList());
-            if (!ObjectUtils.isEmpty(userIds)) {
-                List<RecentlyUserDTO> recentlyUsers = Lists.newArrayList();
-                List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(userIds);
-                Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
-                        carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
-                List<MessageDO> messageDOS = messageDOMapper.selectBatchByUserGroup(userGroups);
-                Map<String, List<MessageDO>> map = ObjectUtils.isEmpty(messageDOS) ? Maps.newHashMap() :
-                        messageDOS.stream().collect(Collectors.groupingBy(MessageDO::getUserGroup));
-                List<String> groups = Lists.newArrayList();
-                messageDOS.forEach(row -> {
-                    if (!groups.contains(row.getUserGroup())) {
-                        groups.add(row.getUserGroup());
-                        CarUserDO userDO = userMap.get(Objects.equals(row.getFromCarUserId(), userId) ?
-                                row.getToCarUserId() : row.getFromCarUserId());
-                        List<MessageDO> messages = map.get(row.getUserGroup());
-                        if (!ObjectUtils.isEmpty(messages)) {
-                            messages = messages.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
-                        }
-                        recentlyUsers.add(RecentlyUserDTO.builder()
-                                .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
-                                .userId(Objects.equals(row.getFromCarUserId(), userId) ?
-                                        row.getToCarUserId() : row.getFromCarUserId())
-                                .desc("最近一次互动" + (ObjectUtils.isEmpty(messages) ? "" : DateUtil.formatDate(messages.get(0).getCreateTime(), "yyyy-MM-dd")))
-                                .title((Objects.isNull(userDO) ? "" : userDO.getNickName()) + "跟你互动" + (ObjectUtils.isEmpty(messages) ? "0" : messages.size()) + "次")
-                                .build());
-                    }
-                });
-                return PageData.data(userGroups, recentlyUsers);
-            } else {
-                return PageData.noData(pageSize);
-            }
-        }
-    }
+//    public PageData<RecentlyUserDTO> askStatistic(Integer userId, Integer pageNum, Integer pageSize) {
+//        PageData.checkPageParam(pageNum, pageSize);
+//        PageHelper.startPage(pageNum, pageSize);
+//
+//        Page<String> userGroups = (Page<String>) messageDOMapper.selectRecentlyUsers(userId);
+//        List<String> data = userGroups.getResult();
+//        if (ObjectUtils.isEmpty(data)) {
+//            return PageData.noData(pageSize);
+//        } else {
+//            List<Integer> userIds = ObjectUtils.isEmpty(userGroups) ? Lists.newArrayList() :
+//                    userGroups.stream().map(row -> {
+//                        String[] s = row.split("-");
+//                        return Objects.equals(s[0], userId.toString()) ? Integer.parseInt(s[1]) : Integer.parseInt(s[0]);
+//                    }).collect(Collectors.toList());
+//            if (!ObjectUtils.isEmpty(userIds)) {
+//                List<RecentlyUserDTO> recentlyUsers = Lists.newArrayList();
+//                List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(userIds);
+//                Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+//                        carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+//                List<MessageDO> messageDOS = messageDOMapper.selectBatchByUserGroup(userGroups);
+//                Map<String, List<MessageDO>> map = ObjectUtils.isEmpty(messageDOS) ? Maps.newHashMap() :
+//                        messageDOS.stream().collect(Collectors.groupingBy(MessageDO::getUserGroup));
+//                List<String> groups = Lists.newArrayList();
+//                messageDOS.forEach(row -> {
+//                    if (!groups.contains(row.getUserGroup())) {
+//                        groups.add(row.getUserGroup());
+//                        CarUserDO userDO = userMap.get(Objects.equals(row.getFromCarUserId(), userId) ?
+//                                row.getToCarUserId() : row.getFromCarUserId());
+//                        List<MessageDO> messages = map.get(row.getUserGroup());
+//                        if (!ObjectUtils.isEmpty(messages)) {
+//                            messages = messages.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
+//                        }
+//                        recentlyUsers.add(RecentlyUserDTO.builder()
+//                                .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
+//                                .userId(Objects.equals(row.getFromCarUserId(), userId) ?
+//                                        row.getToCarUserId() : row.getFromCarUserId())
+//                                .desc("最近一次互动" + (ObjectUtils.isEmpty(messages) ? "" : DateUtil.formatDate(messages.get(0).getCreateTime(), "yyyy-MM-dd")))
+//                                .title((Objects.isNull(userDO) ? "" : userDO.getNickName()) + "跟你互动" + (ObjectUtils.isEmpty(messages) ? "0" : messages.size()) + "次")
+//                                .build());
+//                    }
+//                });
+//                return PageData.data(userGroups, recentlyUsers);
+//            } else {
+//                return PageData.noData(pageSize);
+//            }
+//        }
+//    }
 
     public Boolean makeTag(Integer userId, Integer otherUserId) {
         IntentionCustomDO intentionCustomDO = intentionCustomDOMapper.selectByUserIdAndOtherId(userId, otherUserId);
