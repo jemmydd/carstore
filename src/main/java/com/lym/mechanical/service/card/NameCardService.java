@@ -82,6 +82,9 @@ public class NameCardService {
     @Autowired
     private FriendCardRecordDOMapper friendCardRecordDOMapper;
 
+    @Autowired
+    private PublishLookRecordDOMapper publishLookRecordDOMapper;
+
     public MyNameCardDTO myNameCard(Integer userId) {
         CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(userId);
         if (Objects.isNull(carUserDO)) {
@@ -94,38 +97,28 @@ public class NameCardService {
         List<RecentlyUserDTO> recentlyUsers = Lists.newArrayList();
         List<NameCardDTO> refereeCards = Lists.newArrayList();
         if (hasCard) {
-            List<String> userGroups = messageDOMapper.selectRecentlyUsers(userId);
-            List<Integer> userIds = ObjectUtils.isEmpty(userGroups) ? Lists.newArrayList() :
-                    userGroups.stream().map(row -> {
-                        String[] s = row.split("-");
-                        return Objects.equals(s[0], userId.toString()) ? Integer.parseInt(s[1]) : Integer.parseInt(s[0]);
-                    }).collect(Collectors.toList());
-            if (!ObjectUtils.isEmpty(userIds)) {
+            List<PublishLookRecordDO> publishLookRecordDOS = publishLookRecordDOMapper.selectByPublishUserId(userId);
+            if (!ObjectUtils.isEmpty(publishLookRecordDOS)) {
+                List<Integer> userIds = publishLookRecordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList());
                 List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(userIds);
                 Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                         carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
-                List<MessageDO> messageDOS = messageDOMapper.selectBatchByUserGroup(userGroups);
-                Map<String, List<MessageDO>> map = ObjectUtils.isEmpty(messageDOS) ? Maps.newHashMap() :
-                        messageDOS.stream().collect(Collectors.groupingBy(MessageDO::getUserGroup));
-                List<String> groups = Lists.newArrayList();
-                messageDOS.forEach(row -> {
-                    if (!groups.contains(row.getUserGroup())) {
-                        groups.add(row.getUserGroup());
-                        CarUserDO userDO = userMap.get(Objects.equals(row.getFromCarUserId(), userId) ?
-                                row.getToCarUserId() : row.getFromCarUserId());
-                        List<MessageDO> messages = map.get(row.getUserGroup());
-                        if (!ObjectUtils.isEmpty(messages)) {
-                            messages = messages.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
-                        }
-                        recentlyUsers.add(RecentlyUserDTO.builder()
-                                .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
-                                .userId(Objects.equals(row.getFromCarUserId(), userId) ?
-                                        row.getToCarUserId() : row.getFromCarUserId())
-                                .desc("最近一次互动" + (ObjectUtils.isEmpty(messages) ? "" : DateUtil.formatDate(messages.get(0).getCreateTime(), "yyyy-MM-dd")))
-                                .title((Objects.isNull(userDO) ? "" : userDO.getNickName()) + "跟你互动" + (ObjectUtils.isEmpty(messages) ? "0" : messages.size()) + "次")
-                                .build());
-                    }
-                });
+                List<Integer> publishIds = publishLookRecordDOS.stream().map(PublishLookRecordDO::getPublishId).distinct().collect(Collectors.toList());
+                List<PublishDO> publishDOS = publishDOMapper.selectBatchByPrimaryKey(publishIds);
+                Map<Integer, PublishDO> publishMap = ObjectUtils.isEmpty(publishDOS) ? Maps.newHashMap() :
+                        publishDOS.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
+                recentlyUsers = publishLookRecordDOS.stream().map(row -> {
+                    CarUserDO userDO = userMap.get(row.getUserId());
+                    PublishDO publishDO = publishMap.get(row.getPublishId());
+                    return RecentlyUserDTO.builder()
+                            .userId(row.getUserId())
+                            .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
+                            .nickName(Objects.isNull(userDO) ? "" : userDO.getNickName())
+                            .publishId(row.getPublishId())
+                            .time(DateUtil.dealTime(row.getCreateTime()))
+                            .publishName(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
+                            .build();
+                }).collect(Collectors.toList());
             }
         } else {
             refereeCards = getRefereeCards();

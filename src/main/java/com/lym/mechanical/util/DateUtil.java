@@ -29,6 +29,11 @@ public class DateUtil {
     private static final Long ONE_MINITE = 60L;
     private static final Long ONE_HOUR = 60 * 60L;
     private static final Long ONE_DAY = 60 * 60 * 24L;
+    private static final Long ONE_MINITE_SECOND = 60 * 1000L;
+
+    private static final Long ONE_HOUR_SECOND = 60 * 60 * 1000L;
+
+    private static final Long ONE_DAY_SECOND = 60 * 60 * 24 * 1000L;
 
     public static String formatDate(Date date) {
         String result = "";
@@ -211,5 +216,18 @@ public class DateUtil {
 
     public static void main(String[] args) {
         System.out.println(getTime(5891L));
+    }
+
+    public static String dealTime(Date date) {
+        Long secondBetween = DateUtil.now().getTime() - date.getTime();
+        if (secondBetween < ONE_MINITE_SECOND) {
+            return secondBetween / 1000 + "秒前";
+        } else if (secondBetween < ONE_HOUR_SECOND) {
+            return secondBetween / ONE_MINITE_SECOND + "分钟前";
+        } else if (secondBetween < ONE_DAY_SECOND) {
+            return secondBetween / ONE_HOUR_SECOND + "小时前";
+        } else {
+            return secondBetween / ONE_DAY_SECOND + "天前";
+        }
     }
 }

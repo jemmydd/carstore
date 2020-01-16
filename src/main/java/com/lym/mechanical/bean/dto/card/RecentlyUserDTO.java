@@ -22,12 +22,18 @@ public class RecentlyUserDTO {
     @ApiModelProperty(value = "头像")
     private String avatar;
 
-    @ApiModelProperty(value = "标题")
-    private String title;
+    @ApiModelProperty(value = "访问的设备id")
+    private Integer publishId;
 
-    @ApiModelProperty(value = "描述")
-    private String desc;
+    @ApiModelProperty(value = "访问的设备名称")
+    private String publishName;
 
     @ApiModelProperty(value = "用户id")
     private Integer userId;
+
+    @ApiModelProperty(value = "昵称")
+    private String nickName;
+
+    @ApiModelProperty(value = "查看时间")
+    private String time;
 }

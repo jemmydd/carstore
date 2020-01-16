@@ -40,12 +40,6 @@ public class PayService {
 
     private static final BigDecimal[] AMOUNT = {BigDecimal.ZERO, new BigDecimal(1), new BigDecimal(39), new BigDecimal(98), new BigDecimal(288)};
 
-    private static final Long ONE_MINITE_SECOND = 60 * 1000L;
-
-    private static final Long ONE_HOUR_SECOND = 60 * 60 * 1000L;
-
-    private static final Long ONE_DAY_SECOND = 60 * 60 * 24 * 1000L;
-
     @Autowired
     private PgAppInfo pgAppInfo;
 
@@ -256,7 +250,7 @@ public class PayService {
         return vipOrderDOS.stream().map(row -> {
             CarUserDO carUserDO = userMap.get(row.getUserId());
             String mobile = Objects.isNull(carUserDO) ? "" : carUserDO.getPhone();
-            return "用户" + hidePhone(mobile) + " " + dealTime(row.getUpdateTime()) + "购买了" + VipTypeEnum.getType(row.getBuyType()).getName();
+            return "用户" + hidePhone(mobile) + " " + DateUtil.dealTime(row.getUpdateTime()) + "购买了" + VipTypeEnum.getType(row.getBuyType()).getName();
         }).collect(Collectors.toList());
     }
 
@@ -311,18 +305,5 @@ public class PayService {
             num--;
         }
         return sb.toString();
-    }
-
-    private String dealTime(Date date) {
-        Long secondBetween = DateUtil.now().getTime() - date.getTime();
-        if (secondBetween < ONE_MINITE_SECOND) {
-            return secondBetween / 1000 + "秒前";
-        } else if (secondBetween < ONE_HOUR_SECOND) {
-            return secondBetween / ONE_MINITE_SECOND + "分钟前";
-        } else if (secondBetween < ONE_DAY_SECOND) {
-            return secondBetween / ONE_HOUR_SECOND + "小时前";
-        } else {
-            return secondBetween / ONE_DAY_SECOND + "天前";
-        }
     }
 }

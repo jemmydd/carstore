@@ -62,4 +62,8 @@ public interface PublishLookRecordDOMapper {
 
     @Update("update publish_look_record set has_dial = #{type} where user_id = #{userId} and publish_id = #{publishId}")
     void updateDialByPublishIdAndUserId(@Param("userId") Integer userId, @Param("publishId") Integer publishId, @Param("type") String type);
+
+    @Select("select * from publish_look_record where publish_id in (select id from publish where car_user_id = #{userId}) order by create_time desc")
+    @ResultMap("BaseResultMap")
+    List<PublishLookRecordDO> selectByPublishUserId(@Param("userId") Integer userId);
 }
