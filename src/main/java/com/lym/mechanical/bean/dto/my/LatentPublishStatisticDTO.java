@@ -38,10 +38,13 @@ public class LatentPublishStatisticDTO {
     private String date;
 
     @ApiModelProperty(value = "浏览次数")
-    private String lookTimes;
+    private Integer lookTimes;
 
     @ApiModelProperty(value = "最长浏览时间")
     private String mostLookTime;
+
+    @ApiModelProperty(value = "最长浏览时间")
+    private Long time;
 
     @ApiModelProperty(value = "是否尝试拨号")
     private String hasTakeMobile;
@@ -51,4 +54,7 @@ public class LatentPublishStatisticDTO {
 
     @ApiModelProperty(value = "最近一次访问时间")
     private String recentTime;
+
+    @ApiModelProperty(value = "综合评分")
+    private Integer score;
 }

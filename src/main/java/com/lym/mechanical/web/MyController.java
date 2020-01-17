@@ -90,53 +90,59 @@ public class MyController {
     }
 
     @GetMapping("publishStatistic.action")
-    @ApiOperation(value = "商品数据分析")
+    @ApiOperation(value = "设备数据分析")
     public Result<PublishStatisticDTO> publishStatistic(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) {
         return ResultUtil.success(myService.publishStatistic(userId));
     }
 
-    @GetMapping("latentUsersPublish.action")
-    @ApiOperation(value = "商品潜在用户-上面的设备信息")
-    public Result<LatentUserPublishDTO> latentUserPublishInfo(@RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId) {
-        return ResultUtil.success(myService.latentUserPublishInfo(publishId));
-    }
+//    @GetMapping("latentUsersPublish.action")
+//    @ApiOperation(value = "商品潜在用户-上面的设备信息")
+//    public Result<LatentUserPublishDTO> latentUserPublishInfo(@RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId) {
+//        return ResultUtil.success(myService.latentUserPublishInfo(publishId));
+//    }
 
-    @GetMapping("latentUserTop.action")
-    @ApiOperation(value = "商品潜在用户-中间访问最多或浏览时间最长的用户")
-    public Result<LookUserDTO> latentUserTop(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
-                                             @RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId,
-                                             @RequestParam("type") @ApiParam(value = "类型，0-访问最多，1-浏览时间最长") String type) {
-        return ResultUtil.success(myService.latentUserTop(userId, publishId, type));
-    }
+//    @GetMapping("latentUserTop.action")
+//    @ApiOperation(value = "商品潜在用户-中间访问最多或浏览时间最长的用户")
+//    public Result<LookUserDTO> latentUserTop(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+//                                             @RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId,
+//                                             @RequestParam("type") @ApiParam(value = "类型，0-访问最多，1-浏览时间最长") String type) {
+//        return ResultUtil.success(myService.latentUserTop(userId, publishId, type));
+//    }
 
-    @GetMapping("latentUserHistory.action")
-    @ApiOperation(value = "商品潜在用户-下面历史访问的用户")
-    public Result<List<LookUserDTO>> latentUserHistory(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+    @GetMapping("latent.action")
+    @ApiOperation(value = "访客数据分析")
+    public Result<LatentDTO> latent(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                                        @RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId,
                                                        @RequestParam("hasDial") @ApiParam(value = "是否有拨号") String hasDial,
-                                                       @RequestParam("hasCollect") @ApiParam(value = "是否有收藏") String hasCollect) {
-        return ResultUtil.success(myService.latentUserHistory(userId, publishId, hasDial, hasCollect));
+                                                       @RequestParam("hasCollect") @ApiParam(value = "是否有收藏") String hasCollect,
+                                                       @RequestParam("hasManyLook") @ApiParam(value = "是否多次浏览") String hasManyLook,
+                                                       @RequestParam("hasMobile") @ApiParam(value = "是否有联系方式") String hasMobile,
+                                                       @RequestParam("sortBy") @ApiParam(value = "排序方式,0-综合评分，1-访问次数，2-浏览时间") String sortBy) {
+        return ResultUtil.success(myService.latent(userId, publishId, hasDial, hasCollect, hasManyLook, hasMobile, sortBy));
     }
+
+//    @GetMapping("latentUser.action")
+//    @ApiOperation(value = "潜在客户分析-上面用户信息")
+//    public Result<LatentUserDTO> latentUser(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+//                                            @RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId) {
+//        return ResultUtil.success(myService.latentUser(userId, latentUserId));
+//    }
+
+//    @GetMapping("latentPublishTop.action")
+//    @ApiOperation(value = "潜在客户分析-中间部分")
+//    public Result<LatentPublishStatisticDTO> latentPublishTop(@RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId,
+//                                                              @RequestParam("type") @ApiParam(value = "类型，0-访问最多的设备，1-浏览时间最长的设备") String type) {
+//        return ResultUtil.success(myService.latentPublishTop(latentUserId, type));
+//    }
 
     @GetMapping("latentUser.action")
-    @ApiOperation(value = "潜在客户分析-上面用户信息")
-    public Result<LatentUserDTO> latentUser(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
-                                            @RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId) {
-        return ResultUtil.success(myService.latentUser(userId, latentUserId));
-    }
-
-    @GetMapping("latentPublishTop.action")
-    @ApiOperation(value = "潜在客户分析-中间部分")
-    public Result<LatentPublishStatisticDTO> latentPublishTop(@RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId,
-                                                              @RequestParam("type") @ApiParam(value = "类型，0-访问最多的设备，1-浏览时间最长的设备") String type) {
-        return ResultUtil.success(myService.latentPublishTop(latentUserId, type));
-    }
-
-    @GetMapping("latentPublishList.action")
-    @ApiOperation(value = "潜在客户分析-下面部分")
-    public Result<List<LatentPublishStatisticDTO>> latentPublishList(@RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId,
+    @ApiOperation(value = "潜在客户分析")
+    public Result<UserLatentDTO> latentPublishList(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                                                    @RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId,
                                                                      @RequestParam("hasDial") @ApiParam(value = "是否拨号") String hasDial,
-                                                                     @RequestParam("hasCollect") @ApiParam(value = "是否收藏") String hasCollect) {
-        return ResultUtil.success(myService.latentPublishList(latentUserId, hasDial, hasCollect));
+                                                                     @RequestParam("hasCollect") @ApiParam(value = "是否收藏") String hasCollect,
+                                                                     @RequestParam("hasManyLook") @ApiParam(value = "是否多次浏览") String hasManyLook,
+                                                                     @RequestParam("sortBy") @ApiParam(value = "排序方式,0-综合评分，1-访问次数，2-浏览时间") String sortBy) {
+        return ResultUtil.success(myService.latentPublishList(userId, latentUserId, hasDial, hasCollect, hasManyLook, sortBy));
     }
 }

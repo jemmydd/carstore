@@ -270,89 +270,127 @@ public class MyService {
                 .build();
     }
 
-    public LookUserDTO latentUserTop(Integer userId, Integer publishId, String type) {
-        PublishLookRecordDO top = null;
-        String mostLookTime = "";
-        String totalLookTimes = "";
-        if (Objects.equals("0", type)) {
-            // 访问最多
-            Integer topUserId = publishLookRecordDOMapper.selectLookTimeTopByPublishId(publishId);
-            if (!Objects.isNull(topUserId)) {
-                List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(topUserId, publishId);
-                top = recordDOS.get(0);
-                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
-                totalLookTimes = recordDOS.size() + "次";
-            }
-        } else {
-            // 时间最长
-            List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(userId, publishId);
-            if (!ObjectUtils.isEmpty(recordDOS)) {
-                top = recordDOS.get(0);
-                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
-                List<PublishLookRecordDO> records = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(top.getUserId(), publishId);
-                totalLookTimes = records.size() + "次";
-            }
+//    public LookUserDTO latentUserTop(Integer userId, Integer publishId, String type) {
+//        PublishLookRecordDO top = null;
+//        String mostLookTime = "";
+//        String totalLookTimes = "";
+//        if (Objects.equals("0", type)) {
+//            // 访问最多
+//            Integer topUserId = publishLookRecordDOMapper.selectLookTimeTopByPublishId(publishId);
+//            if (!Objects.isNull(topUserId)) {
+//                List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(topUserId, publishId);
+//                top = recordDOS.get(0);
+//                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
+//                totalLookTimes = recordDOS.size() + "次";
+//            }
+//        } else {
+//            // 时间最长
+//            List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(userId, publishId);
+//            if (!ObjectUtils.isEmpty(recordDOS)) {
+//                top = recordDOS.get(0);
+//                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
+//                List<PublishLookRecordDO> records = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(top.getUserId(), publishId);
+//                totalLookTimes = records.size() + "次";
+//            }
+//        }
+//        if (Objects.isNull(top)) {
+//            return LookUserDTO.builder().build();
+//        }
+//        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(top.getUserId());
+//        List<MessageDO> messageDOS = messageDOMapper.selectByUserGroup(userId < top.getUserId() ? (userId + "-" + top.getUserId()) : (top.getUserId() + "-" + userId));
+//        return LookUserDTO.builder()
+//                .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+//                .hasCollect(top.getHasCollect() ? "有" : "无")
+//                .hasTakeMobile(top.getHasDial() ? "有" : "无")
+//                .hasTalk(!ObjectUtils.isEmpty(messageDOS))
+//                .mobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
+//                .mostLookTime(mostLookTime)
+//                .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+//                .totalLookTimes(totalLookTimes)
+//                .userId(top.getUserId())
+//                .build();
+//    }
+
+    public LatentDTO latent(Integer userId, Integer publishId, String hasDial, String hasCollect, String hasManyLook, String hasMobile, String sortBy) {
+        PublishDO publishDO = publishDOMapper.selectByPrimaryKey(publishId);
+        if (Objects.isNull(publishDO)) {
+            throw new RuntimeException("设备不存在");
         }
-        if (Objects.isNull(top)) {
-            return LookUserDTO.builder().build();
-        }
-        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(top.getUserId());
-        List<MessageDO> messageDOS = messageDOMapper.selectByUserGroup(userId < top.getUserId() ? (userId + "-" + top.getUserId()) : (top.getUserId() + "-" + userId));
-        return LookUserDTO.builder()
-                .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
-                .hasCollect(top.getHasCollect() ? "有" : "无")
-                .hasTakeMobile(top.getHasDial() ? "有" : "无")
-                .hasTalk(!ObjectUtils.isEmpty(messageDOS))
-                .mobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
-                .mostLookTime(mostLookTime)
-                .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
-                .totalLookTimes(totalLookTimes)
-                .userId(top.getUserId())
+        LatentUserPublishDTO publish = LatentUserPublishDTO.builder()
+                .publishId(publishId)
+                .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
+                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
+                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
+                        (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
+                .image(StringUtils.isEmpty(publishDO.getMainMedia()) ? "" : publishDO.getMainMedia())
+                .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
+                .title(publishDO.getTitle())
                 .build();
+        List<LookUserDTO> result = Lists.newArrayList();
+        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistory(publishId, hasDial, hasCollect);
+        if (!ObjectUtils.isEmpty(recordDOS)) {
+            List<Integer> userIds = Lists.newArrayList();
+            Map<Integer, List<PublishLookRecordDO>> recordMap = recordDOS.stream().collect(Collectors.groupingBy(PublishLookRecordDO::getUserId));
+            List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(recordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()));
+            Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                    carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+            List<String> userGroups = Lists.newArrayList();
+            recordDOS.forEach(row -> {
+                String userGroup = userId < row.getUserId() ? (userId + "-" + row.getUserId()) : (row.getUserId() + "-" + userId);
+                if (!userGroups.contains(userGroup)) {
+                    userGroups.add(userGroup);
+                }
+            });
+            List<MessageDO> messageDOS = messageDOMapper.selectBatchByUserGroup(userGroups);
+            Map<String, List<MessageDO>> messageMap = ObjectUtils.isEmpty(messageDOS) ? Maps.newHashMap() :
+                    messageDOS.stream().collect(Collectors.groupingBy(MessageDO::getUserGroup));
+            for (PublishLookRecordDO recordDO : recordDOS) {
+                if (!userIds.contains(recordDO.getUserId())) {
+                    List<PublishLookRecordDO> recordList = recordMap.get(recordDO.getUserId());
+                    recordList = recordList.stream().sorted((o1, o2) -> -o1.getLookTime().compareTo(o2.getLookTime())).collect(Collectors.toList());
+                    CarUserDO carUserDO = userMap.get(recordDO.getUserId());
+                    String userGroup = userId < recordDO.getUserId() ? (userId + "-" + recordDO.getUserId()) : (recordDO.getUserId() + "-" + userId);
+                    List<MessageDO> messageList = messageMap.get(userGroup);
+                    Boolean flag = Boolean.TRUE;
+                    if (Objects.equals("1", hasManyLook) && recordList.size() <= 1) {
+                        flag = Boolean.FALSE;
+                    }
+                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                        flag = Boolean.FALSE;
+                    }
+                    if (flag) {
+                        result.add(LookUserDTO.builder()
+                                .totalLookTimes(recordList.size())
+                                .userId(recordDO.getUserId())
+                                .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                                .mostLookTime(DateUtil.getTime(recordList.get(0).getLookTime().longValue()))
+                                .time(recordList.get(0).getLookTime().longValue())
+                                .mobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
+                                .hasTalk(!ObjectUtils.isEmpty(messageList))
+                                .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
+                                .hasCollect(recordDO.getHasCollect() ? "有" : "无")
+                                .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+                                .score(getScore())
+                                .build());
+                    }
+                }
+            }
+        }
+        if (!ObjectUtils.isEmpty(result)) {
+            if (Objects.equals("0", sortBy)) {
+                result = result.stream().sorted((o1, o2) -> -o1.getScore().compareTo(o2.getScore())).collect(Collectors.toList());
+            } else if (Objects.equals("1", sortBy)) {
+                result = result.stream().sorted((o1, o2) -> -o1.getTotalLookTimes().compareTo(o2.getTotalLookTimes())).collect(Collectors.toList());
+            } else {
+                result = result.stream().sorted((o1, o2) -> -o1.getTime().compareTo(o2.getTime())).collect(Collectors.toList());
+            }
+        }
+        return LatentDTO.builder().publish(publish).users(result).build();
     }
 
-    public List<LookUserDTO> latentUserHistory(Integer userId, Integer publishId, String hasDial, String hasCollect) {
-        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistory(publishId, hasDial, hasCollect);
-        if (ObjectUtils.isEmpty(recordDOS)) {
-            return Lists.newArrayList();
-        }
-        List<LookUserDTO> result = Lists.newArrayList();
-        List<Integer> userIds = Lists.newArrayList();
-        Map<Integer, List<PublishLookRecordDO>> recordMap = recordDOS.stream().collect(Collectors.groupingBy(PublishLookRecordDO::getUserId));
-        List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(recordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()));
-        Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
-                carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
-        List<String> userGroups = Lists.newArrayList();
-        recordDOS.forEach(row -> {
-            String userGroup = userId < row.getUserId() ? (userId + "-" + row.getUserId()) : (row.getUserId() + "-" + userId);
-            if (!userGroups.contains(userGroup)) {
-                userGroups.add(userGroup);
-            }
-        });
-        List<MessageDO> messageDOS = messageDOMapper.selectBatchByUserGroup(userGroups);
-        Map<String, List<MessageDO>> messageMap = ObjectUtils.isEmpty(messageDOS) ? Maps.newHashMap() :
-                messageDOS.stream().collect(Collectors.groupingBy(MessageDO::getUserGroup));
-        for (PublishLookRecordDO recordDO : recordDOS) {
-            if (!userIds.contains(recordDO.getUserId())) {
-                List<PublishLookRecordDO> recordList = recordMap.get(recordDO.getUserId());
-                recordList = recordList.stream().sorted((o1, o2) -> -o1.getLookTime().compareTo(o2.getLookTime())).collect(Collectors.toList());
-                CarUserDO carUserDO = userMap.get(recordDO.getUserId());
-                String userGroup = userId < recordDO.getUserId() ? (userId + "-" + recordDO.getUserId()) : (recordDO.getUserId() + "-" + userId);
-                List<MessageDO> messageList = messageMap.get(userGroup);
-                result.add(LookUserDTO.builder()
-                        .totalLookTimes(recordList.size() + "次")
-                        .userId(recordDO.getUserId())
-                        .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
-                        .mostLookTime(DateUtil.getTime(recordList.get(0).getLookTime().longValue()))
-                        .mobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
-                        .hasTalk(!ObjectUtils.isEmpty(messageList))
-                        .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
-                        .hasCollect(recordDO.getHasCollect() ? "有" : "无")
-                        .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
-                        .build());
-            }
-        }
-        return result;
+    private Integer getScore() {
+        // 计算综合评分
+        return 0;
     }
 
     public LatentUserDTO latentUser(Integer userId, Integer latentUserId) {
@@ -375,94 +413,113 @@ public class MyService {
                 .build();
     }
 
-    public LatentPublishStatisticDTO latentPublishTop(Integer latentUserId, String type) {
-        PublishLookRecordDO top = null;
-        String mostLookTime = "";
-        String totalLookTimes = "";
-        String recentTime = "";
-        if (Objects.equals("0", type)) {
-            // 访问最多
-            Integer topPublishId = publishLookRecordDOMapper.selectLookTimeTopByUserId(latentUserId);
-            if (!Objects.isNull(topPublishId)) {
-                List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, topPublishId);
-                top = recordDOS.get(0);
-                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
-                totalLookTimes = recordDOS.size() + "次";
-                recordDOS = recordDOS.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
-                recentTime = DateUtil.getDateStr(recordDOS.get(0).getCreateTime());
+//    public LatentPublishStatisticDTO latentPublishTop(Integer latentUserId, String type) {
+//        PublishLookRecordDO top = null;
+//        String mostLookTime = "";
+//        String totalLookTimes = "";
+//        String recentTime = "";
+//        if (Objects.equals("0", type)) {
+//            // 访问最多
+//            Integer topPublishId = publishLookRecordDOMapper.selectLookTimeTopByUserId(latentUserId);
+//            if (!Objects.isNull(topPublishId)) {
+//                List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, topPublishId);
+//                top = recordDOS.get(0);
+//                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
+//                totalLookTimes = recordDOS.size() + "次";
+//                recordDOS = recordDOS.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
+//                recentTime = DateUtil.getDateStr(recordDOS.get(0).getCreateTime());
+//            }
+//        } else {
+//            // 时间最长
+//            List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, null);
+//            if (!ObjectUtils.isEmpty(recordDOS)) {
+//                top = recordDOS.get(0);
+//                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
+//                List<PublishLookRecordDO> records = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, top.getPublishId());
+//                totalLookTimes = records.size() + "次";
+//                records = records.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
+//                recentTime = DateUtil.getDateStr(records.get(0).getCreateTime());
+//            }
+//        }
+//        if (Objects.isNull(top)) {
+//            return LatentPublishStatisticDTO.builder().build();
+//        }
+//        PublishDO publishDO = publishDOMapper.selectByPrimaryKey(top.getPublishId());
+//        if (Objects.isNull(publishDO)) {
+//            throw new RuntimeException("设备不存在");
+//        }
+//        return LatentPublishStatisticDTO.builder()
+//                .publishId(top.getPublishId())
+//                .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
+//                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
+//                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
+//                        (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
+//                .hasCollect(top.getHasCollect() ? "有" : "无")
+//                .hasTakeMobile(top.getHasDial() ? "有" : "无")
+//                .image(publishDO.getMainMedia())
+//                .lookTimes(totalLookTimes)
+//                .mostLookTime(mostLookTime)
+//                .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
+//                .recentTime(recentTime)
+//                .title(publishDO.getTitle())
+//                .build();
+//    }
+
+    public UserLatentDTO latentPublishList(Integer userId, Integer latentUserId, String hasDial, String hasCollect, String hasManyLook, String sortBy) {
+        LatentUserDTO user = latentUser(userId, latentUserId);
+        List<LatentPublishStatisticDTO> result = Lists.newArrayList();
+        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistoryByUserId(latentUserId, hasDial, hasCollect);
+        if (!ObjectUtils.isEmpty(recordDOS)) {
+            List<Integer> publishIds = Lists.newArrayList();
+            Map<Integer, List<PublishLookRecordDO>> recordMap = recordDOS.stream().collect(Collectors.groupingBy(PublishLookRecordDO::getPublishId));
+            List<PublishDO> publishDOS = publishDOMapper.searchByIds(recordDOS.stream().map(PublishLookRecordDO::getPublishId).distinct().collect(Collectors.toList()));
+            Map<Integer, PublishDO> map = ObjectUtils.isEmpty(publishDOS) ? Maps.newHashMap() :
+                    publishDOS.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
+            for (PublishLookRecordDO recordDO : recordDOS) {
+                if (!publishIds.contains(recordDO.getPublishId())) {
+                    List<PublishLookRecordDO> recordList = recordMap.get(recordDO.getPublishId());
+                    String recentTime;
+                    recordList = recordList.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
+                    recentTime = DateUtil.getDateStr(recordList.get(0).getCreateTime());
+                    recordList = recordList.stream().sorted((o1, o2) -> -o1.getLookTime().compareTo(o2.getLookTime())).collect(Collectors.toList());
+                    PublishDO publishDO = map.get(recordDO.getPublishId());
+                    if (Objects.equals("1", hasManyLook) && recordList.size() <= 1) {
+                        continue;
+                    } else {
+                        result.add(LatentPublishStatisticDTO.builder()
+                                .publishId(recordDO.getPublishId())
+                                .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
+                                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
+                                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
+                                        (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
+                                .hasCollect(recordDO.getHasCollect() ? "有" : "无")
+                                .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
+                                .image(publishDO.getMainMedia())
+                                .lookTimes(recordList.size())
+                                .mostLookTime(DateUtil.getTime(recordList.get(0).getLookTime().longValue()))
+                                .time(recordList.get(0).getLookTime().longValue())
+                                .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
+                                .recentTime(recentTime)
+                                .title(publishDO.getTitle())
+                                .score(getUserScore())
+                                .build());
+                    }
+                }
             }
-        } else {
-            // 时间最长
-            List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, null);
-            if (!ObjectUtils.isEmpty(recordDOS)) {
-                top = recordDOS.get(0);
-                mostLookTime = DateUtil.getTime(top.getLookTime().longValue());
-                List<PublishLookRecordDO> records = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, top.getPublishId());
-                totalLookTimes = records.size() + "次";
-                records = records.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
-                recentTime = DateUtil.getDateStr(records.get(0).getCreateTime());
+        }
+        if (!ObjectUtils.isEmpty(result)) {
+            if (Objects.equals("0", sortBy)) {
+                result = result.stream().sorted((o1, o2) -> -o1.getScore().compareTo(o2.getScore())).collect(Collectors.toList());
+            } else if (Objects.equals("1", sortBy)) {
+                result = result.stream().sorted((o1, o2) -> -o1.getLookTimes().compareTo(o2.getLookTimes())).collect(Collectors.toList());
+            } else {
+                result = result.stream().sorted((o1, o2) -> -o1.getTime().compareTo(o2.getTime())).collect(Collectors.toList());
             }
         }
-        if (Objects.isNull(top)) {
-            return LatentPublishStatisticDTO.builder().build();
-        }
-        PublishDO publishDO = publishDOMapper.selectByPrimaryKey(top.getPublishId());
-        if (Objects.isNull(publishDO)) {
-            throw new RuntimeException("设备不存在");
-        }
-        return LatentPublishStatisticDTO.builder()
-                .publishId(top.getPublishId())
-                .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
-                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
-                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
-                        (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
-                .hasCollect(top.getHasCollect() ? "有" : "无")
-                .hasTakeMobile(top.getHasDial() ? "有" : "无")
-                .image(publishDO.getMainMedia())
-                .lookTimes(totalLookTimes)
-                .mostLookTime(mostLookTime)
-                .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
-                .recentTime(recentTime)
-                .title(publishDO.getTitle())
-                .build();
+        return UserLatentDTO.builder().user(user).publishs(result).build();
     }
 
-    public List<LatentPublishStatisticDTO> latentPublishList(Integer latentUserId, String hasDial, String hasCollect) {
-        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistoryByUserId(latentUserId, hasDial, hasCollect);
-        if (ObjectUtils.isEmpty(recordDOS)) {
-            return Lists.newArrayList();
-        }
-        List<LatentPublishStatisticDTO> result = Lists.newArrayList();
-        List<Integer> publishIds = Lists.newArrayList();
-        Map<Integer, List<PublishLookRecordDO>> recordMap = recordDOS.stream().collect(Collectors.groupingBy(PublishLookRecordDO::getPublishId));
-        List<PublishDO> publishDOS = publishDOMapper.searchByIds(recordDOS.stream().map(PublishLookRecordDO::getPublishId).distinct().collect(Collectors.toList()));
-        Map<Integer, PublishDO> map = ObjectUtils.isEmpty(publishDOS) ? Maps.newHashMap() :
-                publishDOS.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
-        for (PublishLookRecordDO recordDO : recordDOS) {
-            if (!publishIds.contains(recordDO.getPublishId())) {
-                List<PublishLookRecordDO> recordList = recordMap.get(recordDO.getPublishId());
-                String recentTime;
-                recordList = recordList.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
-                recentTime = DateUtil.getDateStr(recordList.get(0).getCreateTime());
-                recordList = recordList.stream().sorted((o1, o2) -> -o1.getLookTime().compareTo(o2.getLookTime())).collect(Collectors.toList());
-                PublishDO publishDO = map.get(recordDO.getPublishId());
-                result.add(LatentPublishStatisticDTO.builder()
-                        .publishId(recordDO.getPublishId())
-                        .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
-                        .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
-                                (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
-                                (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
-                        .hasCollect(recordDO.getHasCollect() ? "有" : "无")
-                        .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
-                        .image(publishDO.getMainMedia())
-                        .lookTimes(recordList.size() + "次")
-                        .mostLookTime(DateUtil.getTime(recordList.get(0).getLookTime().longValue()))
-                        .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
-                        .recentTime(recentTime)
-                        .title(publishDO.getTitle())
-                        .build());
-            }
-        }
-        return result;
+    private Integer getUserScore() {
+        return 0;
     }
 }

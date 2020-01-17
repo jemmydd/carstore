@@ -32,10 +32,12 @@ public class LookUserDTO {
     private Boolean hasTalk;
 
     @ApiModelProperty(value = "累计浏览次数")
-    private String totalLookTimes;
+    private Integer totalLookTimes;
 
     @ApiModelProperty(value = "最长浏览时间")
     private String mostLookTime;
+
+    private Long time;
 
     @ApiModelProperty(value = "是否尝试拨打电话")
     private String hasTakeMobile;
@@ -45,4 +47,7 @@ public class LookUserDTO {
 
     @ApiModelProperty(value = "手机号")
     private String mobile;
+
+    @ApiModelProperty(value = "综合评分")
+    private Integer score;
 }

@@ -40,7 +40,7 @@ public class WxPgController {
     @ApiOperation(value = "获取用户的手机号")
     @GetMapping("wxUserPhone.action")
     public Result<WxUserPhoneDTO> getWxUserPhone(
-            @ApiParam(value = "userId", required = true) @RequestParam(value = "用户id") Integer userId,
+            @ApiParam(value = "userId", required = true) @RequestParam(value = "userId") Integer userId,
             @ApiParam(value = "encryptedData", required = true) @RequestParam(value = "encryptedData") String encryptedData,
             @ApiParam(value = "iv", required = true) @RequestParam(value = "iv") String iv
     ) {
