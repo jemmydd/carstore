@@ -187,7 +187,7 @@ public class WxPgService {
             try {
                 WxPgAuthDTO wxPgAuthDTO = auth(pgAppInfo.getAppId(), pgAppInfo.getAppSecret(), param.getCode());
                 WxUserPhoneDTO phoneDTO = GsonUtil.GSON.fromJson(decrypt(wxPgAuthDTO.getSession_key(), param.getIv(), param.getEncryptedData()), WxUserPhoneDTO.class);
-                CarUserDO update = CarUserDO.builder().id(param.getUserId()).updateTime(DateUtil.now()).phone(phoneDTO.getPhoneNumber()).build();
+                CarUserDO update = CarUserDO.builder().id(param.getUserId()).sessionKey(wxPgAuthDTO.getSession_key()).updateTime(DateUtil.now()).phone(phoneDTO.getPhoneNumber()).build();
                 carUserDOMapper.updateByPrimaryKeySelective(update);
                 return phoneDTO;
             } catch (Exception e) {
