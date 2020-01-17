@@ -30,6 +30,7 @@ import com.lym.mechanical.util.OkHttp3Util;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.AlgorithmParameters;
+import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -327,20 +331,41 @@ public class WxPgService {
 
     private static String decrypt(String keyStr, String ivStr, String encDataStr) throws Exception {
 
-        byte[] encData = Base64.decode(encDataStr);
-        byte[] iv = Base64.decode(ivStr);
-        byte[] key = Base64.decode(keyStr);
-
-        AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-
-        return new String(cipher.doFinal(encData), StandardCharsets.UTF_8);
+        // 被加密的数据
+        byte[] dataByte = Base64.decode(encDataStr);
+        // 加密秘钥
+        byte[] keyByte = Base64.decode(keyStr);
+        // 偏移量
+        byte[] ivByte = Base64.decode(ivStr);
+        try {
+            // 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
+            int base = 16;
+            if (keyByte.length % base != 0) {
+                int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
+                byte[] temp = new byte[groups * base];
+                Arrays.fill(temp, (byte) 0);
+                System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
+                keyByte = temp;
+            }
+            // 初始化
+            Security.addProvider(new BouncyCastleProvider());
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding","BC");
+            SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
+            AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
+            parameters.init(new IvParameterSpec(ivByte));
+            cipher.init(Cipher.DECRYPT_MODE, spec, parameters);// 初始化
+            byte[] resultByte = cipher.doFinal(dataByte);
+            if (null != resultByte && resultByte.length > 0) {
+                return new String(resultByte, "UTF-8");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("解密时遇到错误");
+        }
+        return null;
     }
 
     public static void main(String[] args) throws Exception {
-        decrypt("q6XVfjAbijONBHTtwNz38g==", "4Dq9G%2BT3mAnuYOiEUyAJ4g%3D%3D", "z89x%2FjmX2wO6CSmHe5K%2BgGHOkp7ClyQn4DyN352y4%2FZ52Wo4Vy7f7oE6BKjC7C6J8Xvccdb7zDvNAF223JulUrBWYPHVvwvfdHKnSHGZcGZ%2BqXvvffcGV%2FvXull8gLn7qbGvhqzUpZwQIuzPIh2s5A4Y%2FO%2FxoupKRIIR6WGMhCuKwZLnwmAGDWzm5oO%2FxiTf20Y29SnV3QOf35fW9vTllA%3D%3D");
+        decrypt("q6XVfjAbijONBHTtwNz38g==", "RpA6UyUbOvx7jxaIH3sGZQ==", "Nq1iI5eLvasm+JOMj9A77c7K3nYVLUcEP8mVDq1hi5iC4CQZCohkjBHlgxdp7iGONYdN7ft1gdacjrqwPkJ/ERwQQeg0ALdix2VqAL9VKnNfWjueBe2hYFFfu9JYlUXKN5F+KA9njq8eyJ0OiBqaNTLb005reynRIw1rOtMmdLyJjiKD43Mrgik76gqMCBEGV7EVd1UGC08qeGNYmAikQA==");
     }
 
     private String getAccessTokenFromWx() throws IOException {

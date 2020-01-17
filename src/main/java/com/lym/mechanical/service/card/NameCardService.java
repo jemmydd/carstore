@@ -461,16 +461,28 @@ public class NameCardService {
 
     public ChangeNameCardDTO changeNameCard(Integer userId) {
         List<NameCardLookRecordDO> recordDOS = nameCardLookRecordDOMapper.selectByUserId(userId);
-        NameCardDTO lookCard = null;
+        List<NameCardDTO> lookCards = Lists.newArrayList();
         if (!ObjectUtils.isEmpty(recordDOS)) {
-            NameCardDO nameCardDO = nameCardDOMapper.selectByPrimaryKey(recordDOS.get(0).getCardId());
-            CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(nameCardDO.getUserId());
-            List<CarUserApplyDO> carUserApplyDOS = carUserApplyDOMapper.selectByUserId(nameCardDO.getUserId());
-            String applyStatus = getApplyStatus(carUserApplyDOS);
-            lookCard = buildNameCard(carUserDO, nameCardDO, applyStatus);
+            List<NameCardDO> nameCardDO = nameCardDOMapper.selectBatchByPrimaryKey(recordDOS.stream().map(NameCardLookRecordDO::getCardId).distinct().collect(Collectors.toList()));
+            Map<Integer, NameCardDO> cardMap = ObjectUtils.isEmpty(nameCardDO) ? Maps.newHashMap() : nameCardDO.stream().collect(Collectors.toMap(NameCardDO::getId, row -> row));
+            List<CarUserDO> carUserDOS = ObjectUtils.isEmpty(nameCardDO) ? Lists.newArrayList() :
+                    carUserDOMapper.selectBatchByPrimaryKey(nameCardDO.stream().map(NameCardDO::getUserId).distinct().collect(Collectors.toList()));
+            Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                    carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+            recordDOS.forEach(row -> {
+                NameCardDO cardDO = cardMap.get(row.getCardId());
+                if (!Objects.isNull(cardDO)) {
+                    CarUserDO userDO = userMap.get(cardDO.getUserId());
+                    if (!Objects.isNull(userDO)) {
+                        List<CarUserApplyDO> carUserApplyDOS = carUserApplyDOMapper.selectByUserId(userDO.getId());
+                        String applyStatus = getApplyStatus(carUserApplyDOS);
+                        lookCards.add(buildNameCard(userDO, cardDO, applyStatus));
+                    }
+                }
+            });
         }
         return ChangeNameCardDTO.builder()
-                .lookCard(lookCard)
+                .lookCards(lookCards)
                 .refereeCards(getRefereeCards())
                 .build();
     }

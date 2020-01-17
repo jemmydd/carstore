@@ -22,7 +22,7 @@ import java.util.List;
 public class ChangeNameCardDTO {
 
     @ApiModelProperty(value = "最近浏览过的一张名片")
-    private NameCardDTO lookCard;
+    private List<NameCardDTO> lookCards;
 
     @ApiModelProperty(value = "推荐名片")
     private List<NameCardDTO> refereeCards;
