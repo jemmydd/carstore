@@ -13,6 +13,7 @@ import com.lym.mechanical.bean.entity.NameCardDO;
 import com.lym.mechanical.bean.entity.WxAccessTokenDO;
 import com.lym.mechanical.bean.entity.WxQrDO;
 import com.lym.mechanical.bean.enumBean.WxQrEnum;
+import com.lym.mechanical.bean.param.wxPg.GetMobileParam;
 import com.lym.mechanical.bean.param.wxPg.QrParam;
 import com.lym.mechanical.bean.param.wxPg.UserInfo;
 import com.lym.mechanical.bean.param.wxPg.WxLoginInfo;
@@ -177,15 +178,16 @@ public class WxPgService {
         }
     }
 
-    public WxUserPhoneDTO getWxUserPhone(Integer userId, String encryptedData, String iv) {
-        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(userId);
+    public WxUserPhoneDTO getWxUserPhone(GetMobileParam param) {
+        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(param.getUserId());
 
         if (carUserDO == null) {
             throw new RuntimeException("用户不存在");
         } else {
             try {
-                WxUserPhoneDTO phoneDTO = GsonUtil.GSON.fromJson(decrypt(carUserDO.getSessionKey(), iv, encryptedData), WxUserPhoneDTO.class);
-                CarUserDO update = CarUserDO.builder().id(userId).updateTime(DateUtil.now()).phone(phoneDTO.getPhoneNumber()).build();
+                WxPgAuthDTO wxPgAuthDTO = auth(pgAppInfo.getAppId(), pgAppInfo.getAppSecret(), param.getCode());
+                WxUserPhoneDTO phoneDTO = GsonUtil.GSON.fromJson(decrypt(wxPgAuthDTO.getSession_key(), param.getIv(), param.getEncryptedData()), WxUserPhoneDTO.class);
+                CarUserDO update = CarUserDO.builder().id(param.getUserId()).updateTime(DateUtil.now()).phone(phoneDTO.getPhoneNumber()).build();
                 carUserDOMapper.updateByPrimaryKeySelective(update);
                 return phoneDTO;
             } catch (Exception e) {

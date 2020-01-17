@@ -469,15 +469,19 @@ public class NameCardService {
                     carUserDOMapper.selectBatchByPrimaryKey(nameCardDO.stream().map(NameCardDO::getUserId).distinct().collect(Collectors.toList()));
             Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                     carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+            List<Integer> cardIds = Lists.newArrayList();
             recordDOS.forEach(row -> {
-                NameCardDO cardDO = cardMap.get(row.getCardId());
-                if (!Objects.isNull(cardDO)) {
-                    CarUserDO userDO = userMap.get(cardDO.getUserId());
-                    if (!Objects.isNull(userDO)) {
-                        List<CarUserApplyDO> carUserApplyDOS = carUserApplyDOMapper.selectByUserId(userDO.getId());
-                        String applyStatus = getApplyStatus(carUserApplyDOS);
-                        lookCards.add(buildNameCard(userDO, cardDO, applyStatus));
+                if (!cardIds.contains(row.getCardId())) {
+                    NameCardDO cardDO = cardMap.get(row.getCardId());
+                    if (!Objects.isNull(cardDO)) {
+                        CarUserDO userDO = userMap.get(cardDO.getUserId());
+                        if (!Objects.isNull(userDO)) {
+                            List<CarUserApplyDO> carUserApplyDOS = carUserApplyDOMapper.selectByUserId(userDO.getId());
+                            String applyStatus = getApplyStatus(carUserApplyDOS);
+                            lookCards.add(buildNameCard(userDO, cardDO, applyStatus));
+                        }
                     }
+                    cardIds.add(row.getCardId());
                 }
             });
         }

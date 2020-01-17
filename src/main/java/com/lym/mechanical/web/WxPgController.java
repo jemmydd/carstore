@@ -41,7 +41,7 @@ public class WxPgController {
     @ApiOperation(value = "获取用户的手机号")
     @PostMapping("wxUserPhone.action")
     public Result<WxUserPhoneDTO> getWxUserPhone(@RequestBody GetMobileParam param) {
-        return ResultUtil.success(wxPgService.getWxUserPhone(param.getUserId(), param.getEncryptedData(), param.getIv()));
+        return ResultUtil.success(wxPgService.getWxUserPhone(param));
     }
 
     @GetMapping("accessToken.action")

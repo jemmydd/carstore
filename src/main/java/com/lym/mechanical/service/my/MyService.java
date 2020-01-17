@@ -462,6 +462,7 @@ public class MyService {
                                 .score(getScore())
                                 .build());
                     }
+                    userIds.add(recordDO.getUserId());
                 }
             }
         }
@@ -593,6 +594,7 @@ public class MyService {
                                 .score(getUserScore())
                                 .build());
                     }
+                    publishIds.add(recordDO.getPublishId());
                 }
             }
         }

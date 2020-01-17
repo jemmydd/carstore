@@ -23,4 +23,6 @@ public class GetMobileParam {
     private String encryptedData;
 
     private String iv;
+
+    private String code;
 }
