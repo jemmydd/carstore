@@ -3,6 +3,7 @@ package com.lym.mechanical.web;
 import com.lym.mechanical.bean.dto.user.CarUserDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserPhoneDTO;
 import com.lym.mechanical.bean.entity.CarUserDO;
+import com.lym.mechanical.bean.param.wxPg.GetMobileParam;
 import com.lym.mechanical.bean.param.wxPg.QrParam;
 import com.lym.mechanical.bean.param.wxPg.WxLoginInfo;
 import com.lym.mechanical.component.result.Result;
@@ -38,13 +39,9 @@ public class WxPgController {
     }
 
     @ApiOperation(value = "获取用户的手机号")
-    @GetMapping("wxUserPhone.action")
-    public Result<WxUserPhoneDTO> getWxUserPhone(
-            @ApiParam(value = "userId", required = true) @RequestParam(value = "userId") Integer userId,
-            @ApiParam(value = "encryptedData", required = true) @RequestParam(value = "encryptedData") String encryptedData,
-            @ApiParam(value = "iv", required = true) @RequestParam(value = "iv") String iv
-    ) {
-        return ResultUtil.success(wxPgService.getWxUserPhone(userId, encryptedData, iv));
+    @PostMapping("wxUserPhone.action")
+    public Result<WxUserPhoneDTO> getWxUserPhone(@RequestBody GetMobileParam param) {
+        return ResultUtil.success(wxPgService.getWxUserPhone(param.getUserId(), param.getEncryptedData(), param.getIv()));
     }
 
     @GetMapping("accessToken.action")

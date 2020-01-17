@@ -32,6 +32,9 @@ public class MessageDetailDTO {
     @ApiModelProperty(value = "名片id，没有返回null")
     private Integer cardId;
 
+    @ApiModelProperty(value = "是否已标为意向")
+    private Boolean hasIntention;
+
     @ApiModelProperty(value = "聊天内容")
     private PageData<MessageDetailListDTO> messages;
 }

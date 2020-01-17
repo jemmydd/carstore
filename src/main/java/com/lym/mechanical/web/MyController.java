@@ -42,11 +42,11 @@ public class MyController {
     @ApiOperation(value = "访客列表")
     @GetMapping("myGuest.action")
     public Result<List<MyGuestDTO>> myGuest(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
-                                            @RequestParam("type") @ApiParam(value = "0-今日访客，1-累计访客") String type,
-                                            @RequestParam("hasLook") @ApiParam(value = "是否看了设备，0-没看，1-看了") String hasLook,
+                                            @RequestParam("type") @ApiParam(value = "0-今日访客，1-累计访客，2-沟通过，3-意向客户") String type,
+                                            @RequestParam("hasManyLook") @ApiParam(value = "是否多次浏览") String hasManyLook,
                                             @RequestParam("hasDial") @ApiParam(value = "是否拨号，0-未拨号，1-拨号") String  hasDial,
-                                            @RequestParam("hasCollect") @ApiParam(value = "是否收藏，0-未收藏，1-收藏") String hasCollect) {
-        return ResultUtil.success(myService.myGuest(userId, type, hasLook, hasDial, hasCollect));
+                                            @RequestParam("hasMobile") @ApiParam(value = "是否有联系方式") String hasMobile) {
+        return ResultUtil.success(myService.myGuest(userId, type, hasManyLook, hasDial, hasMobile));
     }
 
     @GetMapping("myFriendCards.action")

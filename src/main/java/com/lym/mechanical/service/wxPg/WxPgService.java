@@ -339,6 +339,10 @@ public class WxPgService {
         return new String(cipher.doFinal(encData), StandardCharsets.UTF_8);
     }
 
+    public static void main(String[] args) throws Exception {
+        decrypt("q6XVfjAbijONBHTtwNz38g==", "4Dq9G%2BT3mAnuYOiEUyAJ4g%3D%3D", "z89x%2FjmX2wO6CSmHe5K%2BgGHOkp7ClyQn4DyN352y4%2FZ52Wo4Vy7f7oE6BKjC7C6J8Xvccdb7zDvNAF223JulUrBWYPHVvwvfdHKnSHGZcGZ%2BqXvvffcGV%2FvXull8gLn7qbGvhqzUpZwQIuzPIh2s5A4Y%2FO%2FxoupKRIIR6WGMhCuKwZLnwmAGDWzm5oO%2FxiTf20Y29SnV3QOf35fW9vTllA%3D%3D");
+    }
+
     private String getAccessTokenFromWx() throws IOException {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 

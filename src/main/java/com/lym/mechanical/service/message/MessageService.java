@@ -132,12 +132,14 @@ public class MessageService {
             }).collect(Collectors.toList()));
         }
         messageDOMapper.updateReadByToUserIdAndFromUserId(userId, otherUserId);
+        IntentionCustomDO customDO = intentionCustomDOMapper.selectByUserIdAndOtherId(userId, otherUserId);
         return MessageDetailDTO.builder()
                 .mobile(Objects.isNull(nameCardDO) ? "" : nameCardDO.getMobile())
                 .wechatNo(Objects.isNull(nameCardDO) ? "" : nameCardDO.getWechatNo())
                 .userId(otherUserId)
                 .messages(details)
                 .cardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId())
+                .hasIntention(!Objects.isNull(customDO))
                 .build();
     }
 

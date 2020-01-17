@@ -85,4 +85,11 @@ public class NameCardController {
                                      @RequestParam("userId") @ApiParam(value = "当前登录用户id", required = true) Integer userId) {
         return ResultUtil.success(nameCardService.addFriend(cardId, userId));
     }
+
+    @GetMapping("takeMobile.action")
+    @ApiOperation(value = "拨号")
+    public Result<Boolean> takeMobile(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                      @RequestParam("cardId") @ApiParam(value = "名片id") Integer cardId) {
+        return ResultUtil.success(nameCardService.takeMobile(userId, cardId));
+    }
 }

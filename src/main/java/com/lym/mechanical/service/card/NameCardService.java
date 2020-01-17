@@ -684,4 +684,9 @@ public class NameCardService {
         }
         return Boolean.TRUE;
     }
+
+    public Boolean takeMobile(Integer userId, Integer cardId) {
+        nameCardLookRecordDOMapper.updateDialByCardIdAndUserId(userId, cardId, "1");
+        return Boolean.TRUE;
+    }
 }

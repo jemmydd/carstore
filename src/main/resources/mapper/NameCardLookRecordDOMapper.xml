@@ -134,4 +134,12 @@
     FROM name_card_look_record
     WHERE card_id IN (SELECT id FROM name_card WHERE user_id = #{userId})) a ORDER BY a.`date` desc
   </select>
+  <select id="selectByCardIdAndDate" resultMap="BaseResultMap">
+    select * from name_card_look_record
+    where card_id = #{cardId}
+    <if test="date != null and date != ''">
+      and date_format(create_time, '%Y-%m-%d') = #{date}
+    </if>
+    order by create_time desc
+  </select>
 </mapper>

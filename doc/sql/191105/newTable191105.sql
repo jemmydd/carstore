@@ -121,6 +121,7 @@ CREATE TABLE `name_card_look_record` (
 	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 	`user_id` INT NOT NULL COMMENT '用户id',
 	`card_id` INT NOT NULL COMMENT '看过的名片id',
+	`has_dial` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否拨号',
 	PRIMARY KEY (`id`),
 	INDEX `idx_user_id` (`user_id`)
 )

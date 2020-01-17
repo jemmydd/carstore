@@ -88,8 +88,8 @@ public class MyService {
         NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
         List<CarUserApplyDO> applyDOS = carUserApplyDOMapper.selectByUserId(userId);
         List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
-        List<Integer> todayGuest = publishLookRecordDOMapper.selectTodayGuest(userId);
-        List<Integer> totalGuest = publishLookRecordDOMapper.selectTotalGuest(userId);
+        List<NameCardLookRecordDO> todayGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"));
+        List<NameCardLookRecordDO> totalGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(userId, null);
         List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
         return MyIndexDTO.builder()
                 .avatar(StringUtils.isEmpty(carUserDO.getHeadPortrait()) ? "" : carUserDO.getHeadPortrait())
@@ -101,31 +101,120 @@ public class MyService {
                 .isVip(DateUtil.dateValid(carUserDO.getVipStartTime(), carUserDO.getVipEndTime()))
                 .name(carUserDO.getNickName())
                 .talkCount(ObjectUtils.isEmpty(messageDOS) ? 0 : messageDOS.size())
-                .todayGuest(ObjectUtils.isEmpty(todayGuest) ? 0 : todayGuest.size())
+                .todayGuest(ObjectUtils.isEmpty(todayGuest) ? 0 : todayGuest.stream().map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                 .vipEndTime(Objects.isNull(carUserDO.getVipEndTime()) ? "" : DateUtil.formatDate(carUserDO.getVipEndTime(), "yyyy-MM-dd"))
-                .totalGuest(ObjectUtils.isEmpty(totalGuest) ? 0 : totalGuest.size())
+                .totalGuest(ObjectUtils.isEmpty(totalGuest) ? 0 : totalGuest.stream().map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                 .intentionCount(ObjectUtils.isEmpty(intentionCustom) ? 0 : intentionCustom.size())
                 .build();
     }
 
-    public List<MyGuestDTO> myGuest(Integer userId, String type, String hasLook, String hasDial, String hasCollect) {
-        List<MyGuestDO> myGuestDOS = publishLookRecordDOMapper.selectMyGuestList(userId, type, hasLook, hasDial, hasCollect);
-        if (ObjectUtils.isEmpty(myGuestDOS)) {
-            return Lists.newArrayList();
+    public List<MyGuestDTO> myGuest(Integer userId, String type, String hasManyLook, String hasDial, String hasMobile) {
+        List<MyGuestDTO> result = Lists.newArrayList();
+        if (Objects.equals("0", type) || Objects.equals("1", type)) {
+            NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
+            if (Objects.isNull(nameCardDO)) {
+                return result;
+            }
+            List<NameCardLookRecordDO> lookRecordDOS = nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(),
+                    Objects.equals("0", type) ? DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd") : null);
+            if (ObjectUtils.isEmpty(lookRecordDOS)) {
+                return result;
+            }
+            Map<Integer, List<NameCardLookRecordDO>> recordMap = lookRecordDOS.stream().collect(Collectors.groupingBy(NameCardLookRecordDO::getUserId));
+            List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(
+                    lookRecordDOS.stream().map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList()));
+            Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                    carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+            List<Integer> userIds = Lists.newArrayList();
+            for (NameCardLookRecordDO row : lookRecordDOS) {
+                if (!userIds.contains(row.getUserId())) {
+                    CarUserDO carUserDO = userMap.get(row.getUserId());
+                    if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordMap.get(row.getUserId())) || recordMap.get(row.getUserId()).size() <= 1)) {
+                        continue;
+                    }
+                    if (Objects.equals("1", hasDial) && !row.getHasDial()) {
+                        continue;
+                    }
+                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                        continue;
+                    }
+                    result.add(MyGuestDTO.builder()
+                            .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+                            .guestId(row.getUserId())
+                            .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                            .recentTime(DateUtil.getDateStr(row.getCreateTime()))
+                            .build());
+                }
+            }
+        } else if (Objects.equals("2", type)) {
+            List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
+            if (!ObjectUtils.isEmpty(messageDOS)) {
+                List<Integer> otherUserIds = messageDOS.stream().map(row ->
+                        Objects.equals(row.getFromCarUserId(), userId) ? row.getToCarUserId() : row.getFromCarUserId())
+                        .collect(Collectors.toList());
+                NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
+                List<NameCardLookRecordDO> lookRecordDOS = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
+                        nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null);
+                Map<Integer, List<NameCardLookRecordDO>> recordMap = ObjectUtils.isEmpty(lookRecordDOS) ? Maps.newHashMap() :
+                        lookRecordDOS.stream().collect(Collectors.groupingBy(NameCardLookRecordDO::getUserId));
+                List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(otherUserIds);
+                Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                        carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+                for (MessageDO row : messageDOS) {
+                    Integer otherUserId = Objects.equals(row.getFromCarUserId(), userId) ? row.getToCarUserId() : row.getFromCarUserId();
+                    CarUserDO carUserDO = userMap.get(otherUserId);
+                    List<NameCardLookRecordDO> recordDOS = recordMap.get(otherUserId);
+                    if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordDOS) || recordDOS.size() <= 1)) {
+                        continue;
+                    }
+                    if (Objects.equals("1", hasDial) && (ObjectUtils.isEmpty(recordDOS) || !recordDOS.get(0).getHasDial())) {
+                        continue;
+                    }
+                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                        continue;
+                    }
+                    result.add(MyGuestDTO.builder()
+                            .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+                            .guestId(otherUserId)
+                            .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                            .recentTime(DateUtil.getDateStr(row.getCreateTime()))
+                            .build());
+                }
+            }
+        } else {
+            List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
+            if (!ObjectUtils.isEmpty(intentionCustom)) {
+                NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
+                List<NameCardLookRecordDO> lookRecordDOS = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
+                        nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null);
+                Map<Integer, List<NameCardLookRecordDO>> recordMap = ObjectUtils.isEmpty(lookRecordDOS) ? Maps.newHashMap() :
+                        lookRecordDOS.stream().collect(Collectors.groupingBy(NameCardLookRecordDO::getUserId));
+                List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(
+                        intentionCustom.stream().map(IntentionCustomDO::getIntentionCustomUserId).distinct().collect(Collectors.toList()));
+                Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                        carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+                for (IntentionCustomDO row : intentionCustom) {
+                    CarUserDO carUserDO = userMap.get(row.getIntentionCustomUserId());
+                    List<NameCardLookRecordDO> recordDOS = recordMap.get(row.getIntentionCustomUserId());
+                    if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordDOS) || recordDOS.size() <= 1)) {
+                        continue;
+                    }
+                    if (Objects.equals("1", hasDial) && (ObjectUtils.isEmpty(recordDOS) || !recordDOS.get(0).getHasDial())) {
+                        continue;
+                    }
+                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                        continue;
+                    }
+                    result.add(MyGuestDTO.builder()
+                            .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+                            .guestId(row.getUserId())
+                            .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                            .recentTime(DateUtil.getDateStr(row.getCreateTime()))
+                            .build());
+                }
+            }
         }
-        List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(
-                myGuestDOS.stream().map(MyGuestDO::getUserId).distinct().collect(Collectors.toList()));
-        Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
-                carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
-        return myGuestDOS.stream().map(row -> {
-            CarUserDO carUserDO = userMap.get(row.getUserId());
-            return MyGuestDTO.builder()
-                    .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
-                    .guestId(row.getUserId())
-                    .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
-                    .recentTime(DateUtil.getDateStr(row.getCreateTime()))
-                    .build();
-        }).collect(Collectors.toList());
+        return result;
     }
 
     public List<NameCardDTO> myFriendCards(Integer userId) {

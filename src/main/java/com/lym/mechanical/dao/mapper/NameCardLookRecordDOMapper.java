@@ -5,6 +5,7 @@ import com.lym.mechanical.bean.entity.NameCardLookRecordDO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,4 +29,9 @@ public interface NameCardLookRecordDOMapper {
     List<NameCardLookRecordDO> selectByUserId(@Param("userId") Integer userId);
 
     List<LookUserDTO> selectLookRecordByUserId(@Param("userId") Integer userId);
+
+    @Update("update name_card_look_record set has_dial = #{type} where user_id = #{userId} and card_id = #{cardId}")
+    void updateDialByCardIdAndUserId(@Param("userId") Integer userId, @Param("cardId") Integer cardId, @Param("type") String type);
+
+    List<NameCardLookRecordDO> selectByCardIdAndDate(@Param("cardId") Integer cardId, @Param("date") String date);
 }
