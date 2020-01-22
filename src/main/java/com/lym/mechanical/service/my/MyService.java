@@ -88,7 +88,8 @@ public class MyService {
         NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
         List<CarUserApplyDO> applyDOS = carUserApplyDOMapper.selectByUserId(userId);
         List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
-        List<NameCardLookRecordDO> todayGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"));
+        List<NameCardLookRecordDO> todayGuest = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
+                nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"));
         List<NameCardLookRecordDO> totalGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(userId, null);
         List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
         return MyIndexDTO.builder()
