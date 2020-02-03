@@ -215,7 +215,7 @@ public class NameCardService {
         List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(carUserIds);
         Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                 carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
-        if (!Objects.equals(userId, nameCardDO.getUserId())) {
+        if (!Objects.isNull(userId) && !Objects.equals(userId, nameCardDO.getUserId())) {
             this.addLookRecord(userId, cardId);
         }
         return OtherNameCardDTO.builder()

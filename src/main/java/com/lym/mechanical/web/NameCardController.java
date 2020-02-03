@@ -38,7 +38,7 @@ public class NameCardController {
     @GetMapping("otherCard.action")
     @ApiOperation(value = "查看他人名片")
     public Result<OtherNameCardDTO> OtherNameCard(@RequestParam("cardId") @ApiParam(value = "需要查看的名片id", required = true) Integer cardId,
-                                                  @RequestParam("userId") @ApiParam(value = "当前登录用户id", required = true) Integer userId) {
+                                                  @RequestParam(value = "userId", required = false) @ApiParam(value = "当前登录用户id", required = false) Integer userId) {
         return ResultUtil.success(nameCardService.otherNameCard(cardId, userId));
     }
 
