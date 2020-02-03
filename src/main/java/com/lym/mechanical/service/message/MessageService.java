@@ -14,7 +14,7 @@ import com.lym.mechanical.bean.param.message.MessageSendParam;
 import com.lym.mechanical.component.result.PageData;
 import com.lym.mechanical.dao.mapper.*;
 import com.lym.mechanical.util.DateUtil;
-import com.lym.mechanical.web.websocket.MessageWebSocket;
+import com.lym.mechanical.websocket.MessageWebSocket;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
