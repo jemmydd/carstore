@@ -16,10 +16,11 @@
     <result column="introduce" jdbcType="VARCHAR" property="introduce" />
     <result column="voice_introduce" jdbcType="VARCHAR" property="voiceIntroduce" />
     <result column="voice_introduce_time" jdbcType="INTEGER" property="voiceIntroduceTime" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, user_id, name, mobile, wechat_no, company_name, job_title, 
-    company_address, location, introduce, voice_introduce, voice_introduce_time
+    company_address, location, introduce, voice_introduce, voice_introduce_time, code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,19 +32,21 @@
     delete from name_card
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
     insert into name_card (id, create_time, update_time, 
       user_id, name, mobile, 
       wechat_no, company_name, job_title, 
       company_address, location, introduce, 
-      voice_introduce, voice_introduce_time)
+      voice_introduce, voice_introduce_time, code
+      )
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{userId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{wechatNo,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{jobTitle,jdbcType=VARCHAR}, 
       #{companyAddress,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{introduce,jdbcType=VARCHAR}, 
-      #{voiceIntroduce,jdbcType=VARCHAR}, #{voiceIntroduceTime,jdbcType=INTEGER})
+      #{voiceIntroduce,jdbcType=VARCHAR}, #{voiceIntroduceTime,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
     insert into name_card
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -87,6 +90,9 @@
       </if>
       <if test="voiceIntroduceTime != null">
         voice_introduce_time,
+      </if>
+      <if test="code != null">
+        code,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -132,6 +138,9 @@
       <if test="voiceIntroduceTime != null">
         #{voiceIntroduceTime,jdbcType=INTEGER},
       </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
@@ -176,6 +185,9 @@
       <if test="voiceIntroduceTime != null">
         voice_introduce_time = #{voiceIntroduceTime,jdbcType=INTEGER},
       </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -193,7 +205,8 @@
       location = #{location,jdbcType=VARCHAR},
       introduce = #{introduce,jdbcType=VARCHAR},
       voice_introduce = #{voiceIntroduce,jdbcType=VARCHAR},
-      voice_introduce_time = #{voiceIntroduceTime,jdbcType=INTEGER}
+      voice_introduce_time = #{voiceIntroduceTime,jdbcType=INTEGER},
+      code = #{code,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectBatchByPrimaryKey" resultMap="BaseResultMap">
@@ -201,9 +214,9 @@
     <include refid="Base_Column_List" />
     from name_card
     <where>
-      <if test="ids != null and ids.size > 0">
+      <if test="ids != null and ids.size &gt; 0">
         id in
-        <foreach collection="ids" separator="," open="(" item="item" close=")">
+        <foreach close=")" collection="ids" item="item" open="(" separator=",">
           #{item}
         </foreach>
       </if>
@@ -228,9 +241,9 @@
     <include refid="Base_Column_List" />
     from name_card
     <where>
-      <if test="userIds != null and userIds.size > 0">
+      <if test="userIds != null and userIds.size &gt; 0">
         user_id in
-        <foreach collection="userIds" separator="," open="(" item="item" close=")">
+        <foreach close=")" collection="userIds" item="item" open="(" separator=",">
           #{item}
         </foreach>
       </if>

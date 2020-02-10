@@ -36,7 +36,7 @@
         </javaClientGenerator>
 
         <!--表-->
-        <table catalog="mechanical" tableName="name_card_look_record" domainObjectName="NameCardLookRecordDO"
+        <table catalog="mechanical" tableName="name_card" domainObjectName="NameCardDO"
                enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
             <property name="ignoreQualifiersAtRuntime" value="true"/>

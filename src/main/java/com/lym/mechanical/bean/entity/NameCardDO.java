@@ -38,6 +38,8 @@ public class NameCardDO {
 
     private Integer voiceIntroduceTime;
 
+    private String code;
+
     public Integer getId() {
         return id;
     }
@@ -148,5 +150,13 @@ public class NameCardDO {
 
     public void setVoiceIntroduceTime(Integer voiceIntroduceTime) {
         this.voiceIntroduceTime = voiceIntroduceTime;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
     }
 }

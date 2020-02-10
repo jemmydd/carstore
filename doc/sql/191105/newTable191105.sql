@@ -54,6 +54,7 @@ CREATE TABLE `name_card` (
 	`introduce` VARCHAR(200) NULL COMMENT '',
 	`voice_introduce` VARCHAR(500) NULL DEFAULT NULL COMMENT '语音介绍',
 	`voice_introduce_time` INT(11) NULL DEFAULT NULL COMMENT '语音秒数',
+	`code` VARCHAR(6) NOT NULL COMMENT '名片编号',
 	PRIMARY KEY (`id`)
 )
 COMMENT='名片表'

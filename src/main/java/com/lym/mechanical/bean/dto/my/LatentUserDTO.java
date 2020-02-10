@@ -40,6 +40,9 @@ public class LatentUserDTO {
     @ApiModelProperty(value = "收藏设备数量")
     private String collectCount;
 
+    @ApiModelProperty(value = "最长浏览时间")
+    private String mostLookTime;
+
     @ApiModelProperty(value = "手机号")
     private String mobile;
 }

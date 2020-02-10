@@ -161,25 +161,28 @@ public class MyService {
                 List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(otherUserIds);
                 Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                         carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+                List<Integer> userIds = Lists.newArrayList();
                 for (MessageDO row : messageDOS) {
                     Integer otherUserId = Objects.equals(row.getFromCarUserId(), userId) ? row.getToCarUserId() : row.getFromCarUserId();
-                    CarUserDO carUserDO = userMap.get(otherUserId);
-                    List<NameCardLookRecordDO> recordDOS = recordMap.get(otherUserId);
-                    if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordDOS) || recordDOS.size() <= 1)) {
-                        continue;
+                    if (!userIds.contains(otherUserId)) {
+                        CarUserDO carUserDO = userMap.get(otherUserId);
+                        List<NameCardLookRecordDO> recordDOS = recordMap.get(otherUserId);
+                        if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordDOS) || recordDOS.size() <= 1)) {
+                            continue;
+                        }
+                        if (Objects.equals("1", hasDial) && (ObjectUtils.isEmpty(recordDOS) || !recordDOS.get(0).getHasDial())) {
+                            continue;
+                        }
+                        if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                            continue;
+                        }
+                        result.add(MyGuestDTO.builder()
+                                .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+                                .guestId(otherUserId)
+                                .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                                .recentTime(DateUtil.getDateStr(row.getCreateTime()))
+                                .build());
                     }
-                    if (Objects.equals("1", hasDial) && (ObjectUtils.isEmpty(recordDOS) || !recordDOS.get(0).getHasDial())) {
-                        continue;
-                    }
-                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
-                        continue;
-                    }
-                    result.add(MyGuestDTO.builder()
-                            .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
-                            .guestId(otherUserId)
-                            .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
-                            .recentTime(DateUtil.getDateStr(row.getCreateTime()))
-                            .build());
                 }
             }
         } else {
@@ -194,24 +197,27 @@ public class MyService {
                         intentionCustom.stream().map(IntentionCustomDO::getIntentionCustomUserId).distinct().collect(Collectors.toList()));
                 Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                         carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+                List<Integer> userIds = Lists.newArrayList();
                 for (IntentionCustomDO row : intentionCustom) {
-                    CarUserDO carUserDO = userMap.get(row.getIntentionCustomUserId());
-                    List<NameCardLookRecordDO> recordDOS = recordMap.get(row.getIntentionCustomUserId());
-                    if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordDOS) || recordDOS.size() <= 1)) {
-                        continue;
+                    if (!userIds.contains(row.getIntentionCustomUserId())) {
+                        CarUserDO carUserDO = userMap.get(row.getIntentionCustomUserId());
+                        List<NameCardLookRecordDO> recordDOS = recordMap.get(row.getIntentionCustomUserId());
+                        if (Objects.equals("1", hasManyLook) && (ObjectUtils.isEmpty(recordDOS) || recordDOS.size() <= 1)) {
+                            continue;
+                        }
+                        if (Objects.equals("1", hasDial) && (ObjectUtils.isEmpty(recordDOS) || !recordDOS.get(0).getHasDial())) {
+                            continue;
+                        }
+                        if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                            continue;
+                        }
+                        result.add(MyGuestDTO.builder()
+                                .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
+                                .guestId(row.getUserId())
+                                .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                                .recentTime(DateUtil.getDateStr(row.getCreateTime()))
+                                .build());
                     }
-                    if (Objects.equals("1", hasDial) && (ObjectUtils.isEmpty(recordDOS) || !recordDOS.get(0).getHasDial())) {
-                        continue;
-                    }
-                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
-                        continue;
-                    }
-                    result.add(MyGuestDTO.builder()
-                            .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
-                            .guestId(row.getUserId())
-                            .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
-                            .recentTime(DateUtil.getDateStr(row.getCreateTime()))
-                            .build());
                 }
             }
         }
@@ -239,6 +245,8 @@ public class MyService {
                     .jobTitle(Objects.isNull(nameCardDO) ? "" : nameCardDO.getJobTitle())
                     .companyName(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCompanyName())
                     .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
+                    .id(row.getCardId())
+                    .mobile(Objects.isNull(nameCardDO) ? "" : nameCardDO.getMobile())
                     .build();
         }).collect(Collectors.toList());
 
@@ -500,6 +508,7 @@ public class MyService {
                 .lookTimes(ObjectUtils.isEmpty(publishLookRecordDOS) ? "0次" : (publishLookRecordDOS.size() + "次"))
                 .mobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
                 .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
+                .mostLookTime(ObjectUtils.isEmpty(publishLookRecordDOS) ? "0秒" : DateUtil.getTime(publishLookRecordDOS.get(0).getLookTime().longValue()))
                 .userId(latentUserId)
                 .build();
     }
@@ -580,8 +589,8 @@ public class MyService {
                         result.add(LatentPublishStatisticDTO.builder()
                                 .publishId(recordDO.getPublishId())
                                 .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
-                                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
-                                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
+                                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年 | ")) +
+                                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时 | ")) +
                                         (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
                                 .hasCollect(recordDO.getHasCollect() ? "有" : "无")
                                 .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
