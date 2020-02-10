@@ -25,8 +25,11 @@ public class MyIndexDTO {
     @ApiModelProperty(value = "是否有名片")
     private Boolean hasCard;
 
-    @ApiModelProperty(value = "名片id（编号）")
+    @ApiModelProperty(value = "名片id")
     private Integer cardId;
+
+    @ApiModelProperty(value = "名片编号")
+    private String code;
 
     @ApiModelProperty(value = "头像")
     private String avatar;

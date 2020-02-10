@@ -35,4 +35,7 @@ public class MyNameCardDTO {
 
     @ApiModelProperty(value = "最近访客列表")
     private List<RecentlyUserDTO> recentlyUsers;
+
+    @ApiModelProperty(value = "名片编号")
+    private String code;
 }

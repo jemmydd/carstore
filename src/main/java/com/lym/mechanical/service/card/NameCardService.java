@@ -19,6 +19,7 @@ import com.lym.mechanical.bean.param.card.ApplyCarStoreParam;
 import com.lym.mechanical.bean.param.card.NameCardParam;
 import com.lym.mechanical.dao.mapper.*;
 import com.lym.mechanical.util.DateUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +130,7 @@ public class NameCardService {
                 .nameCard(!hasCard ? null : buildNameCard(carUserDO, nameCardDO, applyStatus))
                 .recentlyUsers(recentlyUsers)
                 .refereeCards(refereeCards)
+                .code(hasCard ? nameCardDO.getCode() : "")
                 .build();
     }
 
@@ -182,6 +184,7 @@ public class NameCardService {
                 .name(nameCardDO.getName())
                 .userId(nameCardDO.getUserId())
                 .wechatNo(nameCardDO.getWechatNo())
+                .code(nameCardDO.getCode())
                 .build();
     }
 
@@ -508,6 +511,7 @@ public class NameCardService {
                 .introduce(param.getIntroduce())
                 .voiceIntroduce(param.getIntroduceVoice())
                 .voiceIntroduceTime(param.getIntroduceVoiceTime())
+                .code(produceNumber(6))
                 .build();
         nameCardDOMapper.insertSelective(nameCardDO);
         List<NameCardImageVideo> nameCardImageVideos = Lists.newArrayList();
@@ -672,6 +676,7 @@ public class NameCardService {
                         .cardId(row.getId())
                         .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
                         .hasAdd(currentCardIds.contains(row.getId()))
+                        .code(row.getCode())
                         .build();
             }).collect(Collectors.toList());
         }
@@ -704,5 +709,12 @@ public class NameCardService {
     public Boolean takeMobile(Integer userId, Integer cardId) {
         nameCardLookRecordDOMapper.updateDialByCardIdAndUserId(userId, cardId, "1");
         return Boolean.TRUE;
+    }
+
+    /**
+     * 随机产生几位数字
+     */
+    private String produceNumber(int maxLength) {
+        return RandomStringUtils.randomNumeric(maxLength);
     }
 }

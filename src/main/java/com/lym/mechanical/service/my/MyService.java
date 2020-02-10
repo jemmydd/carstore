@@ -106,6 +106,7 @@ public class MyService {
                 .vipEndTime(Objects.isNull(carUserDO.getVipEndTime()) ? "" : DateUtil.formatDate(carUserDO.getVipEndTime(), "yyyy-MM-dd"))
                 .totalGuest(ObjectUtils.isEmpty(totalGuest) ? 0 : totalGuest.stream().map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                 .intentionCount(ObjectUtils.isEmpty(intentionCustom) ? 0 : intentionCustom.size())
+                .code(!Objects.isNull(nameCardDO) ? nameCardDO.getCode() : "")
                 .build();
     }
 
@@ -246,6 +247,7 @@ public class MyService {
                     .companyName(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCompanyName())
                     .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
                     .id(row.getCardId())
+                    .code(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCode())
                     .mobile(Objects.isNull(nameCardDO) ? "" : nameCardDO.getMobile())
                     .build();
         }).collect(Collectors.toList());

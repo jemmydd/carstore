@@ -34,6 +34,9 @@ public class NameCardDTO {
     @ApiModelProperty(value = "名片id")
     private Integer id;
 
+    @ApiModelProperty(value = "名片编号")
+    private String code;
+
     @ApiModelProperty(value = "电话")
     private String mobile;
 
