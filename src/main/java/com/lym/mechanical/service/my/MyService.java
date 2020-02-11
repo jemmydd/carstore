@@ -111,13 +111,13 @@ public class MyService {
     }
 
     public PageData<MyGuestDTO> myGuest(Integer userId, String type, String hasManyLook, String hasDial, String hasMobile, Integer pageNum, Integer pageSize) {
-        PageData.checkPageParam(pageNum, pageSize);
-        PageHelper.startPage(pageNum, pageSize);
         NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userId);
         if (Objects.isNull(nameCardDO)) {
             return PageData.noData(pageSize);
         }
         if (Objects.equals("0", type) || Objects.equals("1", type)) {
+            PageData.checkPageParam(pageNum, pageSize);
+            PageHelper.startPage(pageNum, pageSize);
             Page<CommonDTO> lookRecordDOS = (Page<CommonDTO>) nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(),
                     Objects.equals("0", type) ? DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd") : null, hasManyLook, hasDial, hasMobile);
             List<CommonDTO> data = lookRecordDOS.getResult();
@@ -143,6 +143,8 @@ public class MyService {
                 return PageData.noData(pageSize);
             }
             List<Integer> userIds = lookRecordDOS.stream().map(CommonDTO::getUserId).collect(Collectors.toList());
+            PageData.checkPageParam(pageNum, pageSize);
+            PageHelper.startPage(pageNum, pageSize);
             Page<CommonDTO> messageDOS = (Page<CommonDTO>) messageDOMapper.selectByUserIdAndOtherUserIds(userId, userIds);
             List<CommonDTO> data = messageDOS.getResult();
             if (ObjectUtils.isEmpty(data)) {
@@ -162,6 +164,8 @@ public class MyService {
                         .build();
             }).collect(Collectors.toList()));
         } else {
+            PageData.checkPageParam(pageNum, pageSize);
+            PageHelper.startPage(pageNum, pageSize);
             Page<CommonDTO> intentionCustom = (Page<CommonDTO>) intentionCustomDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null, hasManyLook, hasDial, hasMobile);
             List<CommonDTO> data = intentionCustom.getResult();
             if (ObjectUtils.isEmpty(data)) {
