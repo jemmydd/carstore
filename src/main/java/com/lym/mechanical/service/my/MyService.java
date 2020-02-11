@@ -281,13 +281,15 @@ public class MyService {
                 .lookRecords(publishDOS.stream().map(row -> {
                     PublishDO publishDO = publishMap.get(row.getId());
                     List<PublishLookRecordDO> records = recordMap.get(row.getId());
+                    List<Integer> userIds = ObjectUtils.isEmpty(records) ? Lists.newArrayList() :
+                            records.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList());
                     return PublishLookRecordDTO.builder()
                             .publishId(row.getId())
                             .title(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
                             .collectCount(ObjectUtils.isEmpty(records) ? 0 : records.stream().filter(r -> r.getHasCollect()).map(PublishLookRecordDO::getUserId).distinct().count())
-                            .guests(ObjectUtils.isEmpty(records) ? Lists.newArrayList() :
-                                    records.stream().map(r -> {
-                                        CarUserDO userDO = userMap.get(r.getUserId());
+                            .guests(ObjectUtils.isEmpty(userIds) ? Lists.newArrayList() :
+                                    userIds.stream().map(r -> {
+                                        CarUserDO userDO = userMap.get(r);
                                         return Objects.isNull(userDO) ? "" : userDO.getHeadPortrait();
                                     }).collect(Collectors.toList()))
                             .image(Objects.isNull(publishDO) ? "" : publishDO.getMainMedia())
@@ -300,7 +302,7 @@ public class MyService {
                             .inPrice(publishDO.getInPrice() == null ? DefaultHandleConstant.PUBLISH_IN : String.valueOf(publishDO.getInPrice()))
                             .outPrice(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : String.valueOf(publishDO.getOutPrice()))
                             .build();
-                }).collect(Collectors.toList()))
+                }).sorted((o1, o2) -> -o1.getLookCount().compareTo(o2.getLookCount())).collect(Collectors.toList()))
                 .build();
     }
 
