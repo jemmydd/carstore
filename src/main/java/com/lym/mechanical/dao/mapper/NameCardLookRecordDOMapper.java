@@ -1,6 +1,7 @@
 package com.lym.mechanical.dao.mapper;
 
 import com.lym.mechanical.bean.dto.message.LookUserDTO;
+import com.lym.mechanical.bean.dto.my.CommonDTO;
 import com.lym.mechanical.bean.entity.NameCardLookRecordDO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
@@ -33,5 +34,7 @@ public interface NameCardLookRecordDOMapper {
     @Update("update name_card_look_record set has_dial = #{type} where user_id = #{userId} and card_id = #{cardId}")
     void updateDialByCardIdAndUserId(@Param("userId") Integer userId, @Param("cardId") Integer cardId, @Param("type") String type);
 
-    List<NameCardLookRecordDO> selectByCardIdAndDate(@Param("cardId") Integer cardId, @Param("date") String date);
+    List<CommonDTO> selectByCardIdAndDate(@Param("cardId") Integer cardId, @Param("date") String date,
+                                          @Param("hasManyLook") String hasManyLook, @Param("hasDial") String hasDial,
+                                          @Param("hasMobile") String hasMobile);
 }

@@ -178,4 +178,18 @@
       </if>
     </where>
   </update>
+  <select id="selectByUserIdAndOtherUserIds" resultType="com.lym.mechanical.bean.dto.my.CommonDTO">
+    select if(from_car_user_id = #{userId}, to_car_user_id, from_car_user_id) as userId,max(create_time) as createTime
+    from message where (from_car_user_id = #{userId} and to_car_user_id in
+    <foreach collection="userIds" close=")" separator="," open="(" item="item">
+      #{item}
+    </foreach>
+    )
+    or (to_car_user_id = #{userId} and from_car_user_id in
+    <foreach collection="userIds" close=")" separator="," open="(" item="item">
+      #{item}
+    </foreach>
+    ) group by userId
+    order by max(create_time) desc
+  </select>
 </mapper>

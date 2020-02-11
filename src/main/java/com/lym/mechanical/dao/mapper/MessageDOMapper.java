@@ -1,5 +1,6 @@
 package com.lym.mechanical.dao.mapper;
 
+import com.lym.mechanical.bean.dto.my.CommonDTO;
 import com.lym.mechanical.bean.entity.MessageDO;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
@@ -41,4 +42,6 @@ public interface MessageDOMapper {
     List<MessageDO> selectByToUserId(@Param("toUserId") Integer toUserId);
 
     void updateReadByToUserIdAndFromUserId(@Param("toUserId") Integer toUserId, @Param("fromUserId") Integer fromUserId);
+
+    List<CommonDTO> selectByUserIdAndOtherUserIds(@Param("userId") Integer userId, @Param("userIds") List<Integer> userIds);
 }

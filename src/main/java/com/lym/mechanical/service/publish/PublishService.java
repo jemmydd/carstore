@@ -749,7 +749,7 @@ public class PublishService {
                     .updateTime(DateUtil.now())
                     .lookTime(time)
                     .build();
-            publishLookRecordDOMapper.updateByPrimaryKeySelective(publishLookRecordDO);
+            publishLookRecordDOMapper.updateByPrimaryKeySelective(update);
         }
         return Boolean.TRUE;
     }
