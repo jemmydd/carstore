@@ -274,14 +274,15 @@ public class MyService {
         Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                 carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
         return PublishStatisticDTO.builder()
-                .todayGuest(recordDOS.stream().filter(row -> Objects.equals(DateUtil.formatDate(row.getCreateTime(), "yyyyMMdd"), DateUtil.formatDate(DateUtil.now(), "yyyyMMdd"))).collect(Collectors.toList()).size())
-                .totalGuest(recordDOS.size())
+                .todayGuest(recordDOS.stream().filter(row -> Objects.equals(DateUtil.formatDate(row.getCreateTime(), "yyyyMMdd"), DateUtil.formatDate(DateUtil.now(), "yyyyMMdd")))
+                        .map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
+                .totalGuest(recordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                 .isVip(isVip)
-                .lookRecords(recordDOS.stream().map(row -> {
-                    PublishDO publishDO = publishMap.get(row.getPublishId());
-                    List<PublishLookRecordDO> records = recordMap.get(row.getPublishId());
+                .lookRecords(publishDOS.stream().map(row -> {
+                    PublishDO publishDO = publishMap.get(row.getId());
+                    List<PublishLookRecordDO> records = recordMap.get(row.getId());
                     return PublishLookRecordDTO.builder()
-                            .publishId(row.getPublishId())
+                            .publishId(row.getId())
                             .title(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
                             .collectCount(ObjectUtils.isEmpty(records) ? 0 : records.stream().filter(r -> r.getHasCollect()).map(PublishLookRecordDO::getUserId).distinct().count())
                             .guests(ObjectUtils.isEmpty(records) ? Lists.newArrayList() :

@@ -31,7 +31,7 @@ public interface PublishLookRecordDOMapper {
                                       @Param("hasDial") String hasDial,
                                       @Param("hasCollect") String hasCollect);
 
-    @Select("select * from publish_look_record where user_id = #{userId} order by create_time desc")
+    @Select("select * from publish_look_record where publish_id in (select id from publish where car_user_id = #{userId}) order by create_time desc")
     @ResultMap("BaseResultMap")
     List<PublishLookRecordDO> selectByUserId(@Param("userId") Integer userId);
 
