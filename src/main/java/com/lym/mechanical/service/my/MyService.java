@@ -420,7 +420,7 @@ public class MyService {
                     if (Objects.equals("1", hasManyLook) && recordList.size() <= 1) {
                         flag = Boolean.FALSE;
                     }
-                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO)) {
+                    if (Objects.equals("1", hasMobile) && Objects.isNull(carUserDO) && !StringUtils.isEmpty(carUserDO.getPhone())) {
                         flag = Boolean.FALSE;
                     }
                     if (flag) {
