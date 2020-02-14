@@ -27,4 +27,10 @@ public interface CarUserDOMapper {
     CarUserDO selectByOpenId(@Param("openId") String openId);
 
     List<CarUserDO> selectBatchByPrimaryKey(@Param("ids") List<Integer> ids);
+
+    CarUserDO selectByName(@Param("name") String name);
+
+    @Select("select * from car_user where is_deleted = 0 and name != 'admin'")
+    @ResultMap("BaseResultMap")
+    List<CarUserDO> selectAllNotAdmin();
 }

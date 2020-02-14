@@ -118,4 +118,8 @@ public interface PublishDOMapper {
     );
 
     List<PublishDO> selectBatchByPrimaryKey(@Param("ids") List<Integer> ids);
+
+    @Select("select * from publish where is_delete = 0 and car_user_id is not null")
+    @ResultMap("BaseResultMap")
+    List<PublishDO> selectCarUserPublish();
 }
