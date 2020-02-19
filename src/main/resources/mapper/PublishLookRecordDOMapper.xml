@@ -211,4 +211,28 @@
     </where>
     order by create_time desc
   </select>
+  <select id="selectBatchByPublishId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from publish_look_record
+    where
+    <if test="publishIds != null and publishIds.size > 0">
+      publish_id in
+      <foreach collection="publishIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="publishIds == null or publishIds.size == 0">
+      1 = 0
+    </if>
+  </select>
+  <select id="selectUserLookByPublishId" resultType="com.lym.mechanical.bean.dto.admin.UserLookRecordDTO">
+    select
+    user_id as userId,
+    max(create_time) as lastTime
+    from publish_look_record
+    where publish_id = #{publishId}
+    group by user_id
+    order by max(create_time) desc
+  </select>
 </mapper>

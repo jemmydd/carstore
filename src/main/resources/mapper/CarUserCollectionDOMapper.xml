@@ -90,4 +90,28 @@
       publish_id = #{publishId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectBatchByPublishId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from car_user_collection
+    where
+    <if test="publishIds != null and publishIds.size > 0">
+      publish_id in
+      <foreach collection="publishIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="publishIds == null or publishIds.size == 0">
+      1 = 0
+    </if>
+  </select>
+  <select id="selectUserCollectByPublishId" resultType="com.lym.mechanical.bean.dto.admin.UserLookRecordDTO">
+    select
+    car_user_id as userId,
+    max(create_time) as lastTime
+    from car_user_collection
+    where publish_id = #{publishId}
+    group by car_user_id
+    order by max(create_time) desc
+  </select>
 </mapper>

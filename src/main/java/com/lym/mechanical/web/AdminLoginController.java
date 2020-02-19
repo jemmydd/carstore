@@ -2,6 +2,7 @@ package com.lym.mechanical.web;
 
 import com.lym.mechanical.bean.dto.admin.AdminLoginDTO;
 import com.lym.mechanical.bean.param.admin.AdminLoginParam;
+import com.lym.mechanical.bean.param.admin.AdminPasswordParam;
 import com.lym.mechanical.component.result.Result;
 import com.lym.mechanical.component.result.ResultUtil;
 import com.lym.mechanical.service.admin.LoginService;
@@ -30,5 +31,11 @@ public class AdminLoginController {
     @ApiOperation(value = "后台管理登陆")
     public Result<AdminLoginDTO> login(@RequestBody AdminLoginParam param) {
         return ResultUtil.success(loginService.login(param));
+    }
+
+    @PostMapping("modifyPwd.admin")
+    @ApiOperation(value = "修改密码")
+    public Result<AdminLoginDTO> modifyPwd(@RequestBody AdminPasswordParam param) {
+        return ResultUtil.success(loginService.modifyPwd(param));
     }
 }

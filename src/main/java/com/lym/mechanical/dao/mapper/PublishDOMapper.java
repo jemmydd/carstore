@@ -122,4 +122,6 @@ public interface PublishDOMapper {
     @Select("select * from publish where is_delete = 0 and car_user_id is not null")
     @ResultMap("BaseResultMap")
     List<PublishDO> selectCarUserPublish();
+
+    List<PublishDO> selectForWeb(@Param("nickName") String nickName, @Param("mobile") String mobile, @Param("userId") String userId);
 }

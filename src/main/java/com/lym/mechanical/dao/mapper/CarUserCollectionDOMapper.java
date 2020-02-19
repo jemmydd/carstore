@@ -1,5 +1,6 @@
 package com.lym.mechanical.dao.mapper;
 
+import com.lym.mechanical.bean.dto.admin.UserLookRecordDTO;
 import com.lym.mechanical.bean.entity.CarUserCollectionDO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
@@ -33,4 +34,8 @@ public interface CarUserCollectionDOMapper {
 
     @Delete("delete from car_user_collection where car_user_id = #{userId} and publish_id = #{publishId}")
     void deleteByUserIdAndPublishId(@Param("userId") Integer userId, @Param("publishId") Integer publishId);
+
+    List<CarUserCollectionDO> selectBatchByPublishId(@Param("publishIds") List<Integer> publishIds);
+
+    List<UserLookRecordDTO> selectUserCollectByPublishId(@Param("publishId") Integer publishId);
 }

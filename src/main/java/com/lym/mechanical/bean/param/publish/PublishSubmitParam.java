@@ -91,4 +91,7 @@ public class PublishSubmitParam {
 
     @ApiModelProperty("联系人")
     private String contact;
+
+    @ApiModelProperty(value = "型号")
+    private String type;
 }

@@ -279,6 +279,7 @@ public class PublishService {
                 .hasCertificate(param.getHasCertificate())
                 .contact(param.getContact())
                 .carUserId(param.getUserId())
+                .type(param.getType())
                 .build();
 
         publishDOMapper.insertSelective(publishDO);
@@ -344,6 +345,7 @@ public class PublishService {
                 .hasCertificate(param.getHasCertificate())
                 .contact(param.getContact())
                 .carUserId(param.getUserId())
+                .type(param.getType())
                 .build();
 
         publishDOMapper.updateByPrimaryKeySelective(publishDOModify);

@@ -1,5 +1,6 @@
 package com.lym.mechanical.dao.mapper;
 
+import com.lym.mechanical.bean.dto.admin.UserLookRecordDTO;
 import com.lym.mechanical.bean.dto.my.MyGuestDO;
 import com.lym.mechanical.bean.entity.PublishLookRecordDO;
 import org.apache.ibatis.annotations.*;
@@ -66,4 +67,8 @@ public interface PublishLookRecordDOMapper {
     @Select("select * from publish_look_record where publish_id in (select id from publish where car_user_id = #{userId}) order by create_time desc")
     @ResultMap("BaseResultMap")
     List<PublishLookRecordDO> selectByPublishUserId(@Param("userId") Integer userId);
+
+    List<PublishLookRecordDO> selectBatchByPublishId(@Param("publishIds") List<Integer> publishIds);
+
+    List<UserLookRecordDTO> selectUserLookByPublishId(@Param("publishId") Integer publishId);
 }

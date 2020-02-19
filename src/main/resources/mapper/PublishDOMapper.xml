@@ -36,6 +36,7 @@
     <result column="has_invoice" jdbcType="TINYINT" property="hasInvoice" />
     <result column="has_certificate" jdbcType="TINYINT" property="hasCertificate" />
     <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="car_user_id" jdbcType="INTEGER" property="carUserId" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -44,7 +45,7 @@
     contact_phone, province_code, province_name, city_code, city_name, area_code, area_name, 
     in_price, out_price, productive_year, like_count, view_count, discuss_count, collection_count, 
     view_phone_count, shelf_status, brand_id, usage_hours, has_invoice, has_certificate, 
-    contact, car_user_id
+    contact, type, car_user_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -56,7 +57,7 @@
     delete from publish
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishDO">
     insert into publish (id, create_time, update_time, 
       is_deleted, user_id, category_first_id, 
       category_second_id, phone, title, 
@@ -68,7 +69,8 @@
       view_count, discuss_count, collection_count, 
       view_phone_count, shelf_status, brand_id, 
       usage_hours, has_invoice, has_certificate, 
-      contact, car_user_id)
+      contact, type, car_user_id
+      )
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{isDeleted,jdbcType=TINYINT}, #{userId,jdbcType=INTEGER}, #{categoryFirstId,jdbcType=INTEGER}, 
       #{categorySecondId,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
@@ -80,9 +82,10 @@
       #{viewCount,jdbcType=INTEGER}, #{discussCount,jdbcType=INTEGER}, #{collectionCount,jdbcType=INTEGER}, 
       #{viewPhoneCount,jdbcType=INTEGER}, #{shelfStatus,jdbcType=TINYINT}, #{brandId,jdbcType=INTEGER}, 
       #{usageHours,jdbcType=VARCHAR}, #{hasInvoice,jdbcType=TINYINT}, #{hasCertificate,jdbcType=TINYINT}, 
-      #{contact,jdbcType=VARCHAR}, #{carUserId,jdbcType=INTEGER})
+      #{contact,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{carUserId,jdbcType=INTEGER}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishDO">
     insert into publish
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -186,6 +189,9 @@
       </if>
       <if test="contact != null">
         contact,
+      </if>
+      <if test="type != null">
+        type,
       </if>
       <if test="carUserId != null">
         car_user_id,
@@ -294,6 +300,9 @@
       <if test="contact != null">
         #{contact,jdbcType=VARCHAR},
       </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
       <if test="carUserId != null">
         #{carUserId,jdbcType=INTEGER},
       </if>
@@ -401,6 +410,9 @@
       <if test="contact != null">
         contact = #{contact,jdbcType=VARCHAR},
       </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
       <if test="carUserId != null">
         car_user_id = #{carUserId,jdbcType=INTEGER},
       </if>
@@ -442,6 +454,7 @@
       has_invoice = #{hasInvoice,jdbcType=TINYINT},
       has_certificate = #{hasCertificate,jdbcType=TINYINT},
       contact = #{contact,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
       car_user_id = #{carUserId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -527,9 +540,9 @@
       <if test="ids == null or ids.size == 0">
         and id = -1
       </if>
-      <if test="ids != null and ids.size > 0">
+      <if test="ids != null and ids.size &gt; 0">
         and id in
-        <foreach item="item" collection="ids" open="(" separator="," close=")">
+        <foreach close=")" collection="ids" item="item" open="(" separator=",">
           #{item}
         </foreach>
       </if>
@@ -622,9 +635,9 @@
     <include refid="Base_Column_List" />
     from publish
     <where>
-      <if test="ids != null and ids.size > 0">
+      <if test="ids != null and ids.size &gt; 0">
         id in
-        <foreach collection="ids" close=")" item="item" open="(" separator=",">
+        <foreach close=")" collection="ids" item="item" open="(" separator=",">
           #{item}
         </foreach>
       </if>
@@ -632,5 +645,24 @@
         1 = 0
       </if>
     </where>
+  </select>
+  <select id="selectForWeb" resultMap="BaseResultMap">
+    select
+    publish.*
+    from publish left join car_user
+    on publish.car_user_id = car_user.id
+    <where>
+      publish.car_user_id is not null
+      <if test="nickName != null and nickName != ''">
+        and car_user.nick_name like concat('%', #{nickName},'%')
+      </if>
+      <if test="mobile != null and mobile != ''">
+        and car_user.phone like concat('%', #{mobile},'%')
+      </if>
+      <if test="userId != null and userId != ''">
+        and publish.car_user_id = #{userId}
+      </if>
+    </where>
+    order by create_time desc
   </select>
 </mapper>

@@ -78,6 +78,8 @@ public class PublishDO {
 
     private String contact;
 
+    private String type;
+
     private Integer carUserId;
 
     public Integer getId() {
@@ -350,6 +352,14 @@ public class PublishDO {
 
     public void setContact(String contact) {
         this.contact = contact == null ? null : contact.trim();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
     }
 
     public Integer getCarUserId() {
