@@ -114,4 +114,19 @@
     group by car_user_id
     order by max(create_time) desc
   </select>
+  <select id="selectBatchByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from car_user_collection
+    where
+    <if test="userIds != null and userIds.size > 0">
+      car_user_id in
+      <foreach collection="userIds" close=")" separator="," open="(" item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="userIds == null or userIds.size == 0">
+      1 = 0
+    </if>
+  </select>
 </mapper>

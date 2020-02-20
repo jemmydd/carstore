@@ -155,4 +155,28 @@
     </if>
     order by max(name_card_look_record.create_time) desc
   </select>
+  <select id="selectBatchByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from name_card_look_record
+    where
+    <if test="userIds != null and userIds.size > 0">
+      user_id in
+      <foreach collection="userIds" close=")" separator="," open="(" item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="userIds == null or userIds.size == 0">
+      1 = 0
+    </if>
+  </select>
+  <select id="selectLastByUserId" resultType="com.lym.mechanical.bean.dto.admin.UserLookRecordDTO">
+    select
+    card_id as userId,
+    max(create_time) as lastTime
+    from name_card_look_record
+    where user_id = #{userId}
+    group by card_id
+    order by max(create_time) desc
+  </select>
 </mapper>

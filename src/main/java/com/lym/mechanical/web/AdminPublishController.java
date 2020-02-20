@@ -41,8 +41,8 @@ public class AdminPublishController {
     @ApiOperation(value = "浏览的访客/收藏的访客")
     public Result<PageData<AdminPublishRecordDTO>> recordList(@RequestParam("publishId") @ApiParam(value = "设备id") Integer publishId,
                                                               @RequestParam("type") @ApiParam(value = "0-浏览的访客，1-收藏的访客") String type,
-                                                            @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,
-                                                            @RequestParam("pageSize") @ApiParam(value = "每页显示数量") Integer pageSize) {
+                                                              @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,
+                                                              @RequestParam("pageSize") @ApiParam(value = "每页显示数量") Integer pageSize) {
         return ResultUtil.success(adminPublishService.recordList(publishId, type, pageNum, pageSize));
     }
 }

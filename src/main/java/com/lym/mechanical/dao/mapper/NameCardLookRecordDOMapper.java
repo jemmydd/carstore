@@ -1,5 +1,6 @@
 package com.lym.mechanical.dao.mapper;
 
+import com.lym.mechanical.bean.dto.admin.UserLookRecordDTO;
 import com.lym.mechanical.bean.dto.message.LookUserDTO;
 import com.lym.mechanical.bean.dto.my.CommonDTO;
 import com.lym.mechanical.bean.entity.NameCardLookRecordDO;
@@ -37,4 +38,8 @@ public interface NameCardLookRecordDOMapper {
     List<CommonDTO> selectByCardIdAndDate(@Param("cardId") Integer cardId, @Param("date") String date,
                                           @Param("hasManyLook") String hasManyLook, @Param("hasDial") String hasDial,
                                           @Param("hasMobile") String hasMobile);
+
+    List<NameCardLookRecordDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
+
+    List<UserLookRecordDTO> selectLastByUserId(@Param("userId") Integer userId);
 }

@@ -44,7 +44,7 @@ public class PayController {
     @GetMapping("pay")
     @ApiOperation(value = "微信预下单")
     public Result<Object> pay(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
-                              @RequestParam("type") @ApiParam(value = "购买类型,1-3天试用，2-一年VIP") String type) {
+                              @RequestParam("type") @ApiParam(value = "购买类型") String type) {
         return ResultUtil.success(payService.pay(userId, type));
     }
 

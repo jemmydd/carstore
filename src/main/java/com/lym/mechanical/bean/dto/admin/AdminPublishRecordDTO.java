@@ -29,6 +29,6 @@ public class AdminPublishRecordDTO {
     @ApiModelProperty(value = "浏览时间/收藏时间")
     private String time;
 
-    @ApiModelProperty(value = "浏览人/收藏人信息")
+    @ApiModelProperty(value = "浏览人/收藏人信息/发布人信息")
     private CarUserDTO user;
 }

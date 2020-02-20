@@ -33,4 +33,7 @@ public interface CarUserDOMapper {
     @Select("select * from car_user where is_deleted = 0 and name != 'admin'")
     @ResultMap("BaseResultMap")
     List<CarUserDO> selectAllNotAdmin();
+
+    List<CarUserDO> selectForWeb(@Param("nickName") String nickName, @Param("mobile") String mobile,
+                        @Param("userId") String userId, @Param("isVip") String isVip, @Param("isCarStore") String isCarStore);
 }

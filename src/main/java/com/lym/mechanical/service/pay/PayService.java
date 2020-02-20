@@ -8,11 +8,15 @@ import com.lym.mechanical.bean.common.WXPayConstants;
 import com.lym.mechanical.bean.dto.pay.*;
 import com.lym.mechanical.bean.entity.CarUserDO;
 import com.lym.mechanical.bean.entity.PaymentDO;
+import com.lym.mechanical.bean.entity.VipConfigDO;
 import com.lym.mechanical.bean.entity.VipOrderDO;
+import com.lym.mechanical.bean.entity.VipRecordDO;
 import com.lym.mechanical.bean.enumBean.VipTypeEnum;
 import com.lym.mechanical.dao.mapper.CarUserDOMapper;
 import com.lym.mechanical.dao.mapper.PaymentDOMapper;
+import com.lym.mechanical.dao.mapper.VipConfigDOMapper;
 import com.lym.mechanical.dao.mapper.VipOrderDOMapper;
+import com.lym.mechanical.dao.mapper.VipRecordDOMapper;
 import com.lym.mechanical.sys.PgAppInfo;
 import com.lym.mechanical.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -52,37 +56,37 @@ public class PayService {
     @Autowired
     private PaymentDOMapper paymentDOMapper;
 
+    @Autowired
+    private VipConfigDOMapper vipConfigDOMapper;
+
+    @Autowired
+    private VipRecordDOMapper vipRecordDOMapper;
+
     public List<VipPayDTO> payList(Integer userId) {
         List<VipPayDTO> result = Lists.newArrayList();
         CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(userId);
         if (Objects.isNull(carUserDO)) {
             throw new RuntimeException("用户不存在");
         }
-        if (carUserDO.getHasTry()) {
-            result.add(VipPayDTO.builder().amount("39")
-                    .desc("￥39元/月")
-                    .isTimeLimit(Boolean.FALSE)
-                    .title("1个月")
-                    .type("2").build());
-        } else {
-            result.add(VipPayDTO.builder().amount("1")
-                    .desc("到期后￥39元/月")
+        List<VipConfigDO> configDOS = vipConfigDOMapper.selectAll();
+        if (!carUserDO.getHasTry()) {
+            result.addAll(configDOS.stream().filter(row -> row.getIsLimit()).map(row -> VipPayDTO.builder()
+                    .amount(row.getPrice().toString())
+                    .desc(row.getDescription())
                     .isTimeLimit(Boolean.TRUE)
-                    .title("7天试用")
-                    .type("1").build());
+                    .title(row.getDescription())
+                    .type(row.getId().toString())
+                    .build())
+            .collect(Collectors.toList()));
         }
-        result.addAll(Lists.newArrayList(
-                VipPayDTO.builder().amount("98")
-                        .desc("￥32元/月")
-                        .isTimeLimit(Boolean.FALSE)
-                        .title("3个月")
-                        .type("3").build(),
-                VipPayDTO.builder().amount("288")
-                        .desc("￥24元/月")
-                        .isTimeLimit(Boolean.FALSE)
-                        .title("12个月")
-                        .type("4").build()
-        ));
+        result.addAll(configDOS.stream().filter(row -> !row.getIsLimit()).map(row -> VipPayDTO.builder()
+                .amount(row.getPrice().toString())
+                .desc(row.getDescription())
+                .isTimeLimit(Boolean.FALSE)
+                .title(row.getDescription())
+                .type(row.getId().toString())
+                .build())
+                .collect(Collectors.toList()));
         return result;
     }
 
@@ -91,13 +95,13 @@ public class PayService {
         if (Objects.isNull(carUserDO) || StringUtils.isEmpty(carUserDO.getOpenid())) {
             throw new RuntimeException("用户不存在");
         }
-        VipTypeEnum typeEnum = VipTypeEnum.getType(Byte.valueOf(type));
-        if (Objects.isNull(typeEnum)) {
+        VipConfigDO vipConfigDO = vipConfigDOMapper.selectByPrimaryKey(Integer.parseInt(type));
+        if (Objects.isNull(vipConfigDO)) {
             throw new RuntimeException("购买类型有误");
         }
         Date now = DateUtil.now();
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        BigDecimal amount = typeEnum.getAmount();
+        BigDecimal amount = vipConfigDO.getPrice();
 
         PaymentDO paymentDO = PaymentDO.builder()
                 .createTime(now)
@@ -236,6 +240,37 @@ public class PayService {
                         .payTime(gmtPayment)
                         .build());
             }
+            VipConfigDO vipConfigDO = vipConfigDOMapper.selectByPrimaryKey(vipOrderDO.getBuyType().intValue());
+            if (!Objects.isNull(vipConfigDO)) {
+                CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(vipOrderDO.getUserId());
+                if (!Objects.isNull(carUserDO)) {
+                    CarUserDO updateUser = CarUserDO.builder().id(carUserDO.getId()).updateTime(DateUtil.now())
+                            .vipStartTime(DateUtil.now())
+                            .build();
+                    if (vipConfigDO.getIsLimit()) {
+                        updateUser.setHasTry(Boolean.TRUE);
+                    }
+                    Calendar calendar = Calendar.getInstance();
+                    String time = vipConfigDO.getDays().substring(0, vipConfigDO.getDays().length() - 1);
+                    if (vipConfigDO.getDays().contains("d")) {
+                        calendar.add(Calendar.DATE, Integer.parseInt(time));
+                    } else if (vipConfigDO.getDays().contains("m")) {
+                        calendar.add(Calendar.MONTH, Integer.parseInt(time));
+                    } else {
+                        calendar.add(Calendar.YEAR, Integer.parseInt(time));
+                    }
+                    updateUser.setVipEndTime(calendar.getTime());
+                    carUserDOMapper.updateByPrimaryKeySelective(updateUser);
+                }
+                vipRecordDOMapper.insertSelective(VipRecordDO.builder()
+                        .createTime(DateUtil.now())
+                        .updateTime(DateUtil.now())
+                        .userId(vipOrderDO.getUserId())
+                        .days(vipConfigDO.getDays())
+                        .price(vipConfigDO.getPrice())
+                        .type((byte) 0)
+                        .build());
+            }
         }
     }
 
@@ -247,10 +282,13 @@ public class PayService {
         List<CarUserDO> userDOS = carUserDOMapper.selectBatchByPrimaryKey(vipOrderDOS.stream().map(VipOrderDO::getUserId).distinct().collect(Collectors.toList()));
         Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(userDOS) ? Maps.newHashMap() :
                 userDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+        List<VipConfigDO> configDOS = vipConfigDOMapper.selectAll();
+        Map<Integer, VipConfigDO> map = configDOS.stream().collect(Collectors.toMap(VipConfigDO::getId, row -> row));
         return vipOrderDOS.stream().map(row -> {
             CarUserDO carUserDO = userMap.get(row.getUserId());
             String mobile = Objects.isNull(carUserDO) ? "" : carUserDO.getPhone();
-            return "用户" + hidePhone(mobile) + " " + DateUtil.dealTime(row.getUpdateTime()) + "购买了" + VipTypeEnum.getType(row.getBuyType()).getName();
+            VipConfigDO configDO = map.get(row.getBuyType().intValue());
+            return "用户" + hidePhone(mobile) + " " + DateUtil.dealTime(row.getUpdateTime()) + "购买了" + configDO.getDescription();
         }).collect(Collectors.toList());
     }
 

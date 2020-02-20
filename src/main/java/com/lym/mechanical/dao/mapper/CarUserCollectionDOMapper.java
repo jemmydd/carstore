@@ -38,4 +38,10 @@ public interface CarUserCollectionDOMapper {
     List<CarUserCollectionDO> selectBatchByPublishId(@Param("publishIds") List<Integer> publishIds);
 
     List<UserLookRecordDTO> selectUserCollectByPublishId(@Param("publishId") Integer publishId);
+
+    List<CarUserCollectionDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
+
+    @Select("select * from car_user_collection where car_user_id = #{userId} order by create_time desc")
+    @ResultMap("BaseResultMap")
+    List<CarUserCollectionDO> selectByUserId(@Param("userId") Integer userId);
 }
