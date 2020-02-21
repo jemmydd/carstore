@@ -57,7 +57,7 @@
     delete from publish
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishDO">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.PublishDO" keyProperty="id" useGeneratedKeys="true">
     insert into publish (id, create_time, update_time, 
       is_deleted, user_id, category_first_id, 
       category_second_id, phone, title, 
@@ -85,7 +85,7 @@
       #{contact,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{carUserId,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishDO">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.PublishDO" keyProperty="id" useGeneratedKeys="true">
     insert into publish
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
