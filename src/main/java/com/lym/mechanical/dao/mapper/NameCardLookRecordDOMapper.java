@@ -42,4 +42,6 @@ public interface NameCardLookRecordDOMapper {
     List<NameCardLookRecordDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
 
     List<UserLookRecordDTO> selectLastByUserId(@Param("userId") Integer userId);
+
+    List<NameCardLookRecordDO> selectBatchByNameCardId(@Param("cardIds") List<Integer> cardIds);
 }

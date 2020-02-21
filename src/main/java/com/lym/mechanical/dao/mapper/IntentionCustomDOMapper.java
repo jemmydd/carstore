@@ -34,4 +34,6 @@ public interface IntentionCustomDOMapper {
     List<CommonDTO> selectByCardIdAndDate(@Param("cardId") Integer cardId, @Param("date") String date,
                                           @Param("hasManyLook") String hasManyLook, @Param("hasDial") String hasDial,
                                           @Param("hasMobile") String hasMobile);
+
+    List<IntentionCustomDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
 }

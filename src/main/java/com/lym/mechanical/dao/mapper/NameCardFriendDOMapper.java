@@ -38,4 +38,6 @@ public interface NameCardFriendDOMapper {
 
     @Delete("delete from name_card_friend where user_id = #{userId} and card_id = #{cardId}")
     void deleteByUserIdAndCardId(@Param("userId") Integer userId, @Param("cardId") Integer cardId);
+
+    List<NameCardFriendDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
 }

@@ -129,4 +129,19 @@
       </trim>
     </foreach>
   </insert>
+  <select id="selectBatchByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from name_card_friend
+    where
+    <if test="userIds != null and userIds.size > 0">
+      user_id in
+      <foreach collection="userIds" close=")" separator="," open="(" item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="userIds == null or userIds.size == 0">
+      1 = 0
+    </if>
+  </select>
 </mapper>

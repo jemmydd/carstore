@@ -40,7 +40,7 @@ public class AdminUserController {
     }
 
     @PostMapping("vip")
-    @ApiOperation(value = "开通VIP")
+    @ApiOperation(value = "开通VIP,访客开通和车商开通都是这个")
     public Result<Boolean> vip(@RequestBody AdminVipParam param) {
         return ResultUtil.success(adminUserService.vip(param));
     }

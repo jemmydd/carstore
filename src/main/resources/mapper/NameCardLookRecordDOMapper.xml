@@ -179,4 +179,19 @@
     group by card_id
     order by max(create_time) desc
   </select>
+  <select id="selectBatchByNameCardId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from name_card_look_record
+    where
+    <if test="cardIds != null and cardIds.size > 0">
+      card_id in
+      <foreach collection="cardIds" close=")" separator="," open="(" item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="cardIds == null or cardIds.size == 0">
+      1 = 0
+    </if>
+  </select>
 </mapper>

@@ -141,4 +141,19 @@
       </if>
     </where>
   </select>
+  <select id="selectForWeb" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from car_user_apply
+    <where>
+      status = 0
+      <if test="startTime != null and startTime != ''">
+        and create_time &gt;= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        and create_time &lt;= #{endTime}
+      </if>
+    </where>
+    order by create_time
+  </select>
 </mapper>

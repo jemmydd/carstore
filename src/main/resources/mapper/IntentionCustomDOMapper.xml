@@ -107,4 +107,19 @@
     </if>
     order by max(intention_custom.create_time) desc
   </select>
+  <select id="selectBatchByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from intention_custom
+    where
+    <if test="userIds != null and userIds.size > 0">
+      user_id in
+      <foreach collection="userIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="userIds == null or userIds.size == 0">
+      1 = 0
+    </if>
+  </select>
 </mapper>

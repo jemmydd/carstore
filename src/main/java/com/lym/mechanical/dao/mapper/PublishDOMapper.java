@@ -124,4 +124,6 @@ public interface PublishDOMapper {
     List<PublishDO> selectCarUserPublish();
 
     List<PublishDO> selectForWeb(@Param("nickName") String nickName, @Param("mobile") String mobile, @Param("userId") String userId);
+
+    List<PublishDO> selectBatchByCarUserId(@Param("userIds") List<Integer> userIds);
 }

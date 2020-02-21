@@ -27,4 +27,6 @@ public interface CarUserApplyDOMapper {
     List<CarUserApplyDO> selectByUserId(@Param("userId") Integer userId);
 
     List<CarUserApplyDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
+
+    List<CarUserApplyDO> selectForWeb(@Param("startTime") String startTime, @Param("endTime") String endTime);
 }
