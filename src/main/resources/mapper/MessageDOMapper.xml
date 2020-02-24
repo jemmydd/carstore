@@ -192,4 +192,67 @@
     ) group by userId
     order by max(create_time) desc
   </select>
+  <insert id="insertBatchSelective">
+    <foreach collection="data" item="item" open="" separator=";" close=";">
+      insert into message
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          id,
+        </if>
+        <if test="item.createTime != null">
+          create_time,
+        </if>
+        <if test="item.updateTime != null">
+          update_time,
+        </if>
+        <if test="item.fromCarUserId != null">
+          from_car_user_id,
+        </if>
+        <if test="item.toCarUserId != null">
+          to_car_user_id,
+        </if>
+        <if test="item.content != null">
+          content,
+        </if>
+        <if test="item.type != null">
+          type,
+        </if>
+        <if test="item.userGroup != null">
+          user_group,
+        </if>
+        <if test="item.isRead != null">
+          is_read,
+        </if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          #{item.id,jdbcType=INTEGER},
+        </if>
+        <if test="item.createTime != null">
+          #{item.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.updateTime != null">
+          #{item.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.fromCarUserId != null">
+          #{item.fromCarUserId,jdbcType=INTEGER},
+        </if>
+        <if test="item.toCarUserId != null">
+          #{item.toCarUserId,jdbcType=INTEGER},
+        </if>
+        <if test="item.content != null">
+          #{item.content,jdbcType=VARCHAR},
+        </if>
+        <if test="item.type != null">
+          #{item.type,jdbcType=VARCHAR},
+        </if>
+        <if test="item.userGroup != null">
+          #{item.userGroup,jdbcType=VARCHAR},
+        </if>
+        <if test="item.isRead != null">
+          #{item.isRead,jdbcType=BIT},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
 </mapper>

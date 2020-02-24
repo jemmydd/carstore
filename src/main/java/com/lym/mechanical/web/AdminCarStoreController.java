@@ -31,13 +31,13 @@ public class AdminCarStoreController {
     @Autowired
     private AdminCarStoreService adminCarStoreService;
 
-    @PostMapping("list")
+    @PostMapping("list.admin")
     @ApiOperation(value = "车商列表")
     public Result<PageData<AdminCarUserDTO>> list(@RequestBody AdminCarStoreSearchParam param) {
         return ResultUtil.success(adminCarStoreService.list(param));
     }
 
-    @GetMapping("friendList")
+    @GetMapping("friendList.admin")
     @ApiOperation(value = "友情合作列表")
     public Result<PageData<AdminFriendDTO>> friendList(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                                        @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,

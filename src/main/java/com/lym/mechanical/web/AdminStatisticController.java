@@ -24,7 +24,7 @@ public class AdminStatisticController {
     @Autowired
     private StatisticService statisticService;
 
-    @GetMapping("statistic")
+    @GetMapping("statistic.admin")
     @ApiOperation(value = "统计")
     public Result<AdminStatisticDTO> statistic() {
         return ResultUtil.success(statisticService.statistic());

@@ -8,9 +8,12 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="images" jdbcType="VARCHAR" property="images" />
+    <result column="is_deal" jdbcType="BIT" property="isDeal" />
+    <result column="deal_message" jdbcType="VARCHAR" property="dealMessage" />
+    <result column="deal_time" jdbcType="TIMESTAMP" property="dealTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_time, update_time, user_id, content, images
+    id, create_time, update_time, user_id, content, images, is_deal, deal_message, deal_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -24,10 +27,12 @@
   </delete>
   <insert id="insert" parameterType="com.lym.mechanical.bean.entity.FeedbackDO">
     insert into feedback (id, create_time, update_time, 
-      user_id, content, images
+      user_id, content, images, 
+      is_deal, deal_message, deal_time
       )
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{userId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}
+      #{userId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, 
+      #{isDeal,jdbcType=BIT}, #{dealMessage,jdbcType=VARCHAR}, #{dealTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.FeedbackDO">
@@ -51,6 +56,15 @@
       <if test="images != null">
         images,
       </if>
+      <if test="isDeal != null">
+        is_deal,
+      </if>
+      <if test="dealMessage != null">
+        deal_message,
+      </if>
+      <if test="dealTime != null">
+        deal_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -70,6 +84,15 @@
       </if>
       <if test="images != null">
         #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeal != null">
+        #{isDeal,jdbcType=BIT},
+      </if>
+      <if test="dealMessage != null">
+        #{dealMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTime != null">
+        #{dealTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -91,6 +114,15 @@
       <if test="images != null">
         images = #{images,jdbcType=VARCHAR},
       </if>
+      <if test="isDeal != null">
+        is_deal = #{isDeal,jdbcType=BIT},
+      </if>
+      <if test="dealMessage != null">
+        deal_message = #{dealMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTime != null">
+        deal_time = #{dealTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -100,7 +132,26 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       user_id = #{userId,jdbcType=INTEGER},
       content = #{content,jdbcType=VARCHAR},
-      images = #{images,jdbcType=VARCHAR}
+      images = #{images,jdbcType=VARCHAR},
+      is_deal = #{isDeal,jdbcType=BIT},
+      deal_message = #{dealMessage,jdbcType=VARCHAR},
+      deal_time = #{dealTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectForWeb" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from feedback
+    <where>
+      <if test="startTime != null and startTime != ''">
+        and create_time &gt;= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        and create_time &lt;= #{endTime}
+      </if>
+      <if test="isDeal != null and isDeal != ''">
+        and is_deal = #{isDeal}
+      </if>
+    </where>
+  </select>
 </mapper>

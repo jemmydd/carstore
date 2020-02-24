@@ -44,4 +44,6 @@ public interface MessageDOMapper {
     void updateReadByToUserIdAndFromUserId(@Param("toUserId") Integer toUserId, @Param("fromUserId") Integer fromUserId);
 
     List<CommonDTO> selectByUserIdAndOtherUserIds(@Param("userId") Integer userId, @Param("userIds") List<Integer> userIds);
+
+    void insertBatchSelective(@Param("data") List<MessageDO> data);
 }

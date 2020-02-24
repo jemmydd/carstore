@@ -28,13 +28,13 @@ public class AdminUserApplyController {
     @Autowired
     private AdminUserApplyService adminUserApplyService;
 
-    @PostMapping("list")
+    @PostMapping("list.admin")
     @ApiOperation(value = "审核列表")
     public Result<PageData<AdminUserApplyDTO>> list(@RequestBody AdminApplySearchParam param) {
         return ResultUtil.success(adminUserApplyService.list(param));
     }
 
-    @PostMapping("operate")
+    @PostMapping("operate.admin")
     @ApiOperation(value = "审核操作")
     public Result<Boolean> operate(@RequestBody AdminApplyOperateParam param) {
         return ResultUtil.success(adminUserApplyService.operate(param));

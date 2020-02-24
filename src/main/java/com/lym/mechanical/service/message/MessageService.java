@@ -84,7 +84,7 @@ public class MessageService {
                         .avatar(Objects.isNull(otherUser) ? "" : otherUser.getHeadPortrait())
                         .message(Objects.equals(messageDO.getType(), MessageTypeEnum.TEXT.getCode()) ? messageDO.getContent()
                                 : MessageTypeEnum.getNameByCode(messageDO.getType()))
-                        .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
+                        .name(Objects.equals(otherUser, 0) ? "系统消息" : (Objects.isNull(nameCardDO) ? "" : nameCardDO.getName()))
                         .time(DateUtil.getDateStr(messageDO.getCreateTime()))
                         .userId(otherUserId)
                         .notReadCount(ObjectUtils.isEmpty(notReadMessages) ? 0 : notReadMessages.size())

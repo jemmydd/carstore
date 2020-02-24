@@ -22,6 +22,12 @@ public class FeedbackDO {
 
     private String images;
 
+    private Boolean isDeal;
+
+    private String dealMessage;
+
+    private Date dealTime;
+
     public Integer getId() {
         return id;
     }
@@ -68,5 +74,29 @@ public class FeedbackDO {
 
     public void setImages(String images) {
         this.images = images == null ? null : images.trim();
+    }
+
+    public Boolean getIsDeal() {
+        return isDeal;
+    }
+
+    public void setIsDeal(Boolean isDeal) {
+        this.isDeal = isDeal;
+    }
+
+    public String getDealMessage() {
+        return dealMessage;
+    }
+
+    public void setDealMessage(String dealMessage) {
+        this.dealMessage = dealMessage == null ? null : dealMessage.trim();
+    }
+
+    public Date getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(Date dealTime) {
+        this.dealTime = dealTime;
     }
 }

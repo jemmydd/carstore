@@ -33,19 +33,19 @@ public class AdminUserController {
     @Autowired
     private AdminUserService adminUserService;
 
-    @PostMapping("list")
+    @PostMapping("list.admin")
     @ApiOperation(value = "访客列表")
     public Result<PageData<AdminUserDTO>> list(@RequestBody AdminUserSearchParam param) {
         return ResultUtil.success(adminUserService.list(param));
     }
 
-    @PostMapping("vip")
+    @PostMapping("vip.admin")
     @ApiOperation(value = "开通VIP,访客开通和车商开通都是这个")
     public Result<Boolean> vip(@RequestBody AdminVipParam param) {
         return ResultUtil.success(adminUserService.vip(param));
     }
 
-    @GetMapping("collectRecord")
+    @GetMapping("collectRecord.admin")
     @ApiOperation(value = "收藏的设备列表")
     public Result<PageData<AdminPublishRecordDTO>> collectRecord(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                                                  @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,
@@ -53,7 +53,7 @@ public class AdminUserController {
         return ResultUtil.success(adminUserService.collectRecord(userId, pageNum, pageSize));
     }
 
-    @GetMapping("nameCardRecord")
+    @GetMapping("nameCardRecord.admin")
     @ApiOperation(value = "浏览的名片列表")
     public Result<PageData<AdminLookRecordDTO>> nameCardRecord(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                                                @RequestParam("pageNum") @ApiParam(value = "当前页，从1开始") Integer pageNum,
