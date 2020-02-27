@@ -28,6 +28,8 @@ public interface CarUserDOMapper {
 
     List<CarUserDO> selectBatchByPrimaryKey(@Param("ids") List<Integer> ids);
 
+    @Select("select * from car_user where name = #{name}")
+    @ResultMap("BaseResultMap")
     CarUserDO selectByName(@Param("name") String name);
 
     @Select("select * from car_user where is_deleted = 0 and name != 'admin'")

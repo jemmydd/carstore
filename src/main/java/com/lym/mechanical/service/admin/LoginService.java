@@ -5,6 +5,7 @@ import com.lym.mechanical.bean.entity.CarUserDO;
 import com.lym.mechanical.bean.param.admin.AdminLoginParam;
 import com.lym.mechanical.bean.param.admin.AdminPasswordParam;
 import com.lym.mechanical.dao.mapper.CarUserDOMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,11 @@ public class LoginService {
         if (Objects.isNull(carUserDO)) {
             throw new RuntimeException("用户名或密码错误");
         }
-        if (!Objects.equals(param.getPassword(), carUserDO.getOpenid())) {
+        if (!StringUtils.isEmpty(carUserDO.getOpenid()) && !Objects.equals(param.getPassword(), carUserDO.getOpenid())) {
             throw new RuntimeException("用户名或密码错误");
+        }
+        if (StringUtils.isEmpty(carUserDO.getOpenid())) {
+            carUserDOMapper.updateByPrimaryKeySelective(CarUserDO.builder().id(carUserDO.getId()).openid(param.getPassword()).build());
         }
         return AdminLoginDTO.builder()
                 .avatar(carUserDO.getHeadPortrait())
