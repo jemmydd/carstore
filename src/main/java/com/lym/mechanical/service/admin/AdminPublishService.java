@@ -86,7 +86,7 @@ public class AdminPublishService {
                     .lookCount((ObjectUtils.isEmpty(lookList) ? 0 : lookList.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size()) + "人")
                     .lookTimes((ObjectUtils.isEmpty(lookList) ? 0 : lookList.size()) + "次")
                     .price(StringUtils.isEmpty(row.getOutPrice()) ? "未知" : (row.getOutPrice() + "万"))
-                    .productiveYear(row.getProductiveYear().toString())
+                    .productiveYear(Objects.isNull(row.getProductiveYear()) ? "" : row.getProductiveYear().toString())
                     .title(row.getTitle())
                     .type(row.getType())
                     .usageHours(StringUtils.isEmpty(row.getUsageHours()) ? "" : (row.getUsageHours() + "小时"))
