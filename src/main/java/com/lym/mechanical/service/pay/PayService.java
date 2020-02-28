@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +91,7 @@ public class PayService {
         return result;
     }
 
+    @Transactional
     public Object pay(Integer userId, String type) {
         CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(userId);
         if (Objects.isNull(carUserDO) || StringUtils.isEmpty(carUserDO.getOpenid())) {

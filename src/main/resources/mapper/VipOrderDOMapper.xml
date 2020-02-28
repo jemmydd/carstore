@@ -28,7 +28,7 @@
     delete from vip_order
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.VipOrderDO">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.VipOrderDO" useGeneratedKeys="true" keyProperty="id">
     insert into vip_order (id, create_time, update_time, 
       user_id, buy_type, pay_type, 
       ought_amount, real_amount, payment_id, 
@@ -38,7 +38,7 @@
       #{oughtAmount,jdbcType=DECIMAL}, #{realAmount,jdbcType=DECIMAL}, #{paymentId,jdbcType=INTEGER}, 
       #{status,jdbcType=VARCHAR}, #{payTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.VipOrderDO">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.VipOrderDO" useGeneratedKeys="true" keyProperty="id">
     insert into vip_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

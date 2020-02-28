@@ -8,7 +8,7 @@ spring:
 pg-app-info:
   app-id: wx8dd96b368530c89d
   app-secret: 427cd0b374b47ccb63350d1cc39a7cab
-  mch-id: 111111
+  mch-id: 1577949261
   server-ip: 116.62.19.123
-  private-key: 1111
+  private-key: 11112222333344445555666677771234
   call-back-url: https://testcar.lanchengyun.com/pay/callback
