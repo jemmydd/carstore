@@ -73,12 +73,12 @@ public class AdminHelpService {
     public Boolean modifyQuestion(AdminQuestionParam param) {
         QuestionAnswerDO questionAnswerDO = questionAnswerDOMapper.selectByPrimaryKey(param.getId());
         if (!Objects.isNull(questionAnswerDO)) {
-            QuestionAnswerDO.builder()
+            questionAnswerDOMapper.updateByPrimaryKeySelective(QuestionAnswerDO.builder()
                     .id(questionAnswerDO.getId())
                     .updateTime(DateUtil.now())
                     .question(param.getQuestion())
                     .answer(param.getAnswer())
-                    .build();
+                    .build());
         }
         return Boolean.TRUE;
     }

@@ -210,21 +210,17 @@
       <if test="userId != null and userId != ''">
         and car_user.id = #{userId}
       </if>
-      <if test="isVip != null and isVip != ''">
-        <if test="isVip == '0'">
-          and (car_user.vip_start_time is null or car_user.vip_start_time &gt; now() or car_user.vip_end_time &lt; now())
-        </if>
-        <if test="isVip == '1'">
-          and car_user.vip_start_time is not null and car_user.vip_end_time is not null and car_user.vip_start_time &lt;= now() and car_user.vip_end_time &gt;= now()
-        </if>
+      <if test="isVip != null and isVip != '' and isVip == 0">
+        and (car_user.vip_start_time is null or car_user.vip_start_time &gt; now() or car_user.vip_end_time &lt; now())
       </if>
-      <if test="isCarStore != null and isCarStore != ''">
-        <if test="isCarStore == '0'">
-          and (car_user_apply.id is null or car_user_apply.status in (0, 1))
-        </if>
-        <if test="isCarStore == '1'">
-          and car_user_apply.id is not null and car_user_apply.status = 2
-        </if>
+      <if test="isVip != null and isVip != '' and isVip == 1">
+        and car_user.vip_start_time is not null and car_user.vip_end_time is not null and car_user.vip_start_time &lt;= now() and car_user.vip_end_time &gt;= now()
+      </if>
+      <if test="isCarStore != null and isCarStore != '' and isCarStore == 0">
+        and (car_user_apply.id is null or car_user_apply.status in (0, 1))
+      </if>
+      <if test="isCarStore != null and isCarStore != '' and isCarStore == 1">
+        and car_user_apply.id is not null and car_user_apply.status = 2
       </if>
     </where>
     order by car_user.create_time desc

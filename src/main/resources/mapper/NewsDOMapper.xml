@@ -106,7 +106,7 @@
     <include refid="Base_Column_List" />
     from news
     <where>
-      <if test="type != null">
+      <if test="typeId != null">
         and type_id = #{typeId}
       </if>
       <if test="isValid != null and isValid != ''">

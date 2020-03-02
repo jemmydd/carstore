@@ -9,6 +9,7 @@ import com.lym.mechanical.bean.dto.admin.AdminPublishRecordDTO;
 import com.lym.mechanical.bean.dto.admin.AdminUserDTO;
 import com.lym.mechanical.bean.dto.admin.CarUserDTO;
 import com.lym.mechanical.bean.dto.admin.UserLookRecordDTO;
+import com.lym.mechanical.bean.entity.CarUserApplyDO;
 import com.lym.mechanical.bean.entity.CarUserCollectionDO;
 import com.lym.mechanical.bean.entity.CarUserDO;
 import com.lym.mechanical.bean.entity.NameCardDO;
@@ -18,6 +19,7 @@ import com.lym.mechanical.bean.entity.VipRecordDO;
 import com.lym.mechanical.bean.param.admin.AdminUserSearchParam;
 import com.lym.mechanical.bean.param.admin.AdminVipParam;
 import com.lym.mechanical.component.result.PageData;
+import com.lym.mechanical.dao.mapper.CarUserApplyDOMapper;
 import com.lym.mechanical.dao.mapper.CarUserCollectionDOMapper;
 import com.lym.mechanical.dao.mapper.CarUserDOMapper;
 import com.lym.mechanical.dao.mapper.NameCardDOMapper;
@@ -27,6 +29,7 @@ import com.lym.mechanical.dao.mapper.VipRecordDOMapper;
 import com.lym.mechanical.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Calendar;
@@ -62,6 +65,9 @@ public class AdminUserService {
     @Autowired
     private NameCardDOMapper nameCardDOMapper;
 
+    @Autowired
+    private CarUserApplyDOMapper carUserApplyDOMapper;
+
     public PageData<AdminUserDTO> list(AdminUserSearchParam param) {
         PageData.checkPageParam(param.getPageNum(), param.getPageSize());
         PageHelper.startPage(param.getPageNum(), param.getPageSize());
@@ -96,6 +102,7 @@ public class AdminUserService {
         }).collect(Collectors.toList()));
     }
 
+    @Transactional
     public Boolean vip(AdminVipParam param) {
         CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(param.getUserId());
         if (Objects.isNull(carUserDO)) {
@@ -120,6 +127,17 @@ public class AdminUserService {
                 .days(param.getDays() + "d")
                 .type((byte) 1)
                 .build());
+        List<CarUserApplyDO> carUserApplyDOS = carUserApplyDOMapper.selectByUserId(param.getUserId());
+        if (ObjectUtils.isEmpty(carUserApplyDOS) || ObjectUtils.isEmpty(carUserApplyDOS.stream().filter(row -> Objects.equals((byte) 2, row.getStatus())).collect(Collectors.toList()))) {
+            carUserApplyDOMapper.insertSelective(CarUserApplyDO.builder()
+                    .createTime(DateUtil.now())
+                    .updateTime(DateUtil.now())
+                    .userId(param.getUserId())
+                    .name(carUserDO.getNickName())
+                    .mobile(carUserDO.getPhone())
+                    .status((byte) 2)
+                    .build());
+        }
         return Boolean.TRUE;
     }
 
