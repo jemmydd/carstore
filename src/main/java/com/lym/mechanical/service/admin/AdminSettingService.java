@@ -108,7 +108,7 @@ public class AdminSettingService {
     public Boolean modifyVip(AdminVipDTO param) {
         VipConfigDO vipConfigDO = vipConfigDOMapper.selectByPrimaryKey(param.getId());
         if (!Objects.isNull(vipConfigDO)) {
-            vipConfigDOMapper.insertSelective(VipConfigDO.builder()
+            vipConfigDOMapper.updateByPrimaryKeySelective(VipConfigDO.builder()
                     .id(param.getId())
                     .updateTime(DateUtil.now())
                     .days(getDays(param.getDays()))
