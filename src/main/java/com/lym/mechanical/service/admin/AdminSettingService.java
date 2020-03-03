@@ -3,6 +3,9 @@ package com.lym.mechanical.service.admin;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.lym.mechanical.bean.common.Constant;
 import com.lym.mechanical.bean.dto.admin.AdminMessageDTO;
 import com.lym.mechanical.bean.dto.admin.AdminVipDTO;
 import com.lym.mechanical.bean.entity.CarUserDO;
@@ -26,7 +29,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -124,16 +129,42 @@ public class AdminSettingService {
         PageData.checkPageParam(param.getPageNum(), param.getPageSize());
         PageHelper.startPage(param.getPageNum(), param.getPageSize());
 
-        Page<MessageRecordDO> recordDOS = (Page<MessageRecordDO>) messageRecordDOMapper.selectAll();
+        Page<MessageRecordDO> recordDOS = (Page<MessageRecordDO>) messageRecordDOMapper.selectForWeb(param.getStartTime(), param.getEndTime());
         if (ObjectUtils.isEmpty(recordDOS)) {
             return PageData.noData(param.getPageSize());
         }
-        return PageData.data(recordDOS, recordDOS.stream().map(row -> AdminMessageDTO.builder()
-                .content(row.getContent())
-                .createTime(DateUtil.formatDateDefault(row.getCreateTime()))
-                .target(StringUtils.isEmpty(row.getUserIds()) ? "全部用户" : row.getUserIds())
-                .build())
-                .collect(Collectors.toList()));
+        Set<Integer> userIds = Sets.newHashSet();
+        recordDOS.forEach(row -> {
+            if (!StringUtils.isEmpty(row.getUserIds())) {
+                userIds.addAll(stringToIntList(row.getUserIds()));
+            }
+        });
+        List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(Lists.newArrayList(userIds));
+        Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+        return PageData.data(recordDOS, recordDOS.stream().map(row -> {
+            String targetNames = "";
+            if (!StringUtils.isEmpty(row.getUserIds())) {
+                List<String> list = Lists.newArrayList();
+                for (String s : row.getUserIds().split(",")) {
+                    CarUserDO carUserDO = userMap.get(Integer.parseInt(s));
+                    if (!Objects.isNull(carUserDO)) {
+                        list.add(carUserDO.getNickName());
+                    }
+                }
+                if (!ObjectUtils.isEmpty(list)) {
+                    targetNames = StringUtils.join(list, ",");
+                }
+            } else {
+                targetNames = "全部用户";
+            }
+            return AdminMessageDTO.builder()
+                    .content(row.getContent())
+                    .createTime(DateUtil.formatDateDefault(row.getCreateTime()))
+                    .target(StringUtils.isEmpty(row.getUserIds()) ? "全部用户" : row.getUserIds())
+                    .targetNames(targetNames)
+                    .build();
+        }).collect(Collectors.toList()));
     }
 
     public Boolean send(AdminMessageParam param) {

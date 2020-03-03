@@ -23,6 +23,9 @@ public class AdminMessageDTO {
     @ApiModelProperty(value = "发送对象")
     private String target;
 
+    @ApiModelProperty(value = "发送对象的昵称")
+    private String targetNames;
+
     @ApiModelProperty(value = "发送时间")
     private String createTime;
 }

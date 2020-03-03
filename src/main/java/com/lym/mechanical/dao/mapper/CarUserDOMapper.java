@@ -32,7 +32,7 @@ public interface CarUserDOMapper {
     @ResultMap("BaseResultMap")
     CarUserDO selectByName(@Param("name") String name);
 
-    @Select("select * from car_user where is_deleted = 0 and name != 'admin'")
+    @Select("select * from car_user where is_deleted = 0 and (name != 'admin' or name is null)")
     @ResultMap("BaseResultMap")
     List<CarUserDO> selectAllNotAdmin();
 

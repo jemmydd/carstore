@@ -109,15 +109,18 @@ public class AdminUserService {
             throw new RuntimeException("用户不存在");
         }
         Date now = DateUtil.now();
-        if (!Objects.isNull(carUserDO.getVipStartTime()) && carUserDO.getVipStartTime().compareTo(now) <= 0 &&
-                !Objects.isNull(carUserDO.getVipEndTime()) && carUserDO.getVipEndTime().compareTo(now) >= 0) {
-            throw new RuntimeException("该用户还在会员期内");
-        }
         CarUserDO updateUser = CarUserDO.builder().id(carUserDO.getId()).updateTime(DateUtil.now())
                 .vipStartTime(DateUtil.now())
                 .build();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, param.getDays());
+        if (!Objects.isNull(carUserDO.getVipStartTime()) && carUserDO.getVipStartTime().compareTo(now) <= 0 &&
+                !Objects.isNull(carUserDO.getVipEndTime()) && carUserDO.getVipEndTime().compareTo(now) >= 0) {
+            calendar.setTime(carUserDO.getVipEndTime());
+            calendar.add(Calendar.DATE, param.getDays());
+        } else {
+            updateUser.setVipStartTime(DateUtil.now());
+            calendar.add(Calendar.DATE, param.getDays());
+        }
         updateUser.setVipEndTime(calendar.getTime());
         carUserDOMapper.updateByPrimaryKeySelective(updateUser);
         vipRecordDOMapper.insertSelective(VipRecordDO.builder()

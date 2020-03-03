@@ -1,6 +1,7 @@
 package com.lym.mechanical.dao.mapper;
 
 import com.lym.mechanical.bean.entity.MessageRecordDO;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
@@ -24,4 +25,6 @@ public interface MessageRecordDOMapper {
     @Select("select * from message_record order by id desc")
     @ResultMap("BaseResultMap")
     List<MessageRecordDO> selectAll();
+
+    List<MessageRecordDO> selectForWeb(@Param("startTime") String startTime, @Param("endTime") String endTime);
 }

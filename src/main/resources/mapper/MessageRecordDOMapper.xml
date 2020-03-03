@@ -90,4 +90,17 @@
       content = #{content,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectForWeb" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message_record
+    <where>
+      <if test="startTime != null and startTime != ''">
+        and create_time &gt;= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        and create_time &lt;= #{endTime}
+      </if>
+    </where>
+  </select>
 </mapper>
