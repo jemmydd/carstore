@@ -75,7 +75,7 @@ public class PayService {
                     .amount(row.getPrice().toString())
                     .desc(row.getDescription())
                     .isTimeLimit(Boolean.TRUE)
-                    .title(row.getDescription())
+                    .title(getDays(row.getDays()))
                     .type(row.getId().toString())
                     .build())
             .collect(Collectors.toList()));
@@ -84,7 +84,7 @@ public class PayService {
                 .amount(row.getPrice().toString())
                 .desc(row.getDescription())
                 .isTimeLimit(Boolean.FALSE)
-                .title(row.getDescription())
+                .title(getDays(row.getDays()))
                 .type(row.getId().toString())
                 .build())
                 .collect(Collectors.toList()));
@@ -345,5 +345,9 @@ public class PayService {
             num--;
         }
         return sb.toString();
+    }
+
+    private String getDays(String days) {
+        return days.replaceAll("d", "天").replaceAll("m", "个月").replaceAll("y", "年");
     }
 }
