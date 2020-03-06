@@ -6,6 +6,7 @@ server:
     key-store: classpath:alymf1n.jks
     key-store-password: sDwLujqG
     key-store-type: JKS
+  use-forward-headers: true
 
 # 应用名称、默认的启动配置
 spring:
