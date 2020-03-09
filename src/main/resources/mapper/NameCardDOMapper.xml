@@ -230,9 +230,7 @@
     <include refid="Base_Column_List" />
     from name_card
     <where>
-      <if test="cardId != null">
-        id = #{cardId}
-      </if>
+      id = #{cardId}
     </where>
     order by create_time desc, id desc
   </select>

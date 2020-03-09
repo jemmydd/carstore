@@ -40,6 +40,8 @@ public class CarUserDO {
 
     private Integer cardId;
 
+    private Boolean isVip;
+
     public Integer getId() {
         return id;
     }
@@ -158,5 +160,13 @@ public class CarUserDO {
 
     public void setCardId(Integer cardId) {
         this.cardId = cardId;
+    }
+
+    public Boolean getIsVip() {
+        return isVip;
+    }
+
+    public void setIsVip(Boolean vip) {
+        isVip = vip;
     }
 }

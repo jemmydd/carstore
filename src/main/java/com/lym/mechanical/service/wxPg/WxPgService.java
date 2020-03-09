@@ -129,8 +129,13 @@ public class WxPgService {
             NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userDO.getId());
             userDO.setCardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId());
         }
-
+        userDO.setIsVip(isVip(userDO.getVipStartTime(), userDO.getVipEndTime()));
         return userDO;
+    }
+
+    private Boolean isVip(Date vipStartTime, Date vipEndTime) {
+        Date now = DateUtil.now();
+        return !Objects.isNull(vipStartTime) && !Objects.isNull(vipEndTime) && now.compareTo(vipStartTime) >= 0 && now.compareTo(vipEndTime) <= 0;
     }
 
     public WxPgAuthDTO auth(String appId, String appSecret, String code) {
