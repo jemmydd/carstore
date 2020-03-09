@@ -384,8 +384,8 @@ public class MyService {
         LatentUserPublishDTO publish = LatentUserPublishDTO.builder()
                 .publishId(publishId)
                 .date(DateUtil.formatDate(publishDO.getCreateTime(), "yyyy-MM-dd") + "发布")
-                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年|")) +
-                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时|")) +
+                .desc((Objects.isNull(publishDO.getProductiveYear()) ? "" : (publishDO.getProductiveYear() + "年 | ")) +
+                        (StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : (publishDO.getUsageHours() + "小时 | ")) +
                         (StringUtils.isEmpty(publishDO.getCityName()) ? "" : publishDO.getCityName()))
                 .image(StringUtils.isEmpty(publishDO.getMainMedia()) ? "" : publishDO.getMainMedia())
                 .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
