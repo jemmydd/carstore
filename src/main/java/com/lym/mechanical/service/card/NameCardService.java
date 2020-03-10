@@ -637,11 +637,11 @@ public class NameCardService {
         return Boolean.TRUE;
     }
 
-    public List<NameCardSimpleDTO> searchFriendCards(Integer cardId, Integer userId) {
+    public List<NameCardSimpleDTO> searchFriendCards(String cardId, Integer userId) {
         List<NameCardFriendDO> nameCardFriendDOS = nameCardFriendDOMapper.selectByUserId(userId);
         List<Integer> currentCardIds = ObjectUtils.isEmpty(nameCardFriendDOS) ? Lists.newArrayList() :
                 nameCardFriendDOS.stream().map(NameCardFriendDO::getCardId).distinct().collect(Collectors.toList());
-        List<NameCardDO> nameCardDOS = nameCardDOMapper.selectByCardId(cardId);
+        List<NameCardDO> nameCardDOS = nameCardDOMapper.selectByCardNo(cardId);
         return buildSimpleNameCard(nameCardDOS, currentCardIds);
     }
 
@@ -677,6 +677,10 @@ public class NameCardService {
                         .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
                         .hasAdd(currentCardIds.contains(row.getId()))
                         .code(row.getCode())
+                        .jobTitle(row.getJobTitle())
+                        .companyName(row.getCompanyName())
+                        .companyAddress(row.getCompanyAddress())
+                        .mobile(row.getMobile())
                         .build();
             }).collect(Collectors.toList());
         }

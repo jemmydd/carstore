@@ -33,4 +33,16 @@ public class NameCardSimpleDTO {
 
     @ApiModelProperty(value = "是否已经添加")
     private Boolean hasAdd;
+
+    @ApiModelProperty(value = "职位")
+    private String jobTitle;
+
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
+
+    @ApiModelProperty(value = "公司地址")
+    private String companyAddress;
+
+    @ApiModelProperty(value = "联系电话")
+    private String mobile;
 }

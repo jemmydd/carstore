@@ -32,7 +32,7 @@
     delete from name_card
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.NameCardDO" useGeneratedKeys="true" keyProperty="id">
     insert into name_card (id, create_time, update_time, 
       user_id, name, mobile, 
       wechat_no, company_name, job_title, 
@@ -46,7 +46,7 @@
       #{voiceIntroduce,jdbcType=VARCHAR}, #{voiceIntroduceTime,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.NameCardDO" useGeneratedKeys="true" keyProperty="id">
     insert into name_card
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -225,12 +225,17 @@
       </if>
     </where>
   </select>
-  <select id="selectByCardId" resultMap="BaseResultMap">
+  <select id="selectByCardNo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from name_card
     <where>
-      id = #{cardId}
+      <if test="cardNo != null and cardNo != ''">
+        code = #{cardNo}
+      </if>
+      <if test="cardNo == null or cardNo == ''">
+        1 = 0
+      </if>
     </where>
     order by create_time desc, id desc
   </select>

@@ -68,7 +68,7 @@ public class NameCardController {
 
     @GetMapping("searchFriendCards.action")
     @ApiOperation(value = "添加友情合作搜索名片")
-    public Result<List<NameCardSimpleDTO>> searchFriendCards(@RequestParam(value = "cardId", required = false) @ApiParam(value = "名片id") Integer cardId,
+    public Result<List<NameCardSimpleDTO>> searchFriendCards(@RequestParam(value = "cardId", required = false) @ApiParam(value = "名片编号") String cardId,
                                                              @RequestParam("userId") @ApiParam(value = "当前登录用户id", required = true) Integer userId) {
         return ResultUtil.success(nameCardService.searchFriendCards(cardId, userId));
     }

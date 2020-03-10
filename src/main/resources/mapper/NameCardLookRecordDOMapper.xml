@@ -143,14 +143,14 @@
     <if test="date != null and date != ''">
       and date_format(name_card_look_record.create_time, '%Y-%m-%d') = #{date}
     </if>
-    <if test="hasDial != null and hasDial == '1'">
+    <if test="hasDial != null and hasDial == 1">
       and name_card_look_record.has_dial = 1
     </if>
-    <if test="hasMobile != null and hasMobile == '1'">
+    <if test="hasMobile != null and hasMobile == 1">
       and car_user.phone is not null
     </if>
     group by name_card_look_record.user_id
-    <if test="hasManyLook != null and hasManyLook == '1'">
+    <if test="hasManyLook != null and hasManyLook == 1">
       having count(*) > 1
     </if>
     order by max(name_card_look_record.create_time) desc

@@ -278,7 +278,7 @@ public class MyService {
                         .map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                 .totalGuest(recordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                 .isVip(isVip)
-                .lookRecords(publishDOS.stream().map(row -> {
+                .lookRecords(publishDOS.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).map(row -> {
                     PublishDO publishDO = publishMap.get(row.getId());
                     List<PublishLookRecordDO> records = recordMap.get(row.getId());
                     List<Integer> userIds = ObjectUtils.isEmpty(records) ? Lists.newArrayList() :

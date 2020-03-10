@@ -125,6 +125,19 @@ public class WxPgService {
                         .build();
 
                 carUserDOMapper.insertSelective(userDO);
+            } else {
+                userDO.setHeadPortrait(userInfo.getAvatarUrl());
+                userDO.setNickName(userInfo.getNickName().length() > 50 ? userInfo.getNickName().substring(0, 50) : userInfo.getNickName());
+                userDO.setSex(userInfo.getGender());
+                userDO.setSessionKey(wxPgAuthDTO.getSession_key());
+                carUserDOMapper.updateByPrimaryKeySelective(CarUserDO.builder()
+                        .id(userDO.getId())
+                        .updateTime(DateUtil.now())
+                        .headPortrait(userInfo.getAvatarUrl())
+                        .nickName(userInfo.getNickName().length() > 50 ? userInfo.getNickName().substring(0, 50) : userInfo.getNickName())
+                        .sex(userInfo.getGender())
+                        .sessionKey(wxPgAuthDTO.getSession_key())
+                        .build());
             }
             NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(userDO.getId());
             userDO.setCardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId());

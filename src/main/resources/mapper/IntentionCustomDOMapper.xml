@@ -95,14 +95,14 @@
     name_card_look_record on intention_custom.intention_custom_user_id = name_card_look_record.user_id
     left join car_user on name_card_look_record.user_id = car_user.id
     where name_card_look_record.card_id = #{cardId}
-    <if test="hasDial != null and hasDial == '1'">
+    <if test="hasDial != null and hasDial == 1">
       and name_card_look_record.has_dial = 1
     </if>
-    <if test="hasMobile != null and hasMobile == '1'">
+    <if test="hasMobile != null and hasMobile == 1">
       and car_user.phone is not null
     </if>
     group by intention_custom.user_id
-    <if test="hasManyLook != null and hasManyLook == '1'">
+    <if test="hasManyLook != null and hasManyLook == 1">
       having count(*) > 1
     </if>
     order by max(intention_custom.create_time) desc
