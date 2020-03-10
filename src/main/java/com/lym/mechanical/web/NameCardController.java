@@ -56,7 +56,7 @@ public class NameCardController {
 
     @PostMapping("createNameCard.action")
     @ApiOperation(value = "创建名片")
-    public Result<Boolean> createNameCard(@RequestBody NameCardParam param) {
+    public Result<Integer> createNameCard(@RequestBody NameCardParam param) {
         return ResultUtil.success(nameCardService.createNameCard(param));
     }
 

@@ -495,7 +495,7 @@ public class NameCardService {
     }
 
     @Transactional
-    public Boolean createNameCard(NameCardParam param) {
+    public Integer createNameCard(NameCardParam param) {
         Date now = DateUtil.now();
         NameCardDO nameCardDO = NameCardDO.builder()
                 .createTime(now)
@@ -558,7 +558,7 @@ public class NameCardService {
         if (!ObjectUtils.isEmpty(friendCardRecordDOS)) {
             friendCardRecordDOMapper.insertBatchSelective(friendCardRecordDOS);
         }
-        return Boolean.TRUE;
+        return nameCardDO.getId();
     }
 
     @Transactional
