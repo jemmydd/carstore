@@ -56,7 +56,7 @@ public class WxPgController {
         return wxPgService.getQr(param);
     }
 
-    @GetMapping("userSig")
+    @GetMapping("userSig.action")
     @ApiOperation(value = "获取userSig")
     public Result<String> userSig(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) throws Exception {
         return ResultUtil.success(wxPgService.userSig(userId));
