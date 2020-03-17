@@ -2,8 +2,12 @@ package com.lym.mechanical.service.wxPg;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lym.mechanical.bean.dto.user.CarUserDTO;
+import com.lym.mechanical.bean.dto.user.ProfileItem;
+import com.lym.mechanical.bean.dto.user.TLSSigAPIv2;
+import com.lym.mechanical.bean.dto.user.UserSetInfoDTO;
 import com.lym.mechanical.bean.dto.wxPg.AccessTokenDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxPgAuthDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserDTO;
@@ -25,6 +29,7 @@ import com.lym.mechanical.dao.mapper.WxAccessTokenDOMapper;
 import com.lym.mechanical.dao.mapper.WxQrDOMapper;
 import com.lym.mechanical.sys.FileDomain;
 import com.lym.mechanical.sys.PgAppInfo;
+import com.lym.mechanical.sys.TencentYunInfo;
 import com.lym.mechanical.util.DateUtil;
 import com.lym.mechanical.util.GsonUtil;
 import com.lym.mechanical.util.OkHttp3Util;
@@ -33,6 +38,8 @@ import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
@@ -46,10 +53,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author liyimin
@@ -101,6 +105,9 @@ public class WxPgService {
 
     @Autowired
     private NameCardDOMapper nameCardDOMapper;
+
+    @Autowired
+    private TencentYunInfo tencentYunInfo;
 
     public CarUserDO auth(WxLoginInfo info) {
         CarUserDO userDO;
@@ -385,7 +392,10 @@ public class WxPgService {
     }
 
     public static void main(String[] args) throws Exception {
-        decrypt("q6XVfjAbijONBHTtwNz38g==", "RpA6UyUbOvx7jxaIH3sGZQ==", "Nq1iI5eLvasm+JOMj9A77c7K3nYVLUcEP8mVDq1hi5iC4CQZCohkjBHlgxdp7iGONYdN7ft1gdacjrqwPkJ/ERwQQeg0ALdix2VqAL9VKnNfWjueBe2hYFFfu9JYlUXKN5F+KA9njq8eyJ0OiBqaNTLb005reynRIw1rOtMmdLyJjiKD43Mrgik76gqMCBEGV7EVd1UGC08qeGNYmAikQA==");
+//        decrypt("q6XVfjAbijONBHTtwNz38g==", "RpA6UyUbOvx7jxaIH3sGZQ==", "Nq1iI5eLvasm+JOMj9A77c7K3nYVLUcEP8mVDq1hi5iC4CQZCohkjBHlgxdp7iGONYdN7ft1gdacjrqwPkJ/ERwQQeg0ALdix2VqAL9VKnNfWjueBe2hYFFfu9JYlUXKN5F+KA9njq8eyJ0OiBqaNTLb005reynRIw1rOtMmdLyJjiKD43Mrgik76gqMCBEGV7EVd1UGC08qeGNYmAikQA==");
+//        TLSSigAPIv2 api = new TLSSigAPIv2(1400000000, "5bd2850fff3ecb11d7c805251c51ee463a25727bddc2385f3fa8bfee1bb93b5e");
+//        System.out.print(api.genSig("xiaojun", 180*86400));
+        System.out.println(DateUtil.stringToDate("2020-03-17", "yyyy-MM-dd").getTime());
     }
 
     private String getAccessTokenFromWx() throws IOException {
@@ -406,5 +416,51 @@ public class WxPgService {
         AccessTokenDTO accessTokenDTO = GsonUtil.GSON.fromJson(as, AccessTokenDTO.class);
 
         return accessTokenDTO.getAccess_token();
+    }
+
+    public String userSig(Integer userId) throws Exception {
+        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(userId);
+        if (Objects.isNull(carUserDO)) {
+            throw new RuntimeException("用户不存在");
+        }
+        String userSig;
+        if (StringUtils.isEmpty(carUserDO.getUserSig()) || DateUtil.now().getTime() - carUserDO.getSigCreateTime().getTime() > 179 * 86400 * 1000) {
+            TLSSigAPIv2 api = new TLSSigAPIv2(tencentYunInfo.getSdkappid(), tencentYunInfo.getKey());
+            userSig = api.genSig(userId.toString(), 180*86400);
+            carUserDOMapper.updateByPrimaryKeySelective(CarUserDO.builder().id(carUserDO.getId()).userSig(userSig).sigCreateTime(DateUtil.now()).build());
+        } else {
+            userSig = carUserDO.getUserSig();
+        }
+        setUserInfo(carUserDO);
+        return userSig;
+    }
+
+    @Async
+    public void setUserInfo(CarUserDO carUserDO) throws Exception {
+        TLSSigAPIv2 api = new TLSSigAPIv2(tencentYunInfo.getSdkappid(), tencentYunInfo.getKey());
+        String userSig = api.genSig(tencentYunInfo.getManager(), 180*86400);
+        String url = String.format("https://console.tim.qq.com/v4/profile/portrait_set?sdkappid=%s&identifier=%s&usersig=%s&random=%s&contenttype=json",
+                tencentYunInfo.getSdkappid(), tencentYunInfo.getManager(), userSig, random32Number());
+        UserSetInfoDTO infoDTO = UserSetInfoDTO.builder()
+                .From_Account(carUserDO.getId().toString())
+                .ProfileItem(Lists.newArrayList(
+                        ProfileItem.builder().Tag("Tag_Profile_IM_Nick").Value(carUserDO.getNickName()).build(),
+                        ProfileItem.builder().Tag("Tag_Profile_IM_Image").Value(carUserDO.getHeadPortrait()).build()
+                )).build();
+        String js = GsonUtil.GSON.toJson(infoDTO);
+        log.info(js);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), js);
+        OkHttp3Util.simplePost(url, body);
+    }
+
+    private String random32Number() {
+        Random rand = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 1; i <= 32; i++){
+            int randNum = rand.nextInt(9) + 1;
+            String num = randNum + "";
+            sb = sb.append(num);
+        }
+        return String.valueOf(sb);
     }
 }

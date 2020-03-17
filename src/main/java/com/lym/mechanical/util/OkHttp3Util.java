@@ -7,6 +7,8 @@ import org.apache.commons.lang3.RandomUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author liyimin
@@ -48,6 +50,19 @@ public class OkHttp3Util {
         }
 
         return responseBody.string();
+    }
+
+    public static String simplePost(String url, RequestBody requestBody) throws IOException {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(600, TimeUnit.SECONDS)
+                .connectTimeout(600, TimeUnit.SECONDS).build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .headers(getRandomUserAgentHeaders())
+                .build();
+        Response response = okHttpClient.newCall(request).execute();
+
+        return response.body().string();
     }
 
     /**

@@ -14,6 +14,8 @@ CREATE TABLE `car_user` (
 	`vip_start_time` DATETIME NULL DEFAULT NULL COMMENT '会员有效开始时间',
 	`vip_end_time` DATETIME NULL DEFAULT NULL COMMENT '会员有效截止时间',
 	`has_try` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '是否试用过7天会员',
+	`user_sig` VARCHAR(500) NULL DEFAULT NULL COMMENT '腾讯云用户秘钥',
+	`sig_create_time` TIMESTAMP NULL DEFAULT NULL COMMENT '用户秘钥创建时间',
 	PRIMARY KEY (`id`)
 )
 COMMENT='车商用户'

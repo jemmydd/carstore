@@ -16,10 +16,12 @@
     <result column="vip_start_time" jdbcType="TIMESTAMP" property="vipStartTime" />
     <result column="vip_end_time" jdbcType="TIMESTAMP" property="vipEndTime" />
     <result column="has_try" jdbcType="BIT" property="hasTry" />
+    <result column="user_sig" jdbcType="VARCHAR" property="userSig" />
+    <result column="sig_create_time" jdbcType="TIMESTAMP" property="sigCreateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, is_deleted, head_portrait, name, nick_name, sex, phone, 
-    openid, session_key, vip_start_time, vip_end_time, has_try
+    openid, session_key, vip_start_time, vip_end_time, has_try, user_sig, sig_create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,17 +33,19 @@
     delete from car_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
     insert into car_user (id, create_time, update_time, 
       is_deleted, head_portrait, name, 
       nick_name, sex, phone, 
       openid, session_key, vip_start_time, 
-      vip_end_time, has_try)
+      vip_end_time, has_try, user_sig, 
+      sig_create_time)
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{isDeleted,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{nickName,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{phone,jdbcType=VARCHAR}, 
       #{openid,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{vipStartTime,jdbcType=TIMESTAMP}, 
-      #{vipEndTime,jdbcType=TIMESTAMP}, #{hasTry,jdbcType=BIT})
+      #{vipEndTime,jdbcType=TIMESTAMP}, #{hasTry,jdbcType=BIT}, #{userSig,jdbcType=VARCHAR}, 
+      #{sigCreateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
     insert into car_user
@@ -88,6 +92,12 @@
       <if test="hasTry != null">
         has_try,
       </if>
+      <if test="userSig != null">
+        user_sig,
+      </if>
+      <if test="sigCreateTime != null">
+        sig_create_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -131,6 +141,12 @@
       </if>
       <if test="hasTry != null">
         #{hasTry,jdbcType=BIT},
+      </if>
+      <if test="userSig != null">
+        #{userSig,jdbcType=VARCHAR},
+      </if>
+      <if test="sigCreateTime != null">
+        #{sigCreateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -176,7 +192,32 @@
       <if test="hasTry != null">
         has_try = #{hasTry,jdbcType=BIT},
       </if>
+      <if test="userSig != null">
+        user_sig = #{userSig,jdbcType=VARCHAR},
+      </if>
+      <if test="sigCreateTime != null">
+        sig_create_time = #{sigCreateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
+    update car_user
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      head_portrait = #{headPortrait,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=TINYINT},
+      phone = #{phone,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR},
+      session_key = #{sessionKey,jdbcType=VARCHAR},
+      vip_start_time = #{vipStartTime,jdbcType=TIMESTAMP},
+      vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP},
+      has_try = #{hasTry,jdbcType=BIT},
+      user_sig = #{userSig,jdbcType=VARCHAR},
+      sig_create_time = #{sigCreateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectBatchByPrimaryKey" resultMap="BaseResultMap">

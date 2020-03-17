@@ -38,6 +38,10 @@ public class CarUserDO {
 
     private Boolean hasTry;
 
+    private String userSig;
+
+    private Date sigCreateTime;
+
     private Integer cardId;
 
     private Boolean isVip;
@@ -152,6 +156,22 @@ public class CarUserDO {
 
     public void setHasTry(Boolean hasTry) {
         this.hasTry = hasTry;
+    }
+
+    public String getUserSig() {
+        return userSig;
+    }
+
+    public void setUserSig(String userSig) {
+        this.userSig = userSig == null ? null : userSig.trim();
+    }
+
+    public Date getSigCreateTime() {
+        return sigCreateTime;
+    }
+
+    public void setSigCreateTime(Date sigCreateTime) {
+        this.sigCreateTime = sigCreateTime;
     }
 
     public Integer getCardId() {
