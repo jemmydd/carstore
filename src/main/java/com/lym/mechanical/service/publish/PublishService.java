@@ -469,13 +469,14 @@ public class PublishService {
     @Async
     public void addPublishLookRecord(Integer userId, PublishDO publishDO) {
         if (!Objects.equals(userId, publishDO.getCarUserId())) {
+            List<PublishLookRecordDO> publishLookRecordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishId(userId, publishDO.getId());
             publishLookRecordDOMapper.insertSelective(PublishLookRecordDO.builder()
                     .createTime(DateUtil.now())
                     .updateTime(DateUtil.now())
                     .userId(userId)
                     .publishId(publishDO.getId())
-                    .hasDial(Boolean.FALSE)
-                    .hasCollect(Boolean.FALSE)
+                    .hasDial(ObjectUtils.isEmpty(publishLookRecordDOS) ? Boolean.FALSE : publishLookRecordDOS.get(0).getHasDial())
+                    .hasCollect(ObjectUtils.isEmpty(publishLookRecordDOS) ? Boolean.FALSE : publishLookRecordDOS.get(0).getHasCollect())
                     .lookTime(0)
                     .build());
         }

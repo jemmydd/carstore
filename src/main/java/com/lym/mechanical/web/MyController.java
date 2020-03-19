@@ -115,10 +115,10 @@ public class MyController {
     @ApiOperation(value = "访客数据分析")
     public Result<LatentDTO> latent(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                                        @RequestParam("publishId") @ApiParam(value = "发布id") Integer publishId,
-                                                       @RequestParam("hasDial") @ApiParam(value = "是否有拨号") String hasDial,
-                                                       @RequestParam("hasCollect") @ApiParam(value = "是否有收藏") String hasCollect,
-                                                       @RequestParam("hasManyLook") @ApiParam(value = "是否多次浏览") String hasManyLook,
-                                                       @RequestParam("hasMobile") @ApiParam(value = "是否有联系方式") String hasMobile,
+                                                       @RequestParam(value = "hasDial", required = false) @ApiParam(value = "是否有拨号") String hasDial,
+                                                       @RequestParam(value = "hasCollect", required = false) @ApiParam(value = "是否有收藏") String hasCollect,
+                                                       @RequestParam(value = "hasManyLook", required = false) @ApiParam(value = "是否多次浏览") String hasManyLook,
+                                                       @RequestParam(value = "hasMobile", required = false) @ApiParam(value = "是否有联系方式") String hasMobile,
                                                        @RequestParam("sortBy") @ApiParam(value = "排序方式,0-综合评分，1-访问次数，2-浏览时间") String sortBy) {
         return ResultUtil.success(myService.latent(userId, publishId, hasDial, hasCollect, hasManyLook, hasMobile, sortBy));
     }
@@ -141,9 +141,9 @@ public class MyController {
     @ApiOperation(value = "潜在客户分析")
     public Result<UserLatentDTO> latentPublishList(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                                                     @RequestParam("latentUserId") @ApiParam(value = "潜在用户id") Integer latentUserId,
-                                                                     @RequestParam("hasDial") @ApiParam(value = "是否拨号") String hasDial,
-                                                                     @RequestParam("hasCollect") @ApiParam(value = "是否收藏") String hasCollect,
-                                                                     @RequestParam("hasManyLook") @ApiParam(value = "是否多次浏览") String hasManyLook,
+                                                                     @RequestParam(value = "hasDial", required = false) @ApiParam(value = "是否拨号") String hasDial,
+                                                                     @RequestParam(value = "hasCollect", required = false) @ApiParam(value = "是否收藏") String hasCollect,
+                                                                     @RequestParam(value = "hasManyLook", required = false) @ApiParam(value = "是否多次浏览") String hasManyLook,
                                                                      @RequestParam("sortBy") @ApiParam(value = "排序方式,0-综合评分，1-访问次数，2-浏览时间") String sortBy) {
         return ResultUtil.success(myService.latentPublishList(userId, latentUserId, hasDial, hasCollect, hasManyLook, sortBy));
     }
