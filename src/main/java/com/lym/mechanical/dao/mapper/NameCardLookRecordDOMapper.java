@@ -44,4 +44,8 @@ public interface NameCardLookRecordDOMapper {
     List<UserLookRecordDTO> selectLastByUserId(@Param("userId") Integer userId);
 
     List<NameCardLookRecordDO> selectBatchByNameCardId(@Param("cardIds") List<Integer> cardIds);
+
+    @Select("select * from name_card_look_record where card_id = #{cardId} order by create_time desc")
+    @ResultMap("BaseResultMap")
+    List<NameCardLookRecordDO> selectByCardId(@Param("cardId") Integer cardId);
 }

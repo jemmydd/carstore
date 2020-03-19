@@ -98,28 +98,25 @@ public class NameCardService {
         List<RecentlyUserDTO> recentlyUsers = Lists.newArrayList();
         List<NameCardDTO> refereeCards = Lists.newArrayList();
         if (hasCard) {
-            List<PublishLookRecordDO> publishLookRecordDOS = publishLookRecordDOMapper.selectByPublishUserId(userId);
-            if (!ObjectUtils.isEmpty(publishLookRecordDOS)) {
-                List<Integer> userIds = publishLookRecordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList());
+            List<NameCardLookRecordDO> nameCardLookRecordDOS = nameCardLookRecordDOMapper.selectByCardId(nameCardDO.getId());
+            if (!ObjectUtils.isEmpty(nameCardLookRecordDOS)) {
+                List<Integer> userIds = nameCardLookRecordDOS.stream().map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList());
                 List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(userIds);
                 Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
                         carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
-                List<Integer> publishIds = publishLookRecordDOS.stream().map(PublishLookRecordDO::getPublishId).distinct().collect(Collectors.toList());
-                List<PublishDO> publishDOS = publishDOMapper.selectBatchByPrimaryKey(publishIds);
-                Map<Integer, PublishDO> publishMap = ObjectUtils.isEmpty(publishDOS) ? Maps.newHashMap() :
-                        publishDOS.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
-                recentlyUsers = publishLookRecordDOS.stream().map(row -> {
-                    CarUserDO userDO = userMap.get(row.getUserId());
-                    PublishDO publishDO = publishMap.get(row.getPublishId());
-                    return RecentlyUserDTO.builder()
-                            .userId(row.getUserId())
-                            .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
-                            .nickName(Objects.isNull(userDO) ? "" : userDO.getNickName())
-                            .publishId(row.getPublishId())
-                            .time(DateUtil.dealTime(row.getCreateTime()))
-                            .publishName(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
-                            .build();
-                }).collect(Collectors.toList());
+                List<Integer> ids = Lists.newArrayList();
+                for (NameCardLookRecordDO row : nameCardLookRecordDOS) {
+                    if (!ids.contains(row.getUserId())) {
+                        CarUserDO userDO = userMap.get(row.getUserId());
+                        recentlyUsers.add(RecentlyUserDTO.builder()
+                                .userId(row.getUserId())
+                                .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
+                                .nickName(Objects.isNull(userDO) ? "" : userDO.getNickName())
+                                .time(DateUtil.dealTime(row.getCreateTime()))
+                                .build());
+                        ids.add(row.getUserId());
+                    }
+                }
             }
         } else {
             refereeCards = getRefereeCards();

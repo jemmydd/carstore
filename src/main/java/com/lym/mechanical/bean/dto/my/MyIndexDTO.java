@@ -54,4 +54,7 @@ public class MyIndexDTO {
 
     @ApiModelProperty(value = "意向客户数量")
     private Integer intentionCount;
+
+    @ApiModelProperty(value = "手机号")
+    private String mobile;
 }

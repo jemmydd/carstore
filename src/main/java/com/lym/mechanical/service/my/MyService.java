@@ -107,6 +107,7 @@ public class MyService {
                 .totalGuest(ObjectUtils.isEmpty(totalGuest) ? 0 : totalGuest.stream().map(CommonDTO::getUserId).distinct().collect(Collectors.toList()).size())
                 .intentionCount(ObjectUtils.isEmpty(intentionCustom) ? 0 : intentionCustom.size())
                 .code(!Objects.isNull(nameCardDO) ? nameCardDO.getCode() : "")
+                .mobile(carUserDO.getPhone())
                 .build();
     }
 
@@ -435,7 +436,7 @@ public class MyService {
                                 .hasTakeMobile(recordDO.getHasDial() ? "有" : "无")
                                 .hasCollect(recordDO.getHasCollect() ? "有" : "无")
                                 .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
-                                .score(getScore())
+                                .score(getScore(recordList))
                                 .build());
                     }
                     userIds.add(recordDO.getUserId());
@@ -454,9 +455,26 @@ public class MyService {
         return LatentDTO.builder().publish(publish).users(result).build();
     }
 
-    private Integer getScore() {
+    private Integer getScore(List<PublishLookRecordDO> recordList) {
         // 计算综合评分
-        return 0;
+        Integer score = 0;
+        if (!ObjectUtils.isEmpty(recordList)) {
+            if (recordList.size() == 1) {
+                score += 1;
+            } else {
+                score += 2;
+            }
+            if (recordList.get(0).getLookTime() >= 20) {
+                score += 1;
+            }
+            if (!ObjectUtils.isEmpty(recordList.stream().filter(row -> row.getHasCollect()).collect(Collectors.toList()))) {
+                score += 1;
+            }
+            if (!ObjectUtils.isEmpty(recordList.stream().filter(row -> row.getHasDial()).collect(Collectors.toList()))) {
+                score += 1;
+            }
+        }
+        return score;
     }
 
     public LatentUserDTO latentUser(Integer userId, Integer latentUserId) {
@@ -568,7 +586,7 @@ public class MyService {
                                 .price(publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice())
                                 .recentTime(recentTime)
                                 .title(publishDO.getTitle())
-                                .score(getUserScore())
+                                .score(getScore(recordList))
                                 .build());
                     }
                     publishIds.add(recordDO.getPublishId());
@@ -585,9 +603,5 @@ public class MyService {
             }
         }
         return UserLatentDTO.builder().user(user).publishs(result).build();
-    }
-
-    private Integer getUserScore() {
-        return 0;
     }
 }
