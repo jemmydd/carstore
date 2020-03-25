@@ -271,4 +271,8 @@ public class MessageService {
         messageDOMapper.updateReadByToUserIdAndFromUserId(userId, null);
         return Boolean.TRUE;
     }
+
+    public Boolean isIntention(Integer userId, Integer otherUserId) {
+        return !Objects.isNull(intentionCustomDOMapper.selectByUserIdAndOtherId(userId, otherUserId));
+    }
 }

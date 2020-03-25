@@ -82,4 +82,11 @@ public class MessageController {
 //                                                          @RequestParam("pageSize") @ApiParam(value = "每页显示数量") Integer pageSize) {
 //        return ResultUtil.success(messageService.askStatistic(userId, pageNum, pageSize));
 //    }
+
+    @GetMapping("isIntention")
+    @ApiOperation(value = "判断用户是否为当前用户的意向客户")
+    public Result<Boolean> isIntention(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
+                                       @RequestParam("otherUserId") @ApiParam(value = "其他的用户id") Integer otherUserId) {
+        return ResultUtil.success(messageService.isIntention(userId, otherUserId));
+    }
 }
