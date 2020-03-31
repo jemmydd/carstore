@@ -208,10 +208,15 @@ public class MyService {
                     .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
                     .jobTitle(Objects.isNull(nameCardDO) ? "" : nameCardDO.getJobTitle())
                     .companyName(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCompanyName())
+                    .companyAddress(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCompanyAddress())
                     .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
                     .id(row.getCardId())
                     .code(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCode())
                     .mobile(Objects.isNull(nameCardDO) ? "" : nameCardDO.getMobile())
+                    .userId(Objects.isNull(nameCardDO) ? null : nameCardDO.getUserId())
+                    .location(Objects.isNull(nameCardDO) ? "" : nameCardDO.getLocation())
+                    .isVip(Objects.isNull(userDO) ? Boolean.FALSE :
+                            DateUtil.dateValid(userDO.getVipStartTime(), userDO.getVipEndTime()))
                     .build();
         }).collect(Collectors.toList());
 

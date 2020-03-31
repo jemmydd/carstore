@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @Classname RecentlyUserDTO
  * @Description
@@ -36,4 +38,6 @@ public class RecentlyUserDTO {
 
     @ApiModelProperty(value = "查看时间")
     private String time;
+
+    private Date createTime;
 }

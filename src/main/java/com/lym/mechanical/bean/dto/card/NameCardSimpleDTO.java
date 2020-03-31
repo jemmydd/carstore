@@ -45,4 +45,7 @@ public class NameCardSimpleDTO {
 
     @ApiModelProperty(value = "联系电话")
     private String mobile;
+
+    @ApiModelProperty(value = "是否vip")
+    private Boolean isVip;
 }

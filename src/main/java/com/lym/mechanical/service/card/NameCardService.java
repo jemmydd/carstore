@@ -113,10 +113,42 @@ public class NameCardService {
                                 .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
                                 .nickName(Objects.isNull(userDO) ? "" : userDO.getNickName())
                                 .time(DateUtil.dealTime(row.getCreateTime()))
+                                .createTime(row.getCreateTime())
                                 .build());
                         ids.add(row.getUserId());
                     }
                 }
+            }
+            List<PublishLookRecordDO> publishLookRecordDOS = publishLookRecordDOMapper.selectByPublishUserId(userId);
+            if (!ObjectUtils.isEmpty(publishLookRecordDOS)) {
+                List<Integer> userIds = publishLookRecordDOS.stream().map(PublishLookRecordDO::getUserId).distinct().collect(Collectors.toList());
+                List<CarUserDO> carUserDOS = carUserDOMapper.selectBatchByPrimaryKey(userIds);
+                Map<Integer, CarUserDO> userMap = ObjectUtils.isEmpty(carUserDOS) ? Maps.newHashMap() :
+                        carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
+                List<Integer> publishIds = publishLookRecordDOS.stream().map(PublishLookRecordDO::getPublishId).distinct().collect(Collectors.toList());
+                List<PublishDO> publishDOS = publishDOMapper.selectBatchByPrimaryKey(publishIds);
+                Map<Integer, PublishDO> publishMap = ObjectUtils.isEmpty(publishDOS) ? Maps.newHashMap() :
+                        publishDOS.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
+                List<Integer> ids = Lists.newArrayList();
+                for (PublishLookRecordDO row : publishLookRecordDOS) {
+                    if (!ids.contains(row.getUserId())) {
+                        CarUserDO userDO = userMap.get(row.getUserId());
+                        PublishDO publishDO = publishMap.get(row.getPublishId());
+                        recentlyUsers.add(RecentlyUserDTO.builder()
+                                .userId(row.getUserId())
+                                .avatar(Objects.isNull(userDO) ? "" : userDO.getHeadPortrait())
+                                .nickName(Objects.isNull(userDO) ? "" : userDO.getNickName())
+                                .publishId(row.getPublishId())
+                                .time(DateUtil.dealTime(row.getCreateTime()))
+                                .publishName(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
+                                .createTime(row.getCreateTime())
+                                .build());
+                        ids.add(row.getUserId());
+                    }
+                }
+            }
+            if (!ObjectUtils.isEmpty(recentlyUsers)) {
+                recentlyUsers = recentlyUsers.stream().sorted((o1, o2) -> -o1.getCreateTime().compareTo(o2.getCreateTime())).collect(Collectors.toList());
             }
         } else {
             refereeCards = getRefereeCards();
@@ -678,6 +710,8 @@ public class NameCardService {
                         .companyName(row.getCompanyName())
                         .companyAddress(row.getCompanyAddress())
                         .mobile(row.getMobile())
+                        .isVip(Objects.isNull(userDO) ? Boolean.FALSE :
+                                DateUtil.dateValid(userDO.getVipStartTime(), userDO.getVipEndTime()))
                         .build();
             }).collect(Collectors.toList());
         }

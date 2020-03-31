@@ -68,6 +68,9 @@ public class PublishService {
     @Autowired
     private PublishLookRecordDOMapper publishLookRecordDOMapper;
 
+    @Autowired
+    private CarUserDOMapper carUserDOMapper;
+
     private static final Integer OVER_SIZE = 8;
     private static final String CONTENT_PREFIX = "回复%s：";
 
@@ -647,7 +650,7 @@ public class PublishService {
         publishImageVideoDOS = ObjectUtils.isEmpty(publishImageVideoDOS) ? Lists.newArrayList() : publishImageVideoDOS.stream().sorted(Comparator.comparing(PublishImageVideoDO::getId)).collect(Collectors.toList());
 
         BrandDO brandDO = row.getBrandId() == null ? null : brandDOMapper.selectByPrimaryKey(row.getBrandId());
-
+        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(row.getCarUserId());
         return PublishDTO.builder()
                 .categoryFirstId(row.getCategoryFirstId())
                 .categoryFirstName(cm.get(row.getCategoryFirstId()))
@@ -686,6 +689,8 @@ public class PublishService {
                 .hasCertificate(row.getHasCertificate())
                 .contact(StringUtils.isEmpty(row.getContact()) ? "" : row.getContact())
 
+                .carUserId(row.getCarUserId())
+                .carUserMobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
                 .build();
     }
 
