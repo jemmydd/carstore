@@ -127,5 +127,5 @@ public class PublishDTO {
     private Integer carUserId;
 
     @ApiModelProperty("车商用户手机号")
-    private Integer carUserMobile;
+    private String carUserMobile;
 }
