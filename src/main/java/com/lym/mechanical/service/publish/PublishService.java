@@ -696,6 +696,8 @@ public class PublishService {
                 .carUserId(row.getCarUserId())
                 .carUserMobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
                 .cardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId())
+
+                .type(row.getType())
                 .build();
     }
 

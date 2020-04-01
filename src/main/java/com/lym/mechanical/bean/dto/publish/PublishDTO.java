@@ -123,6 +123,9 @@ public class PublishDTO {
     @ApiModelProperty("联系人")
     private String contact;
 
+    @ApiModelProperty("型号")
+    private String type;
+
     @ApiModelProperty("车商用户id")
     private Integer carUserId;
 
