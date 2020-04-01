@@ -128,4 +128,7 @@ public class PublishDTO {
 
     @ApiModelProperty("车商用户手机号")
     private String carUserMobile;
+
+    @ApiModelProperty("车商名片id")
+    private Integer cardId;
 }

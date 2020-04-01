@@ -71,6 +71,9 @@ public class PublishService {
     @Autowired
     private CarUserDOMapper carUserDOMapper;
 
+    @Autowired
+    private NameCardDOMapper nameCardDOMapper;
+
     private static final Integer OVER_SIZE = 8;
     private static final String CONTENT_PREFIX = "回复%s：";
 
@@ -651,6 +654,7 @@ public class PublishService {
 
         BrandDO brandDO = row.getBrandId() == null ? null : brandDOMapper.selectByPrimaryKey(row.getBrandId());
         CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(row.getCarUserId());
+        NameCardDO nameCardDO = nameCardDOMapper.selectByUserId(row.getCarUserId());
         return PublishDTO.builder()
                 .categoryFirstId(row.getCategoryFirstId())
                 .categoryFirstName(cm.get(row.getCategoryFirstId()))
@@ -691,6 +695,7 @@ public class PublishService {
 
                 .carUserId(row.getCarUserId())
                 .carUserMobile(Objects.isNull(carUserDO) ? "" : carUserDO.getPhone())
+                .cardId(Objects.isNull(nameCardDO) ? null : nameCardDO.getId())
                 .build();
     }
 
