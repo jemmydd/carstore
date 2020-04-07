@@ -489,7 +489,7 @@ public class MyService {
         }
         List<MessageDO> messageDOS = messageDOMapper.selectByUserGroup(userId < latentUserId ? (userId + "-" + latentUserId) :
                 (latentUserId + "-" + userId));
-        List<PublishLookRecordDO> publishLookRecordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, null);
+        List<PublishLookRecordDO> publishLookRecordDOS = publishLookRecordDOMapper.selectByUserIdAndPublishIdOrderByLookTime(latentUserId, null, userId);
         return LatentUserDTO.builder()
                 .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
                 .collectCount(ObjectUtils.isEmpty(publishLookRecordDOS) ? "0个" : (publishLookRecordDOS.stream().filter(row -> row.getHasCollect()).map(PublishLookRecordDO::getPublishId).distinct().count() + "个"))
@@ -558,7 +558,7 @@ public class MyService {
     public UserLatentDTO latentPublishList(Integer userId, Integer latentUserId, String hasDial, String hasCollect, String hasManyLook, String sortBy) {
         LatentUserDTO user = latentUser(userId, latentUserId);
         List<LatentPublishStatisticDTO> result = Lists.newArrayList();
-        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistoryByUserId(latentUserId, hasDial, hasCollect);
+        List<PublishLookRecordDO> recordDOS = publishLookRecordDOMapper.selectHistoryByUserId(latentUserId, hasDial, hasCollect, userId);
         if (!ObjectUtils.isEmpty(recordDOS)) {
             List<Integer> publishIds = Lists.newArrayList();
             Map<Integer, List<PublishLookRecordDO>> recordMap = recordDOS.stream().collect(Collectors.groupingBy(PublishLookRecordDO::getPublishId));

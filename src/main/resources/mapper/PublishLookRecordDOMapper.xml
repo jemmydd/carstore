@@ -168,11 +168,14 @@
     <include refid="Base_Column_List" />
     from publish_look_record
     <where>
-      <if test="userId != null">
-        and user_id = #{userId}
+      <if test="latentUserId != null">
+        and user_id = #{latentUserId}
       </if>
       <if test="publishId != null">
         and publish_id = #{publishId}
+      </if>
+      <if test="userId != null">
+        and publish_id in (select id from publish where car_user_id = #{userId})
       </if>
     </where>
     order by look_time desc
@@ -199,14 +202,17 @@
     <include refid="Base_Column_List" />
     from publish_look_record
     <where>
-      <if test="userId != null">
-        and user_id = #{userId}
+      <if test="latentUserId != null">
+        and user_id = #{latentUserId}
       </if>
       <if test="hasDial != null and hasDial == 1">
         and has_dial = #{hasDial}
       </if>
       <if test="hasCollect != null and hasCollect == 1">
         and has_collect = #{hasCollect}
+      </if>
+      <if test="userId != null">
+        and publish_id in (select id from publish where car_user_id = #{userId})
       </if>
     </where>
     order by create_time desc

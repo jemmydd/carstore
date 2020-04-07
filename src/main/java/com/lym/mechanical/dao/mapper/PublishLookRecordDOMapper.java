@@ -41,7 +41,7 @@ public interface PublishLookRecordDOMapper {
     @ResultType(Integer.class)
     Integer selectLookTimeTopByPublishId(@Param("publishId") Integer publishId);
 
-    List<PublishLookRecordDO> selectByUserIdAndPublishIdOrderByLookTime(@Param("userId") Integer userId, @Param("publishId") Integer publishId);
+    List<PublishLookRecordDO> selectByUserIdAndPublishIdOrderByLookTime(@Param("latentUserId") Integer latentUserId, @Param("publishId") Integer publishId, @Param("userId") Integer userId);
 
     List<PublishLookRecordDO> selectHistory(@Param("publishId") Integer publishId,
                                             @Param("hasDial") String hasDial, @Param("hasCollect") String hasCollect);
@@ -51,8 +51,9 @@ public interface PublishLookRecordDOMapper {
     @ResultType(Integer.class)
     Integer selectLookTimeTopByUserId(@Param("userId") Integer userId);
 
-    List<PublishLookRecordDO> selectHistoryByUserId(@Param("userId") Integer userId,
-                                                    @Param("hasDial") String hasDial, @Param("hasCollect") String hasCollect);
+    List<PublishLookRecordDO> selectHistoryByUserId(@Param("latentUserId") Integer latentUserId,
+                                                    @Param("hasDial") String hasDial, @Param("hasCollect") String hasCollect,
+                                                    @Param("userId") Integer userId);
 
     @Select("select * from publish_look_record where user_id = #{userId} and publish_id = #{publishId} order by create_time desc, id desc limit 1")
     @ResultMap("BaseResultMap")
