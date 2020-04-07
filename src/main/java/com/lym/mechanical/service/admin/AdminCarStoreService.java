@@ -101,7 +101,7 @@ public class AdminCarStoreService {
                     .companyName(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCompanyName())
                     .jobTitle(Objects.isNull(nameCardDO) ? "" : nameCardDO.getJobTitle())
                     .isVip(isVip ? "是" : "否")
-                    .vipEndTime(isVip ? DateUtil.formatDateDefault(row.getVipEndTime()) : "")
+                    .vipEndTime(!Objects.isNull(row.getVipEndTime()) ? DateUtil.formatDateDefault(row.getVipEndTime()) : "")
                     .buyTime(isVip ? DateUtil.formatDateDefault(row.getVipStartTime()) : "")
                     .todayGuest(ObjectUtils.isEmpty(recordList) ? 0 : recordList.stream().filter(r -> Objects.equals(DateUtil.formatDate(r.getCreateTime(), "yyyyMMdd"), DateUtil.formatDate(now, "yyyyMMdd")))
                             .map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
