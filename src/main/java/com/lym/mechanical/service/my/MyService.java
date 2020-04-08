@@ -90,7 +90,8 @@ public class MyService {
         List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
         List<CommonDTO> todayGuest = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
                 nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"), null, null, null);
-        List<CommonDTO> totalGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null, null, null, null);
+        List<CommonDTO> totalGuest = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
+                nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null, null, null, null);
         List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
         return MyIndexDTO.builder()
                 .avatar(StringUtils.isEmpty(carUserDO.getHeadPortrait()) ? "" : carUserDO.getHeadPortrait())

@@ -435,7 +435,6 @@ public class WxPgService {
         return userSig;
     }
 
-    @Async
     public void setUserInfo(CarUserDO carUserDO) throws Exception {
         TLSSigAPIv2 api = new TLSSigAPIv2(tencentYunInfo.getSdkappid(), tencentYunInfo.getKey());
         String userSig = api.genSig(tencentYunInfo.getManager(), 180*86400);
