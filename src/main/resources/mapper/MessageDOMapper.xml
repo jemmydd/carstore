@@ -156,14 +156,14 @@
     </where>
   </select>
   <select id="selectByUserId" resultMap="BaseResultMap">
-    SELECT * from message JOIN (SELECT MAX(create_time) AS `time`,user_group AS user_group FROM message WHERE
+    SELECT * from message JOIN (SELECT MAX(create_time) AS `time`,user_group AS user_group FROM message WHERE from_car_user_id != 0 and to_car_user_id != 0
     <if test="name != null and name != ''">
-      (from_car_user_id = #{userId} and to_car_user_id in (select user_id from name_card where name like concat('%', #{name}, '%')))
+      and ((from_car_user_id = #{userId} and to_car_user_id in (select user_id from name_card where name like concat('%', #{name}, '%')))
       OR
-      (to_car_user_id = #{userId} and from_car_user_id in (select user_id from name_card where name like concat('%', #{name}, '%')))
+      (to_car_user_id = #{userId} and from_car_user_id in (select user_id from name_card where name like concat('%', #{name}, '%'))))
     </if>
     <if test="name == null or name == ''">
-      from_car_user_id = #{userId} OR to_car_user_id = #{userId}
+      and (from_car_user_id = #{userId} OR to_car_user_id = #{userId})
     </if>
     GROUP BY user_group) a ON message.create_time = a.`time` AND message.user_group = a.user_group
   </select>

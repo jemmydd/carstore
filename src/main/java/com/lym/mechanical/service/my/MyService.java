@@ -90,7 +90,7 @@ public class MyService {
         List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
         List<CommonDTO> todayGuest = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
                 nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"), null, null, null);
-        List<CommonDTO> totalGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(userId, null, null, null, null);
+        List<CommonDTO> totalGuest = nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null, null, null, null);
         List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
         return MyIndexDTO.builder()
                 .avatar(StringUtils.isEmpty(carUserDO.getHeadPortrait()) ? "" : carUserDO.getHeadPortrait())
@@ -182,7 +182,7 @@ public class MyService {
                         .avatar(Objects.isNull(carUserDO) ? "" : carUserDO.getHeadPortrait())
                         .guestId(row.getUserId())
                         .name(Objects.isNull(carUserDO) ? "" : carUserDO.getNickName())
-                        .recentTime(DateUtil.getDateStr(row.getCreateTime()))
+                        .recentTime(Objects.isNull(row.getCreateTime()) ? "" : DateUtil.getDateStr(row.getCreateTime()))
                         .build();
             }).collect(Collectors.toList()));
         }
@@ -203,7 +203,7 @@ public class MyService {
                 carUserDOS.stream().collect(Collectors.toMap(CarUserDO::getId, row -> row));
         return nameCardFriendDOS.stream().map(row -> {
             NameCardDO nameCardDO = map.get(row.getCardId());
-            CarUserDO userDO = Objects.isNull(nameCardDO) ? null : userMap.get(nameCardDO.getId());
+            CarUserDO userDO = Objects.isNull(nameCardDO) ? null : userMap.get(nameCardDO.getUserId());
             return NameCardDTO.builder()
                     .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
                     .jobTitle(Objects.isNull(nameCardDO) ? "" : nameCardDO.getJobTitle())

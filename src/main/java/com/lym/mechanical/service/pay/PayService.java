@@ -247,13 +247,17 @@ public class PayService {
                 CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(vipOrderDO.getUserId());
                 if (!Objects.isNull(carUserDO)) {
                     CarUserDO updateUser = CarUserDO.builder().id(carUserDO.getId()).updateTime(DateUtil.now())
-                            .vipStartTime(DateUtil.now())
                             .build();
                     if (vipConfigDO.getIsLimit()) {
                         updateUser.setHasTry(Boolean.TRUE);
                     }
                     Calendar calendar = Calendar.getInstance();
                     String time = vipConfigDO.getDays().substring(0, vipConfigDO.getDays().length() - 1);
+                    if (!isVip(carUserDO)) {
+                        updateUser.setVipStartTime(DateUtil.now());
+                    } else {
+                        calendar.setTime(carUserDO.getVipEndTime());
+                    }
                     if (vipConfigDO.getDays().contains("d")) {
                         calendar.add(Calendar.DATE, Integer.parseInt(time));
                     } else if (vipConfigDO.getDays().contains("m")) {
@@ -349,5 +353,9 @@ public class PayService {
 
     private String getDays(String days) {
         return days.replaceAll("d", "天").replaceAll("m", "个月").replaceAll("y", "年");
+    }
+
+    public Boolean isVip(CarUserDO carUserDO) {
+        return DateUtil.dateValid(carUserDO.getVipStartTime(), carUserDO.getVipEndTime());
     }
 }
