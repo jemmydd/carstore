@@ -221,6 +221,7 @@ public class PayService {
         return result;
     }
 
+    @Transactional
     public void callbackHandler(Integer orderId, Date gmtPayment, String totalFee, String transaction_id, String out_trade_no) {
         VipOrderDO vipOrderDO = vipOrderDOMapper.selectByPrimaryKey(orderId);
         if (!Objects.isNull(vipOrderDO)) {
