@@ -242,6 +242,7 @@
     from car_user left join car_user_apply
     on car_user.id = car_user_apply.user_id
     <where>
+    (name != 'admin' or name is null)
       <if test="nickName != null and nickName != ''">
         and car_user.nick_name like concat('%', #{nickName}, '%')
       </if>
