@@ -224,7 +224,7 @@ public class PayService {
     @Transactional
     public void callbackHandler(Integer orderId, Date gmtPayment, String totalFee, String transaction_id, String out_trade_no) {
         VipOrderDO vipOrderDO = vipOrderDOMapper.selectByPrimaryKey(orderId);
-        if (!Objects.isNull(vipOrderDO)) {
+        if (!Objects.isNull(vipOrderDO) && Objects.equals("NO_PAY", vipOrderDO.getStatus())) {
             VipOrderDO update = VipOrderDO.builder()
                     .id(vipOrderDO.getId())
                     .updateTime(DateUtil.now())
