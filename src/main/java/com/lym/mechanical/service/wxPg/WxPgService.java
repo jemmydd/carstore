@@ -439,15 +439,14 @@ public class WxPgService {
     public void setUserInfo(CarUserDO carUserDO) throws Exception {
         TLSSigAPIv2 api = new TLSSigAPIv2(tencentYunInfo.getSdkappid(), tencentYunInfo.getKey());
         String userSig = api.genSig(tencentYunInfo.getManager(), 180*86400);
-        String url = String.format("https://console.tim.qq.com/v4/profile/portrait_set?sdkappid=%s&identifier=%s&usersig=%s&random=%s&contenttype=json",
+        String url = String.format("https://console.tim.qq.com/v4/im_open_login_svc/account_import?sdkappid=%s&identifier=%s&usersig=%s&random=%s&contenttype=json",
                 tencentYunInfo.getSdkappid(), tencentYunInfo.getManager(), userSig, random32Number());
         log.info("url-----------------{}", url);
         UserSetInfoDTO infoDTO = UserSetInfoDTO.builder()
-                .From_Account(carUserDO.getId().toString())
-                .ProfileItem(Lists.newArrayList(
-                        ProfileItem.builder().Tag("Tag_Profile_IM_Nick").Value(carUserDO.getNickName()).build(),
-                        ProfileItem.builder().Tag("Tag_Profile_IM_Image").Value(carUserDO.getHeadPortrait()).build()
-                )).build();
+                .Identifier(carUserDO.getId().toString())
+                .Nick(carUserDO.getNickName())
+                .FaceUrl(carUserDO.getHeadPortrait())
+                .build();
         String js = GsonUtil.GSON.toJson(infoDTO);
         log.info(js);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), js);

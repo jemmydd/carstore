@@ -20,7 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 public class UserSetInfoDTO {
 
-    private String From_Account;
+    private String Identifier;
 
-    private List<ProfileItem> ProfileItem;
+    private String Nick;
+
+    private String FaceUrl;
 }
