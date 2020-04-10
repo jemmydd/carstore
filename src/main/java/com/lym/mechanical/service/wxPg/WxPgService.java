@@ -424,9 +424,10 @@ public class WxPgService {
             throw new RuntimeException("用户不存在");
         }
         String userSig;
-        if (StringUtils.isEmpty(carUserDO.getUserSig()) || DateUtil.now().getTime() - carUserDO.getSigCreateTime().getTime() > 179 * 86400 * 1000) {
+        if (StringUtils.isEmpty(carUserDO.getUserSig()) || (DateUtil.now().getTime() - carUserDO.getSigCreateTime().getTime()) > 179 * 86400 * 1000L) {
             TLSSigAPIv2 api = new TLSSigAPIv2(tencentYunInfo.getSdkappid(), tencentYunInfo.getKey());
             userSig = api.genSig(userId.toString(), 180*86400);
+            carUserDO.setUserSig(userSig);
             carUserDOMapper.updateByPrimaryKeySelective(CarUserDO.builder().id(carUserDO.getId()).userSig(userSig).sigCreateTime(DateUtil.now()).build());
         } else {
             userSig = carUserDO.getUserSig();
