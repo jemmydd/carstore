@@ -9,6 +9,7 @@ public enum SortedTypeEnum {
     NEWEST,
     PRICE_HIGH,
     PRICE_LOW,
+    UPDATE,
     ;
 
     public static Boolean contain(String st) {

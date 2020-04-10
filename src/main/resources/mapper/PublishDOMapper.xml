@@ -504,6 +504,9 @@
       <if test="sortedType == 'IN_PRICE_LOW'">
         order by in_price desc
       </if>
+      <if test="sortedType == 'UPDATE'">
+        order by update_time desc
+      </if>
     </if>
   </select>
 
