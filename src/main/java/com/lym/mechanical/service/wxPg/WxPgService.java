@@ -441,6 +441,7 @@ public class WxPgService {
         String userSig = api.genSig(tencentYunInfo.getManager(), 180*86400);
         String url = String.format("https://console.tim.qq.com/v4/profile/portrait_set?sdkappid=%s&identifier=%s&usersig=%s&random=%s&contenttype=json",
                 tencentYunInfo.getSdkappid(), tencentYunInfo.getManager(), userSig, random32Number());
+        log.info("url-----------------{}", url);
         UserSetInfoDTO infoDTO = UserSetInfoDTO.builder()
                 .From_Account(carUserDO.getId().toString())
                 .ProfileItem(Lists.newArrayList(
