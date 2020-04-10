@@ -451,7 +451,8 @@ public class WxPgService {
         String js = GsonUtil.GSON.toJson(infoDTO);
         log.info(js);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), js);
-        OkHttp3Util.simplePost(url, body);
+        String response = OkHttp3Util.simplePost(url, body);
+        log.info(response);
     }
 
     private String random32Number() {
