@@ -48,4 +48,8 @@ public interface NameCardLookRecordDOMapper {
     @Select("select * from name_card_look_record where card_id = #{cardId} order by create_time desc")
     @ResultMap("BaseResultMap")
     List<NameCardLookRecordDO> selectByCardId(@Param("cardId") Integer cardId);
+
+    @Select("select * from name_card_look_record where card_id = #{cardId} and user_id = #{userId}")
+    @ResultMap("BaseResultMap")
+    List<NameCardLookRecordDO> selectByUserIdAndCardId(@Param("userId") Integer userId, @Param("cardId") Integer cardId);
 }

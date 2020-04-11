@@ -277,11 +277,13 @@ public class NameCardService {
 
     @Async
     public void addLookRecord(Integer userId, Integer cardId) {
+        List<NameCardLookRecordDO> nameCardLookRecordDOS = nameCardLookRecordDOMapper.selectByUserIdAndCardId(userId, cardId);
         nameCardLookRecordDOMapper.insertSelective(NameCardLookRecordDO.builder()
                 .createTime(DateUtil.now())
                 .updateTime(DateUtil.now())
                 .userId(userId)
                 .cardId(cardId)
+                .hasDial(ObjectUtils.isEmpty(nameCardLookRecordDOS) ? Boolean.FALSE : nameCardLookRecordDOS.get(0).getHasDial())
                 .build());
     }
 
