@@ -62,8 +62,3 @@ logging:
 # 业务资源的域名
 file-domain:
   ali-oss-domain: https://mechanical-test.oss-cn-hangzhou.aliyuncs.com/
-
-tencentyun:
-  sdkappid: 1400331931
-  key: e778949d8b53d45183f03235870d7569e19b22117d6c07a46a64ac440e816cd6
-  manager: administrator
