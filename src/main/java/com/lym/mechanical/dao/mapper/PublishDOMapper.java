@@ -20,7 +20,7 @@ public interface PublishDOMapper {
 
     int updateByPrimaryKey(PublishDO record);
 
-    @Select("select * from publish where car_user_id = #{carUserId} order by create_time desc,id desc")
+    @Select("select * from publish where car_user_id = #{carUserId} and is_deleted = 0 and shelf_status = 1 order by create_time desc,id desc")
     @ResultMap("BaseResultMap")
     List<PublishDO> selectByCarUserId(@Param("carUserId") Integer carUserId);
 
