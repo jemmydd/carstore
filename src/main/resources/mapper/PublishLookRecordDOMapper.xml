@@ -243,7 +243,7 @@
     order by max(create_time) desc
   </select>
   <select id="selectBatchByCarUserId" resultMap="BaseResultMap">
-    select publish_look_record.*, publish.car_user_id as carUserId
+    select publish_look_record.*, publish.car_user_id
     FROM publish_look_record JOIN publish ON publish_look_record.publish_id = publish.id
     <where>
       <if test="carUserIds != null and carUserIds.size > 0">
