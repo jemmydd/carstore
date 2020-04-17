@@ -78,4 +78,6 @@ public interface PublishLookRecordDOMapper {
     List<PublishLookRecordDO> selectByUserIdAndPublishId(@Param("userId") Integer userId, @Param("publishId") Integer publishId);
 
     List<PublishLookRecordDO> selectBatchByCarUserId(@Param("carUserIds") List<Integer> carUserIds);
+
+
 }

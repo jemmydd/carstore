@@ -89,9 +89,9 @@ public class MyService {
         List<CarUserApplyDO> applyDOS = carUserApplyDOMapper.selectByUserId(userId);
         List<MessageDO> messageDOS = messageDOMapper.selectByUserId(userId, null);
         List<CommonDTO> todayGuest = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
-                nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"), null, null, null);
+                nameCardLookRecordDOMapper.selectGuestByUserId(userId, DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd"), null, null, null);
         List<CommonDTO> totalGuest = Objects.isNull(nameCardDO) ? Lists.newArrayList() :
-                nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(), null, null, null, null);
+                nameCardLookRecordDOMapper.selectGuestByUserId(userId, null, null, null, null);
         List<IntentionCustomDO> intentionCustom = intentionCustomDOMapper.selectByUserId(userId);
         return MyIndexDTO.builder()
                 .avatar(StringUtils.isEmpty(carUserDO.getHeadPortrait()) ? "" : carUserDO.getHeadPortrait())
@@ -120,7 +120,7 @@ public class MyService {
         if (Objects.equals("0", type) || Objects.equals("1", type)) {
             PageData.checkPageParam(pageNum, pageSize);
             PageHelper.startPage(pageNum, pageSize);
-            Page<CommonDTO> lookRecordDOS = (Page<CommonDTO>) nameCardLookRecordDOMapper.selectByCardIdAndDate(nameCardDO.getId(),
+            Page<CommonDTO> lookRecordDOS = (Page<CommonDTO>) nameCardLookRecordDOMapper.selectGuestByUserId(userId,
                     Objects.equals("0", type) ? DateUtil.formatDate(DateUtil.now(), "yyyy-MM-dd") : null, hasManyLook, hasDial, hasMobile);
             List<CommonDTO> data = lookRecordDOS.getResult();
             if (ObjectUtils.isEmpty(data)) {

@@ -155,6 +155,35 @@
     </if>
     order by max(name_card_look_record.create_time) desc
   </select>
+  <select id="selectGuestByUserId" resultType="com.lym.mechanical.bean.dto.my.CommonDTO">
+    SELECT b.user_id AS userId,MAX(b.create_time) AS createTime FROM (SELECT * FROM (
+    SELECT
+    name_card_look_record.user_id, c.id, name_card_look_record.create_time,name_card_look_record.has_dial AS card_dial,0 AS publish_dial, car_user.phone AS phone FROM
+    name_card_look_record LEFT JOIN car_user on name_card_look_record.user_id = car_user.id
+    LEFT JOIN name_card ON name_card_look_record.card_id = name_card.id
+    LEFT JOIN car_user c ON name_card.user_id = c.id
+    UNION ALL
+    SELECT
+    publish_look_record.user_id, c.id, publish_look_record.create_time,0 as card_dial, publish_look_record.has_dial AS publish_dial, car_user.phone AS phone FROM
+    publish_look_record LEFT JOIN car_user ON publish_look_record.user_id = car_user.id
+    LEFT JOIN publish ON publish_look_record.publish_id = publish.id
+    LEFT JOIN car_user c ON publish.car_user_id = c.id) a
+    WHERE a.id = #{userId}
+    <if test="date != null and date != ''">
+      and DATE_FORMAT(a.create_time, '%Y-%m-%d') = #{date}
+    </if>
+    <if test="hasDial != null and hasDial == 1">
+      AND (a.card_dial = 1 OR a.publish_dial = 1)
+    </if>
+    <if test="hasMobile != null and hasMobile == 1">
+      AND a.phone IS NOT NULL
+    </if>
+    ) b GROUP BY b.user_id
+    <if test="hasManyLook != null and hasManyLook == 1">
+      HAVING COUNT(*) > 1
+    </if>
+    ORDER BY MAX(b.create_time) desc
+  </select>
   <select id="selectBatchByUserId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

@@ -10,6 +10,7 @@
     <result column="has_dial" jdbcType="BIT" property="hasDial" />
     <result column="has_collect" jdbcType="BIT" property="hasCollect" />
     <result column="look_time" jdbcType="INTEGER" property="lookTime" />
+    <result column="car_user_id" jdbcType="INTEGER" property="carUserId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, user_id, publish_id, has_dial, has_collect, look_time
@@ -241,8 +242,8 @@
     group by user_id
     order by max(create_time) desc
   </select>
-  <select id="selectBatchByCarUserId" resultType="com.lym.mechanical.bean.entity.PublishLookRecordDO">
-    select publish_look_record.*, publish.car_user_id as carUserId
+  <select id="selectBatchByCarUserId" resultMap="BaseResultMap">
+    select publish_look_record.*, publish.car_user_id as car_user_id
     FROM publish_look_record JOIN publish ON publish_look_record.publish_id = publish.id
     <where>
       <if test="carUserIds != null and carUserIds.size > 0">
