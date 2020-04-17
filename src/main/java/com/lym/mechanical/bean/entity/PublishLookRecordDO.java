@@ -26,6 +26,8 @@ public class PublishLookRecordDO {
 
     private Integer lookTime;
 
+    private Integer carUserId;
+
     public Integer getId() {
         return id;
     }
@@ -88,5 +90,13 @@ public class PublishLookRecordDO {
 
     public void setLookTime(Integer lookTime) {
         this.lookTime = lookTime;
+    }
+
+    public Integer getCarUserId() {
+        return carUserId;
+    }
+
+    public void setCarUserId(Integer carUserId) {
+        this.carUserId = carUserId;
     }
 }

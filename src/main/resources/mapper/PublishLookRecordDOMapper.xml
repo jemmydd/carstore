@@ -10,6 +10,7 @@
     <result column="has_dial" jdbcType="BIT" property="hasDial" />
     <result column="has_collect" jdbcType="BIT" property="hasCollect" />
     <result column="look_time" jdbcType="INTEGER" property="lookTime" />
+    <result column="car_user_id" jdbcType="INTEGER" property="carUserId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, user_id, publish_id, has_dial, has_collect, look_time
@@ -240,5 +241,20 @@
     where publish_id = #{publishId}
     group by user_id
     order by max(create_time) desc
+  </select>
+  <select id="selectBatchByCarUserId" resultMap="BaseResultMap">
+    select publish_look_record.*, publish.car_user_id as carUserId
+    FROM publish_look_record JOIN publish ON publish_look_record.publish_id = publish.id
+    <where>
+      <if test="carUserIds != null and carUserIds.size > 0">
+        publish.car_user_id IN
+        <foreach collection="carUserIds" separator="," open="(" item="item" close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="carUserIds == null or carUserIds.size == 0">
+        1 = 0
+      </if>
+    </where>
   </select>
 </mapper>

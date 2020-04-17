@@ -76,4 +76,6 @@ public interface PublishLookRecordDOMapper {
     @Select("select * from publish_look_record where publish_id = #{publishId} and user_id = #{userId}")
     @ResultMap("BaseResultMap")
     List<PublishLookRecordDO> selectByUserIdAndPublishId(@Param("userId") Integer userId, @Param("publishId") Integer publishId);
+
+    List<PublishLookRecordDO> selectBatchByCarUserId(@Param("carUserIds") List<Integer> carUserIds);
 }
