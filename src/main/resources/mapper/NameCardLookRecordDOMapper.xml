@@ -173,7 +173,7 @@
       and DATE_FORMAT(a.create_time, '%Y-%m-%d') = #{date}
     </if>
     <if test="hasDial != null and hasDial == 1">
-      AND (a.card_dial = 1 OR a.publish_dial = 1)
+      AND a.card_dial+a.publish_dial >= 1
     </if>
     <if test="hasMobile != null and hasMobile == 1">
       AND a.phone IS NOT NULL
