@@ -126,4 +126,8 @@ public interface PublishDOMapper {
     List<PublishDO> selectForWeb(@Param("nickName") String nickName, @Param("mobile") String mobile, @Param("userId") String userId);
 
     List<PublishDO> selectBatchByCarUserId(@Param("userIds") List<Integer> userIds);
+
+    @Select("select * from publish where car_user_id = #{userId} and create_time <= #{endDate} and create_time >= #{startDate}")
+    @ResultMap("BaseResultMap")
+    List<PublishDO> selectByCarUserIdAndDateBetween(@Param("userId") Integer userId, @Param("startDate") String startDate, @Param("endDate") String endDate);
 }

@@ -61,4 +61,10 @@ public class WxPgController {
     public Result<String> userSig(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) throws Exception {
         return ResultUtil.success(wxPgService.userSig(userId));
     }
+
+    @GetMapping("active.action")
+    @ApiOperation(value = "记录用户活跃")
+    public Result<Boolean> userActive(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) {
+        return ResultUtil.success(wxPgService.userActive(userId));
+    }
 }

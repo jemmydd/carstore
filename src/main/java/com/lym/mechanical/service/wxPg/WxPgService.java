@@ -12,10 +12,7 @@ import com.lym.mechanical.bean.dto.wxPg.AccessTokenDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxPgAuthDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserDTO;
 import com.lym.mechanical.bean.dto.wxPg.WxUserPhoneDTO;
-import com.lym.mechanical.bean.entity.CarUserDO;
-import com.lym.mechanical.bean.entity.NameCardDO;
-import com.lym.mechanical.bean.entity.WxAccessTokenDO;
-import com.lym.mechanical.bean.entity.WxQrDO;
+import com.lym.mechanical.bean.entity.*;
 import com.lym.mechanical.bean.enumBean.WxQrEnum;
 import com.lym.mechanical.bean.param.wxPg.GetMobileParam;
 import com.lym.mechanical.bean.param.wxPg.QrParam;
@@ -23,10 +20,7 @@ import com.lym.mechanical.bean.param.wxPg.UserInfo;
 import com.lym.mechanical.bean.param.wxPg.WxLoginInfo;
 import com.lym.mechanical.component.oss.OssService;
 import com.lym.mechanical.component.oss.OssServiceImpl;
-import com.lym.mechanical.dao.mapper.CarUserDOMapper;
-import com.lym.mechanical.dao.mapper.NameCardDOMapper;
-import com.lym.mechanical.dao.mapper.WxAccessTokenDOMapper;
-import com.lym.mechanical.dao.mapper.WxQrDOMapper;
+import com.lym.mechanical.dao.mapper.*;
 import com.lym.mechanical.sys.FileDomain;
 import com.lym.mechanical.sys.PgAppInfo;
 import com.lym.mechanical.sys.TencentYunInfo;
@@ -108,6 +102,9 @@ public class WxPgService {
 
     @Autowired
     private TencentYunInfo tencentYunInfo;
+
+    @Autowired
+    private CarUserActiveDOMapper carUserActiveDOMapper;
 
     public CarUserDO auth(WxLoginInfo info) {
         CarUserDO userDO;
@@ -463,5 +460,20 @@ public class WxPgService {
             sb = sb.append(num);
         }
         return String.valueOf(sb);
+    }
+
+    public Boolean userActive(Integer userId) {
+        Date now = DateUtil.now();
+        String date = DateUtil.formatDate(now, "yyyy-MM-dd");
+        CarUserActiveDO carUserActiveDO = carUserActiveDOMapper.selectByUserIdAndDate(userId, date);
+        if (Objects.isNull(carUserActiveDO)) {
+            carUserActiveDOMapper.insertSelective(CarUserActiveDO.builder()
+                    .createTime(now)
+                    .updateTime(now)
+                    .userId(userId)
+                    .activeDate(now)
+                    .build());
+        }
+        return Boolean.TRUE;
     }
 }

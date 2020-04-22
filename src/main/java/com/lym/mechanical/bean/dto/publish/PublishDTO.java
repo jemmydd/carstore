@@ -134,4 +134,7 @@ public class PublishDTO {
 
     @ApiModelProperty("车商名片id")
     private Integer cardId;
+
+    @ApiModelProperty(value = "查看人数")
+    private Integer lookCount;
 }

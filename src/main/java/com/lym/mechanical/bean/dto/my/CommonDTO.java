@@ -21,4 +21,6 @@ public class CommonDTO {
     private Integer userId;
 
     private Date createTime;
+
+    private String date;
 }

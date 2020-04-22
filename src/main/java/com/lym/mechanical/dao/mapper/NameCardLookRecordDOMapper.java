@@ -39,9 +39,12 @@ public interface NameCardLookRecordDOMapper {
                                           @Param("hasManyLook") String hasManyLook, @Param("hasDial") String hasDial,
                                           @Param("hasMobile") String hasMobile);
 
-    List<CommonDTO> selectGuestByUserId(@Param("userId") Integer cardId, @Param("date") String date,
+    List<CommonDTO> selectGuestByUserId(@Param("userId") Integer userId, @Param("date") String date,
                                         @Param("hasManyLook") String hasManyLook, @Param("hasDial") String hasDial,
                                         @Param("hasMobile") String hasMobile);
+
+    List<CommonDTO> selectDateGuest(@Param("userId") Integer userId, @Param("startDate") String startDate,
+                                    @Param("endDate") String endDate);
 
     List<NameCardLookRecordDO> selectBatchByUserId(@Param("userIds") List<Integer> userIds);
 

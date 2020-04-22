@@ -223,4 +223,21 @@
       1 = 0
     </if>
   </select>
+  <select id="selectDateGuest" resultType="com.lym.mechanical.bean.dto.my.CommonDTO">
+    SELECT b.user_id as userId,date_format(max(b.create_time), '%Y%m%d') as `date` FROM (SELECT * FROM (
+    SELECT
+    name_card_look_record.user_id, c.id, name_card_look_record.create_time,name_card_look_record.has_dial AS card_dial,0 AS publish_dial, car_user.phone AS phone FROM
+    name_card_look_record LEFT JOIN car_user on name_card_look_record.user_id = car_user.id
+    LEFT JOIN name_card ON name_card_look_record.card_id = name_card.id
+    LEFT JOIN car_user c ON name_card.user_id = c.id
+    UNION ALL
+    SELECT
+    publish_look_record.user_id, c.id, publish_look_record.create_time,0 as card_dial, publish_look_record.has_dial AS publish_dial, car_user.phone AS phone FROM
+    publish_look_record LEFT JOIN car_user ON publish_look_record.user_id = car_user.id
+    LEFT JOIN publish ON publish_look_record.publish_id = publish.id
+    LEFT JOIN car_user c ON publish.car_user_id = c.id) a
+    WHERE a.id = #{userId}
+    and a.create_time &lt;= #{endDate} and a.create_time &gt;= #{startDate}
+    ) b GROUP BY DATE_FORMAT(b.create_time, '%Y%m%d'), b.user_id
+  </select>
 </mapper>

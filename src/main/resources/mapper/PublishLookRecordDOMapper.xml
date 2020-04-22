@@ -257,4 +257,10 @@
       </if>
     </where>
   </select>
+  <select id="selectLookCountByUserIdAndDateBetween" resultType="com.lym.mechanical.bean.dto.statistic.PublishLookDTO">
+    SELECT publish_id as publishId, COUNT(DISTINCT(user_id)) as `count` FROM publish_look_record
+    WHERE publish_id IN (SELECT id FROM publish WHERE car_user_id = #{userId})
+    AND create_time &lt;= #{endDate} AND create_time &gt;= #{startDate}
+    GROUP BY publish_id ORDER BY `count` DESC LIMIT 3;
+  </select>
 </mapper>

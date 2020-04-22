@@ -36,12 +36,7 @@
         </javaClientGenerator>
 
         <!--表-->
-        <table catalog="mechanical" tableName="news" domainObjectName="NewsDO"
-               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-            <property name="ignoreQualifiersAtRuntime" value="true"/>
-        </table>
-        <table catalog="mechanical" tableName="news_type" domainObjectName="NewsTypeDO"
+        <table catalog="mechanical" tableName="car_user_active" domainObjectName="CarUserActiveDO"
                enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
             <property name="ignoreQualifiersAtRuntime" value="true"/>

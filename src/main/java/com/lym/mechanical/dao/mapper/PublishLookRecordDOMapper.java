@@ -2,6 +2,7 @@ package com.lym.mechanical.dao.mapper;
 
 import com.lym.mechanical.bean.dto.admin.UserLookRecordDTO;
 import com.lym.mechanical.bean.dto.my.MyGuestDO;
+import com.lym.mechanical.bean.dto.statistic.PublishLookDTO;
 import com.lym.mechanical.bean.entity.PublishLookRecordDO;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
@@ -79,5 +80,5 @@ public interface PublishLookRecordDOMapper {
 
     List<PublishLookRecordDO> selectBatchByCarUserId(@Param("carUserIds") List<Integer> carUserIds);
 
-
+    List<PublishLookDTO> selectLookCountByUserIdAndDateBetween(@Param("userId") Integer userId, @Param("startDate") String startDate, @Param("endDate") String endDate);
 }
