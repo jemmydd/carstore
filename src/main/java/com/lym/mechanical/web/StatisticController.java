@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequestMapping("statistic")
 @RestController
-@Api(tags = "统计")
+@Api(tags = "小程序端周统计")
 public class StatisticController {
 
     @Autowired
     private WeekStatisticService weekStatisticService;
 
-    @GetMapping("statisticWeek")
+    @GetMapping("statisticWeek.action")
     @ApiOperation(value = "周数据分析")
     public Result<StatisticDTO> statisticWeek(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId,
                                               @RequestParam("startDate") @ApiParam(value = "统计开始日期，yyyy-MM-dd") String startDate,
