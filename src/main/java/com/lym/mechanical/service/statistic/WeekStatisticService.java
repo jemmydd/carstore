@@ -85,6 +85,43 @@ public class WeekStatisticService {
                 publishDOMapper.selectBatchByPrimaryKey(publishLooks.stream().map(PublishLookDTO::getPublishId).collect(Collectors.toList()));
         Map<Integer, PublishDO> publishMap = ObjectUtils.isEmpty(publishList) ? Maps.newHashMap() :
                 publishList.stream().collect(Collectors.toMap(PublishDO::getId, row -> row));
+        List<PublishDTO> hotPublishList = publishLooks.stream().map(row -> {
+            PublishDO publishDO = publishMap.get(row.getPublishId());
+            Integer lookCount = map.get(row.getPublishId());
+            return PublishDTO.builder()
+                    .id(row.getPublishId())
+                    .mainMedia(Objects.isNull(publishDO) ? "" : publishDO.getMainMedia())
+                    .title(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
+                    .productiveYear(Objects.isNull(publishDO) || Objects.isNull(publishDO.getProductiveYear()) ? 0 : publishDO.getProductiveYear())
+                    .usageHours(Objects.isNull(publishDO) || StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : publishDO.getUsageHours())
+                    .location(Objects.isNull(publishDO) ? "" : (publishDO.getProvinceName() + " · " + publishDO.getCityName()))
+                    .outPrice(Objects.isNull(publishDO) ? DefaultHandleConstant.PUBLISH_OUT : (publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice()))
+                    .lookCount(Objects.isNull(lookCount) ? 0 : lookCount)
+                    .build();
+        }).collect(Collectors.toList());
+        int index = 0;
+        List<Integer> publishIds = hotPublishList.stream().map(PublishDTO::getId).collect(Collectors.toList());
+        List<PublishDO> publishs = publishDOMapper.selectByCarUserId(userId);
+        while (hotPublishList.size() < 3) {
+            if (index < publishs.size()) {
+                PublishDO publishDO = publishs.get(index);
+                if (!publishIds.contains(publishDO.getId())) {
+                    hotPublishList.add(PublishDTO.builder()
+                            .id(publishDO.getId())
+                            .mainMedia(Objects.isNull(publishDO) ? "" : publishDO.getMainMedia())
+                            .title(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
+                            .productiveYear(Objects.isNull(publishDO) || Objects.isNull(publishDO.getProductiveYear()) ? 0 : publishDO.getProductiveYear())
+                            .usageHours(Objects.isNull(publishDO) || StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : publishDO.getUsageHours())
+                            .location(Objects.isNull(publishDO) ? "" : (publishDO.getProvinceName() + " · " + publishDO.getCityName()))
+                            .outPrice(Objects.isNull(publishDO) ? DefaultHandleConstant.PUBLISH_OUT : (publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice()))
+                            .lookCount(0)
+                            .build());
+                }
+                index++;
+            } else {
+                break;
+            }
+        }
         return StatisticDTO.builder()
                 .top(StatisticTopDTO.builder()
                         .activeCount(ObjectUtils.isEmpty(carUserActiveDOS) ? 0 : carUserActiveDOS.size())
@@ -96,20 +133,7 @@ public class WeekStatisticService {
                         .weekData(weekData)
                         .build())
                 .bottom(StatisticBottom.builder()
-                        .hotPublish(publishLooks.stream().map(row -> {
-                            PublishDO publishDO = publishMap.get(row.getPublishId());
-                            Integer lookCount = map.get(row.getPublishId());
-                            return PublishDTO.builder()
-                                    .id(row.getPublishId())
-                                    .mainMedia(Objects.isNull(publishDO) ? "" : publishDO.getMainMedia())
-                                    .title(Objects.isNull(publishDO) ? "" : publishDO.getTitle())
-                                    .productiveYear(Objects.isNull(publishDO) || Objects.isNull(publishDO.getProductiveYear()) ? 0 : publishDO.getProductiveYear())
-                                    .usageHours(Objects.isNull(publishDO) || StringUtils.isEmpty(publishDO.getUsageHours()) ? "" : publishDO.getUsageHours())
-                                    .location(Objects.isNull(publishDO) ? "" : (publishDO.getProvinceName() + " · " + publishDO.getCityName()))
-                                    .outPrice(Objects.isNull(publishDO) ? DefaultHandleConstant.PUBLISH_OUT : (publishDO.getOutPrice() == null ? DefaultHandleConstant.PUBLISH_OUT : publishDO.getOutPrice()))
-                                    .lookCount(Objects.isNull(lookCount) ? 0 : lookCount)
-                                    .build();
-                        }).collect(Collectors.toList()))
+                        .hotPublish(hotPublishList)
                         .build())
                 .build();
     }
