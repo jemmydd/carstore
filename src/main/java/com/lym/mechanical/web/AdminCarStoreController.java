@@ -44,4 +44,10 @@ public class AdminCarStoreController {
                                                        @RequestParam("pageSize") @ApiParam(value = "每页显示数量") Integer pageSize) {
         return ResultUtil.success(adminCarStoreService.friendList(userId, pageNum, pageSize));
     }
+
+    @GetMapping("switchShow.action")
+    @ApiOperation(value = "修改是否同步二手平台开关")
+    public Result<Boolean> switchShow(@RequestParam("userId") @ApiParam(value = "用户id") Integer userId) {
+        return ResultUtil.success(adminCarStoreService.switchShow(userId));
+    }
 }
