@@ -119,6 +119,7 @@ public class AdminCarStoreService {
                     .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
                     .code(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCode())
                     .isShow(row.getIsShow())
+                    .cardCreateTime(Objects.isNull(nameCardDO) ? "" : DateUtil.formatDate(nameCardDO.getCreateTime(), "yyyy-MM-dd"))
                     .build();
         }).collect(Collectors.toList()));
     }

@@ -73,4 +73,7 @@ public class AdminCarUserDTO {
 
     @ApiModelProperty(value = "是否同步二手平台")
     private Boolean isShow;
+
+    @ApiModelProperty(value = "名片创建时间")
+    private String cardCreateTime;
 }
