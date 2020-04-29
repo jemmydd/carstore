@@ -64,4 +64,13 @@ public class AdminCarUserDTO {
 
     @ApiModelProperty(value = "友情合作")
     private Integer friendCount;
+
+    @ApiModelProperty(value = "名片编号")
+    private String code;
+
+    @ApiModelProperty(value = "姓名")
+    private String name;
+
+    @ApiModelProperty(value = "是否同步二手平台")
+    private Boolean isShow;
 }

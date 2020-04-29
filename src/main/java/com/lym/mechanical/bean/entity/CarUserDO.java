@@ -42,6 +42,8 @@ public class CarUserDO {
 
     private Date sigCreateTime;
 
+    private Boolean isShow;
+
     private Integer cardId;
 
     private Boolean isVip;
@@ -172,6 +174,14 @@ public class CarUserDO {
 
     public void setSigCreateTime(Date sigCreateTime) {
         this.sigCreateTime = sigCreateTime;
+    }
+
+    public Boolean getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(Boolean isShow) {
+        this.isShow = isShow;
     }
 
     public Integer getCardId() {

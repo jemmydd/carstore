@@ -116,6 +116,9 @@ public class AdminCarStoreService {
                     .intentionGuest(ObjectUtils.isEmpty(intentionList) ? 0 : intentionList.stream().map(IntentionCustomDO::getIntentionCustomUserId).distinct().collect(Collectors.toList()).size())
                     .publishCount(ObjectUtils.isEmpty(publishList) ? 0 : publishList.size())
                     .friendCount(ObjectUtils.isEmpty(friendList) ? 0 : friendList.size())
+                    .name(Objects.isNull(nameCardDO) ? "" : nameCardDO.getName())
+                    .code(Objects.isNull(nameCardDO) ? "" : nameCardDO.getCode())
+                    .isShow(row.getIsShow())
                     .build();
         }).collect(Collectors.toList()));
     }
@@ -154,5 +157,17 @@ public class AdminCarStoreService {
                     .totalGuest(ObjectUtils.isEmpty(recordList) ? 0 : recordList.stream().map(NameCardLookRecordDO::getUserId).distinct().collect(Collectors.toList()).size())
                     .build();
         }).collect(Collectors.toList()));
+    }
+
+    public Boolean switchShow(Integer userId) {
+        CarUserDO carUserDO = carUserDOMapper.selectByPrimaryKey(userId);
+        if (Objects.isNull(carUserDO)) {
+            throw new RuntimeException("用户不存在");
+        }
+        carUserDOMapper.updateByPrimaryKeySelective(CarUserDO.builder()
+                .id(userId)
+                .isShow(!carUserDO.getIsShow())
+                .build());
+        return Boolean.TRUE;
     }
 }

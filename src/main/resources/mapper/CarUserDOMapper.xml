@@ -18,10 +18,12 @@
     <result column="has_try" jdbcType="BIT" property="hasTry" />
     <result column="user_sig" jdbcType="VARCHAR" property="userSig" />
     <result column="sig_create_time" jdbcType="TIMESTAMP" property="sigCreateTime" />
+    <result column="is_show" jdbcType="BIT" property="isShow" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, is_deleted, head_portrait, name, nick_name, sex, phone, 
-    openid, session_key, vip_start_time, vip_end_time, has_try, user_sig, sig_create_time
+    openid, session_key, vip_start_time, vip_end_time, has_try, user_sig, sig_create_time, 
+    is_show
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,21 +35,21 @@
     delete from car_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
     insert into car_user (id, create_time, update_time, 
       is_deleted, head_portrait, name, 
       nick_name, sex, phone, 
       openid, session_key, vip_start_time, 
       vip_end_time, has_try, user_sig, 
-      sig_create_time)
+      sig_create_time, is_show)
     values (#{id,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{isDeleted,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{nickName,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{phone,jdbcType=VARCHAR}, 
       #{openid,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{vipStartTime,jdbcType=TIMESTAMP}, 
       #{vipEndTime,jdbcType=TIMESTAMP}, #{hasTry,jdbcType=BIT}, #{userSig,jdbcType=VARCHAR}, 
-      #{sigCreateTime,jdbcType=TIMESTAMP})
+      #{sigCreateTime,jdbcType=TIMESTAMP}, #{isShow,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
     insert into car_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -97,6 +99,9 @@
       </if>
       <if test="sigCreateTime != null">
         sig_create_time,
+      </if>
+      <if test="isShow != null">
+        is_show,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -148,6 +153,9 @@
       <if test="sigCreateTime != null">
         #{sigCreateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isShow != null">
+        #{isShow,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.lym.mechanical.bean.entity.CarUserDO">
@@ -198,6 +206,9 @@
       <if test="sigCreateTime != null">
         sig_create_time = #{sigCreateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isShow != null">
+        is_show = #{isShow,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -217,7 +228,8 @@
       vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP},
       has_try = #{hasTry,jdbcType=BIT},
       user_sig = #{userSig,jdbcType=VARCHAR},
-      sig_create_time = #{sigCreateTime,jdbcType=TIMESTAMP}
+      sig_create_time = #{sigCreateTime,jdbcType=TIMESTAMP},
+      is_show = #{isShow,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectBatchByPrimaryKey" resultMap="BaseResultMap">
